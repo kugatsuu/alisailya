@@ -2,46 +2,41 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Dota 2: Legendary Gift</title>
+    <title>Dota 2: Legendary Quest</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
         body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
+        /* ЭКРАН ВХОДА */
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
-        .overlay-content h1 { 
-            font-family: 'Cinzel', serif; font-size: 4rem; margin-bottom: 40px; color: #fff;
-            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--gold), 0 0 40px var(--gold);
-        }
-        button { 
-            background: transparent; color: var(--gold); border: 2px solid var(--gold); 
-            padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; 
-            border-radius: 5px; transition: 0.3s; text-transform: uppercase; box-shadow: 0 0 10px var(--gold);
-        }
+        .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); }
+        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 30px 80px; font-family: 'Cinzel', serif; font-size: 2rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* Фото скрыты по умолчанию */
-        .falling-photo { 
-            position: fixed; 
-            border: 2px solid var(--gold); 
-            z-index: 1; 
-            pointer-events: none;
-            opacity: 0; 
-            transition: opacity 0.8s ease;
-        }
+        /* ПИКСЕЛЬНЫЕ АВАТАРЫ */
+        .avatar-container { position: fixed; bottom: 40px; left: 10%; width: 80%; height: 50px; z-index: 50; }
+        .avatar { position: absolute; width: 40px; height: 40px; transition: left 0.8s ease-in-out; }
+        .ilya { background: var(--red); box-shadow: 0 0 10px var(--red); border-radius: 4px; } /* Красный - Илья */
+        .alice { background: #00bcd4; box-shadow: 0 0 10px #00bcd4; border-radius: 4px; } /* Синий - Алиса */
 
-        .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
+        /* ПРОГРЕСС-БАР */
+        .progress-bar { position: fixed; bottom: 20px; left: 10%; width: 80%; display: flex; justify-content: space-between; z-index: 40; }
+        .dot { width: 15px; height: 15px; background: #333; border-radius: 50%; }
+        .dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+        /* ФОТО */
+        .falling-photo { position: fixed; border: 2px solid var(--gold); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
+
+        /* КОНТЕНТ */
+        .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 800px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
-        .step { background: rgba(22, 27, 34, 0.85); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
+        .step { background: rgba(22, 27, 34, 0.9); padding: 50px; border-radius: 15px; border: 2px solid #333; margin-top: 30px; display: none; }
         .step.active { display: block; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; box-sizing: border-box; }
-        .submit-btn { margin-top: 15px; width: 100%; background: var(--red); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; }
+        input { width: 100%; padding: 24px; font-size: 1.5rem; background: #000; border: 2px solid var(--gold); color: white; border-radius: 8px; box-sizing: border-box; margin-bottom: 20px; }
+        .submit-btn { width: 100%; padding: 24px; font-size: 1.5rem; background: var(--red); color: white; border: none; cursor: pointer; border-radius: 8px; font-family: 'Cinzel', serif; }
         
-        #reveal-img {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100px; height: 100px; z-index: 10000; opacity: 0;
-            transition: all 4s ease-in-out; border: 5px solid var(--gold); display: none;
-        }
+        #reveal-img { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; z-index: 10000; opacity: 0; transition: all 4s ease-in-out; border: 5px solid var(--gold); display: none; }
         #reveal-img.expanded { width: 100vw; height: 100vh; opacity: 1; }
     </style>
 </head>
@@ -54,100 +49,113 @@
         </div>
     </div>
 
-    <audio id="audio"></audio>
+    <audio id="audio" loop></audio>
     <img id="reveal-img" src="a1.jpg">
+
+    <!-- Прогресс-бар -->
+    <div class="progress-bar" id="progress">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="avatar-container">
+        <div class="avatar ilya" id="avatar-ilya" style="left: 0%;"></div>
+        <div class="avatar alice" id="avatar-alice" style="left: 0%;"></div>
+    </div>
 
     <div class="content" id="main-content">
         <h1>Тайная Лавка</h1>
-        <div id="step1" class="step active">
-            <p>Кто озвучивает фразу "я люблю когда гмом"?</p>
-            <input type="text" id="answer1" placeholder="Ответ...">
-            <button class="submit-btn" onclick="checkAnswer(1)">Проверить</button>
-        </div>
-        <div id="step2" class="step">
-            <p>Вопрос 2: Впиши вопрос?</p>
-            <input type="text" id="answer2" placeholder="Ответ...">
-            <button class="submit-btn" onclick="checkAnswer(2)">Проверить</button>
-        </div>
+        <div id="quiz-area"></div>
     </div>
 
     <script>
         const audio = document.getElementById('audio');
         const playlist = ["Bodies.mp3", "Gorillaz.mp3", "Nickelback.mp3"];
         let currentTrack = 0;
+        let currentStep = 1;
 
-        audio.onended = () => { 
-            currentTrack = (currentTrack + 1) % playlist.length; 
-            audio.src = playlist[currentTrack]; 
-            audio.play(); 
-        };
+        // --- ВОПРОСЫ (ДОБАВЬ СВОИ) ---
+        const quizData = [
+            { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
+            { q: "Вопрос 2", a: ["ответ2"] },
+            { q: "Вопрос 3", a: ["ответ3"] },
+            { q: "Вопрос 4", a: ["ответ4"] },
+            { q: "Вопрос 5", a: ["ответ5"] },
+            { q: "Вопрос 6", a: ["ответ6"] },
+            { q: "Вопрос 7", a: ["ответ7"] },
+            { q: "Вопрос 8", a: ["ответ8"] },
+            { q: "Вопрос 9", a: ["ответ9"] },
+            { q: "Вопрос 10", a: ["ответ10"] }
+        ];
 
-        // Загрузка фото от p1 до p23
-        const photoFiles = [];
-        for(let i = 1; i <= 23; i++) { photoFiles.push(`p${i}.jpg`); }
-        
-        const answers = { 1: ["анастасия"], 2: ["ответ2"] };
+        // Создаем шаги
+        const quizArea = document.getElementById('quiz-area');
+        quizData.forEach((item, index) => {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'step';
+            stepDiv.id = 'step' + (index + 1);
+            if(index === 0) stepDiv.classList.add('active');
+            stepDiv.innerHTML = `<p style="font-size: 1.5rem;">${item.q}</p><input type="text" id="answer${index + 1}" placeholder="Ответ..."><button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>`;
+            quizArea.appendChild(stepDiv);
+        });
 
         function startExperience() {
-            audio.volume = 0.25; // Уменьшил громкость до 25%
+            audio.volume = 0.15; // Еще тише (15%)
             audio.src = playlist[currentTrack];
             audio.play();
-            
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
-            photoFiles.forEach((file, i) => {
+            // Фото от 1 до 23
+            for(let i = 1; i <= 23; i++) {
                 const img = document.createElement('img');
-                img.src = file;
+                img.src = `p${i}.jpg`;
                 img.className = 'falling-photo';
-                
-                // --- НАСТРОЙКИ СТИЛЯ ДО ВСТАВКИ В ДОМ ---
-                img.style.position = 'fixed';
-                img.style.top = '-800px'; 
                 img.style.left = (Math.random() * 80) + 'vw';
                 img.style.width = (Math.floor(Math.random() * 300) + 300) + 'px';
-                
-                // Добавляем на страницу
                 document.body.appendChild(img);
-                
-                // Запуск анимации через короткий таймаут
                 setTimeout(() => {
                     img.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
-                    img.style.animationDelay = (i * 0.8) + 's';
                     img.style.opacity = '0.25';
                 }, 50);
-            });
+            }
         }
 
-        // Анимация падения
-        const style = document.createElement('style');
-        style.innerHTML = `@keyframes fall { from { top: -800px; } to { top: 110vh; } }`;
-        document.head.appendChild(style);
-
-        async function checkAnswer(step) {
+        function checkAnswer(step) {
             const val = document.getElementById('answer' + step).value.toLowerCase().trim();
-            if (answers[step].includes(val)) {
+            if (quizData[step-1].a.includes(val)) {
+                // Логика первого вопроса (звук)
                 if (step === 1) {
-                    audio.pause(); 
+                    audio.pause();
                     const quote = new Audio('gol.mp3');
                     const img = document.getElementById('reveal-img');
                     img.style.display = 'block';
-                    
                     setTimeout(() => img.classList.add('expanded'), 50);
                     quote.play();
-                    
-                    quote.onended = () => {
-                        img.classList.remove('expanded');
-                        img.style.display = 'none';
-                        audio.play(); 
-                        document.getElementById('step1').style.display = 'none';
-                        document.getElementById('step2').classList.add('active');
-                    };
-                } else {
-                    alert("GG WP! Защита снята. Код: 732");
-                }
+                    quote.onended = () => { img.classList.remove('expanded'); img.style.display = 'none'; audio.play(); nextStep(); };
+                } else { nextStep(); }
             } else { alert("Неверно!"); }
         }
+
+        function nextStep() {
+            document.getElementById('step' + currentStep).style.display = 'none';
+            currentStep++;
+            if (currentStep <= 10) {
+                document.getElementById('step' + currentStep).classList.add('active');
+                // Двигаем аватары
+                const pos = (currentStep - 1) * 10;
+                document.getElementById('avatar-ilya').style.left = pos + '%';
+                document.getElementById('avatar-alice').style.left = (pos + 2) + '%';
+                // Зажигаем точки
+                const dots = document.querySelectorAll('.dot');
+                dots[currentStep - 1].classList.add('active');
+            } else {
+                alert("GG WP! Защита снята. Код: 732");
+            }
+        }
+
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes fall { from { top: -800px; } to { top: 110vh; } }`;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
