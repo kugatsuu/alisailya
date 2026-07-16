@@ -8,7 +8,6 @@
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
         body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
-        /* ЭКРАН ВХОДА */
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { 
             font-family: 'Cinzel', serif; font-size: 4rem; margin-bottom: 40px; color: #fff;
@@ -21,10 +20,16 @@
         }
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* ФОТКИ - БЕСКОНЕЧНЫЙ ДОЖДЬ */
-        .falling-photo { position: fixed; border: 2px solid var(--gold); opacity: 0.25; z-index: 1; pointer-events: none; }
+        /* ИСПРАВЛЕННЫЙ СТИЛЬ ДЛЯ ФОТОК */
+        .falling-photo { 
+            position: fixed; 
+            top: -600px; /* СРАЗУ СТАВИМ ИХ ЗА ПРЕДЕЛЫ ЭКРАНА */
+            border: 2px solid var(--gold); 
+            opacity: 0.25; 
+            z-index: 1; 
+            pointer-events: none;
+        }
 
-        /* ОСНОВНОЙ КОНТЕНТ */
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
         .step { background: rgba(22, 27, 34, 0.85); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
@@ -74,7 +79,6 @@
         const answers = { 1: "ответ1", 2: "ответ2" };
 
         function startExperience() {
-            // Громкость 0.3 (фоновая)
             audio.volume = 0.3;
             audio.src = playlist[currentTrack];
             audio.play();
@@ -89,14 +93,17 @@
                 const w = Math.floor(Math.random() * 200) + 200;
                 img.style.width = w + 'px';
                 img.style.left = (Math.random() * 90) + 'vw';
+                
+                // Анимация
                 img.style.animation = `fall ${Math.random() * 10 + 15}s linear infinite`;
                 img.style.animationDelay = (i * 1.5) + 's';
+                
                 document.body.appendChild(img);
             });
         }
 
         const style = document.createElement('style');
-        style.innerHTML = `@keyframes fall { from { top: -400px; } to { top: 110vh; } }`;
+        style.innerHTML = `@keyframes fall { from { top: -600px; } to { top: 110vh; } }`;
         document.head.appendChild(style);
 
         function checkAnswer(step) {
