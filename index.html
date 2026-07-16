@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Dota 2: Legendary Birthday Quest</title>
+    <title>Dota 2: Quest</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
@@ -10,38 +10,39 @@
 
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); }
-        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 30px 80px; font-family: 'Cinzel', serif; font-size: 2rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
+        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* ТРОПИНКА */
-        .lane-container { position: fixed; bottom: 40px; left: 15%; width: 70%; height: 80px; z-index: 50; display: flex; align-items: center; }
-        .lane-line { position: absolute; width: 100%; height: 8px; background: #2a2a2a; top: 50%; z-index: 1; border-radius: 4px; box-shadow: inset 0 2px 5px #000; }
-        .checkpoint { width: 25px; height: 25px; background: var(--red); clip-path: polygon(0% 0%, 100% 50%, 0% 100%); z-index: 2; opacity: 0.3; transition: 0.3s; margin: 0 5px; }
+        /* ТРОПИНКА И ПРОГРЕСС-БАР */
+        .lane-container { position: fixed; bottom: 30px; left: 15%; width: 70%; height: 90px; z-index: 50; display: flex; align-items: center; }
+        .lane-line { position: absolute; width: 100%; height: 6px; background: #222; top: 60%; z-index: 1; border-radius: 3px; }
+        .checkpoint { width: 22px; height: 22px; background: var(--red); clip-path: polygon(0% 0%, 100% 50%, 0% 100%); z-index: 2; opacity: 0.4; transition: 0.3s; margin: 0 4px; }
         .checkpoint.active { opacity: 1; box-shadow: 0 0 10px var(--red); }
         .lock-icon { font-size: 2rem; margin-left: auto; z-index: 2; }
 
-        /* АВАТАРЫ */
+        /* АВАТАРЫ (Улучшенная верстка) */
         .avatar { 
             position: absolute; width: 50px; height: 50px; border: 2px solid var(--gold); 
-            border-radius: 5px; z-index: 3; transition: left 0.8s ease-in-out;
-            display: flex; align-items: center; justify-content: center; font-size: 9px;
-            color: #fff; text-shadow: 1px 1px 1px #000; cursor: help;
-            overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            z-index: 10; transition: left 0.8s ease-in-out;
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000;
+            border-radius: 4px; cursor: help; box-shadow: 0 0 10px rgba(0,0,0,0.5);
             animation: run 0.4s infinite alternate;
         }
-        .tooltip { visibility: hidden; width: 220px; background-color: rgba(0,0,0,0.95); color: #fff; text-align: center; border-radius: 6px; padding: 12px; position: absolute; z-index: 100; bottom: 130%; left: 50%; margin-left: -110px; font-size: 13px; border: 1px solid var(--gold); line-height: 1.4; }
+        .tooltip { visibility: hidden; width: 220px; background-color: #000; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; bottom: 120%; left: 50%; margin-left: -110px; font-size: 12px; border: 1px solid var(--gold); line-height: 1.4; box-shadow: 0 0 10px var(--gold); }
         .avatar:hover .tooltip { visibility: visible; }
-        .ilya { background-color: #444; }
-        .alice { background-color: #88c; }
-        @keyframes run { 0% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-8px) rotate(5deg); } 100% { transform: translateY(0) rotate(-5deg); } }
+        
+        .ilya { background-color: #a33; top: 0px; }
+        .alice { background-color: #337ab7; top: 40px; }
+        @keyframes run { 0% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } 100% { transform: translateY(0) rotate(-3deg); } }
 
-        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
-        .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 800px; margin: 0 auto; display: none; }
-        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
-        .step { background: rgba(22, 27, 34, 0.9); padding: 40px; border-radius: 15px; border: 2px solid #333; margin-top: 30px; display: none; }
+        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0.5; transition: opacity 0.8s ease; }
+        .content { position: relative; z-index: 10; padding: 30px 20px; max-width: 600px; margin: 0 auto; display: none; }
+        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; }
+        .step { background: rgba(0, 0, 0, 0.85); padding: 30px; border-radius: 15px; border: 1px solid #444; margin-top: 20px; display: none; }
         .step.active { display: block; }
-        input { width: 100%; padding: 20px; background: #000; border: 2px solid var(--gold); color: white; border-radius: 8px; margin-bottom: 20px; }
-        .submit-btn { width: 100%; padding: 20px; background: var(--red); color: white; border: none; cursor: pointer; font-family: 'Cinzel', serif; }
+        input { width: 100%; padding: 15px; background: #111; border: 1px solid var(--gold); color: white; border-radius: 5px; margin-bottom: 15px; font-size: 1.1rem; }
+        .submit-btn { width: 100%; padding: 15px; background: var(--red); color: white; border: none; cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.1rem; }
         
         #reveal-img { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; z-index: 10000; opacity: 0; transition: all 4s ease-in-out; border: 5px solid var(--gold); display: none; }
         #reveal-img.expanded { width: 100vw; height: 100vh; opacity: 1; }
@@ -67,6 +68,7 @@
         <div class="checkpoint"></div>
         <div class="lock-icon">🔒</div>
         
+        <!-- Аватары разнесены по высоте -->
         <div class="avatar ilya" id="avatar-ilya" style="left: 0%;">
             Илья
             <div class="tooltip">Парень с душой размером с океан. Рядом с ним чувствуешь себя как за каменной стеной (даже если стена постоянно шутит)</div>
@@ -107,7 +109,7 @@
             stepDiv.className = 'step';
             stepDiv.id = 'step' + (index + 1);
             if(index === 0) stepDiv.classList.add('active');
-            stepDiv.innerHTML = `<p>${item.q}</p><input type="text" id="answer${index + 1}" placeholder="Ответ..."><button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>`;
+            stepDiv.innerHTML = `<p>${item.q}</p><input type="text" id="answer${index + 1}" placeholder="Ответ..." autofocus><button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>`;
             quizArea.appendChild(stepDiv);
         });
 
@@ -120,7 +122,6 @@
             img.style.width = (Math.floor(Math.random() * 200) + 150) + 'px';
             img.style.top = '-500px';
             document.body.appendChild(img);
-            
             setTimeout(() => {
                 img.style.animation = `fall ${Math.random() * 6 + 6}s linear`;
                 img.style.opacity = '0.5'; 
@@ -159,7 +160,7 @@
                 document.getElementById('step' + currentStep).classList.add('active');
                 const pos = (currentStep - 1) * 8.5;
                 document.getElementById('avatar-ilya').style.left = (pos) + '%';
-                document.getElementById('avatar-alice').style.left = (pos + 4) + '%';
+                document.getElementById('avatar-alice').style.left = (pos) + '%';
                 const flags = document.querySelectorAll('.checkpoint');
                 flags[currentStep - 1].classList.add('active');
             } else {
