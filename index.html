@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Dota 2: Quest</title>
+    <title>Dota 2: Legendary Quest</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
@@ -11,34 +11,38 @@
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); }
         button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
-        button:hover { background: var(--gold); color: black; transform: scale(1.1); }
+        button:hover { background: var(--gold); color: black; }
 
-        /* ТРОПИНКА И ПРОГРЕСС-БАР */
-        .lane-container { position: fixed; bottom: 30px; left: 15%; width: 70%; height: 90px; z-index: 50; display: flex; align-items: center; }
-        .lane-line { position: absolute; width: 100%; height: 6px; background: #222; top: 60%; z-index: 1; border-radius: 3px; }
-        .checkpoint { width: 22px; height: 22px; background: var(--red); clip-path: polygon(0% 0%, 100% 50%, 0% 100%); z-index: 2; opacity: 0.4; transition: 0.3s; margin: 0 4px; }
-        .checkpoint.active { opacity: 1; box-shadow: 0 0 10px var(--red); }
-        .lock-icon { font-size: 2rem; margin-left: auto; z-index: 2; }
+        /* ТРОПА */
+        .lane-container { position: fixed; bottom: 50px; left: 10%; width: 80%; height: 120px; z-index: 50; display: flex; align-items: center; }
+        .lane-line { position: absolute; width: 100%; height: 8px; background: #1a1a1a; top: 50%; z-index: 1; border-radius: 4px; border: 1px solid #333; }
+        
+        /* ФЛАЖКИ (точки) */
+        .checkpoint { width: 4px; height: 30px; background: #555; z-index: 2; margin: 0 45px; transition: 0.3s; position: relative; }
+        .checkpoint::before { content: ''; position: absolute; top: -10px; left: 0; width: 15px; height: 10px; background: var(--red); display: none; }
+        .checkpoint.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        .checkpoint.active::before { display: block; }
+        
+        /* ANCIENT (Dota стиль) */
+        .ancient { width: 40px; height: 40px; background: #e5c07b; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); margin-left: auto; box-shadow: 0 0 15px var(--gold); z-index: 2; }
 
-        /* АВАТАРЫ (Улучшенная верстка) */
+        /* АВАТАРЫ (Статичные) */
         .avatar { 
-            position: absolute; width: 50px; height: 50px; border: 2px solid var(--gold); 
+            position: absolute; width: 45px; height: 45px; border: 2px solid var(--gold); 
             z-index: 10; transition: left 0.8s ease-in-out;
             display: flex; align-items: center; justify-content: center; 
-            font-size: 11px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000;
+            font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000;
             border-radius: 4px; cursor: help; box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            animation: run 0.4s infinite alternate;
+            text-align: center; padding: 2px;
         }
-        .tooltip { visibility: hidden; width: 220px; background-color: #000; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; bottom: 120%; left: 50%; margin-left: -110px; font-size: 12px; border: 1px solid var(--gold); line-height: 1.4; box-shadow: 0 0 10px var(--gold); }
+        .tooltip { visibility: hidden; width: 220px; background-color: #000; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; bottom: 130%; left: 50%; margin-left: -110px; font-size: 12px; border: 1px solid var(--gold); line-height: 1.4; box-shadow: 0 0 10px var(--gold); }
         .avatar:hover .tooltip { visibility: visible; }
         
         .ilya { background-color: #a33; top: 0px; }
-        .alice { background-color: #337ab7; top: 40px; }
-        @keyframes run { 0% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } 100% { transform: translateY(0) rotate(-3deg); } }
+        .alice { background-color: #337ab7; top: 60px; }
 
         .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0.5; transition: opacity 0.8s ease; }
         .content { position: relative; z-index: 10; padding: 30px 20px; max-width: 600px; margin: 0 auto; display: none; }
-        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; }
         .step { background: rgba(0, 0, 0, 0.85); padding: 30px; border-radius: 15px; border: 1px solid #444; margin-top: 20px; display: none; }
         .step.active { display: block; }
         input { width: 100%; padding: 15px; background: #111; border: 1px solid var(--gold); color: white; border-radius: 5px; margin-bottom: 15px; font-size: 1.1rem; }
@@ -66,9 +70,8 @@
         <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
         <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
         <div class="checkpoint"></div>
-        <div class="lock-icon">🔒</div>
+        <div class="ancient"></div>
         
-        <!-- Аватары разнесены по высоте -->
         <div class="avatar ilya" id="avatar-ilya" style="left: 0%;">
             Илья
             <div class="tooltip">Парень с душой размером с океан. Рядом с ним чувствуешь себя как за каменной стеной (даже если стена постоянно шутит)</div>
@@ -92,14 +95,10 @@
 
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
-            { q: "Вопрос 2", a: ["ответ2"] },
-            { q: "Вопрос 3", a: ["ответ3"] },
-            { q: "Вопрос 4", a: ["ответ4"] },
-            { q: "Вопрос 5", a: ["ответ5"] },
-            { q: "Вопрос 6", a: ["ответ6"] },
-            { q: "Вопрос 7", a: ["ответ7"] },
-            { q: "Вопрос 8", a: ["ответ8"] },
-            { q: "Вопрос 9", a: ["ответ9"] },
+            { q: "Вопрос 2", a: ["ответ2"] }, { q: "Вопрос 3", a: ["ответ3"] },
+            { q: "Вопрос 4", a: ["ответ4"] }, { q: "Вопрос 5", a: ["ответ5"] },
+            { q: "Вопрос 6", a: ["ответ6"] }, { q: "Вопрос 7", a: ["ответ7"] },
+            { q: "Вопрос 8", a: ["ответ8"] }, { q: "Вопрос 9", a: ["ответ9"] },
             { q: "Вопрос 10", a: ["ответ10"] }
         ];
 
@@ -158,7 +157,8 @@
             currentStep++;
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
-                const pos = (currentStep - 1) * 8.5;
+                // Сдвиг по тропинке
+                const pos = (currentStep - 1) * 7.5;
                 document.getElementById('avatar-ilya').style.left = (pos) + '%';
                 document.getElementById('avatar-alice').style.left = (pos) + '%';
                 const flags = document.querySelectorAll('.checkpoint');
