@@ -14,22 +14,32 @@
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
         /* ИГРОВОЙ ИНТЕРФЕЙС ВНИЗУ */
-        .lane-container { position: fixed; bottom: 50px; left: 10%; width: 80%; height: 80px; z-index: 50; display: flex; align-items: center; }
-        .lane-line { position: absolute; width: 100%; height: 4px; background: #333; top: 50%; z-index: 1; }
+        .lane-container { position: fixed; bottom: 40px; left: 10%; width: 80%; height: 100px; z-index: 50; display: flex; align-items: center; }
+        .lane-line { position: absolute; width: 100%; height: 6px; background: #222; top: 60%; z-index: 1; border-radius: 3px; }
         .checkpoint { width: 30px; height: 30px; background: var(--red); clip-path: polygon(0% 0%, 100% 50%, 0% 100%); z-index: 2; opacity: 0.3; transition: 0.3s; }
         .checkpoint.active { opacity: 1; box-shadow: 0 0 15px var(--red); }
-        .lock-icon { font-size: 2rem; margin-left: auto; }
+        .lock-icon { font-size: 2.5rem; margin-left: auto; z-index: 2; }
 
-        /* ПИКСЕЛЬНЫЕ АВАТАРЫ (DOTA STYLE) */
+        /* АВАТАРЫ: ГУМАНОИДНЫЙ СТИЛЬ */
         .avatar { 
-            position: absolute; width: 50px; height: 50px; border: 3px solid #fff; 
+            position: absolute; width: 60px; height: 60px; border: 3px solid var(--gold); 
             border-radius: 50%; z-index: 3; transition: left 0.8s ease-in-out;
-            image-rendering: pixelated; background-size: cover;
+            background-color: #ffd8b1; /* цвет кожи */
+            overflow: hidden; box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            animation: run 0.4s infinite alternate;
         }
-        .ilya { background-color: var(--red); box-shadow: 0 0 15px var(--red); }
-        .alice { background-color: #00bcd4; box-shadow: 0 0 15px #00bcd4; }
+        /* Прически */
+        .hair { position: absolute; top: 0; left: 0; width: 100%; height: 50%; border-radius: 50% 50% 0 0; }
+        .ilya-hair { background-color: #1a1a1a; }
+        .alice-hair { background-color: #ff85c1; }
 
-        .falling-photo { position: fixed; border: 2px solid var(--gold); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
+        @keyframes run {
+            0% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(-5deg); }
+        }
+
+        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0.08; transition: opacity 0.8s ease; }
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 800px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
         .step { background: rgba(22, 27, 34, 0.9); padding: 50px; border-radius: 15px; border: 2px solid #333; margin-top: 30px; display: none; }
@@ -53,22 +63,20 @@
     <audio id="audio" loop></audio>
     <img id="reveal-img" src="a1.jpg">
 
-    <!-- LANE -->
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
-        <div class="checkpoint active"></div>
-        <div class="checkpoint"></div>
-        <div class="checkpoint"></div>
-        <div class="checkpoint"></div>
-        <div class="checkpoint"></div>
-        <div class="checkpoint"></div>
-        <div class="checkpoint"></div>
-        <div class="checkpoint"></div>
-        <div class="checkpoint"></div>
+        <div class="checkpoint active"></div><div class="checkpoint"></div><div class="checkpoint"></div>
+        <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
+        <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
         <div class="checkpoint"></div>
         <div class="lock-icon">🔒</div>
-        <div class="avatar ilya" id="avatar-ilya" style="left: 0%;"></div>
-        <div class="avatar alice" id="avatar-alice" style="left: 0%;"></div>
+        
+        <div class="avatar" id="avatar-ilya" style="left: 0%;">
+            <div class="hair ilya-hair"></div>
+        </div>
+        <div class="avatar" id="avatar-alice" style="left: 0%;">
+            <div class="hair alice-hair"></div>
+        </div>
     </div>
 
     <div class="content" id="main-content">
@@ -82,7 +90,6 @@
         let currentTrack = 0;
         let currentStep = 1;
 
-        // --- ВОПРОСЫ (ЗАПОЛНИ ИХ) ---
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
             { q: "Вопрос 2", a: ["ответ2"] },
@@ -122,7 +129,7 @@
                 document.body.appendChild(img);
                 setTimeout(() => {
                     img.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
-                    img.style.opacity = '0.25';
+                    img.style.opacity = '0.08';
                 }, 50);
             }
         }
@@ -147,8 +154,7 @@
             currentStep++;
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
-                // Аватары двигаются по линии (всего 10 шагов)
-                const pos = (currentStep - 1) * 8.5; // Смещение
+                const pos = (currentStep - 1) * 8.5;
                 document.getElementById('avatar-ilya').style.left = pos + '%';
                 document.getElementById('avatar-alice').style.left = (pos + 2) + '%';
                 const flags = document.querySelectorAll('.checkpoint');
