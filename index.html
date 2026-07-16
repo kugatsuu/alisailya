@@ -45,14 +45,14 @@
         
         /* КОНТЕНТ (ЦЕНТРАЛЬНОЕ ОГРОМНОЕ ОКНО) */
         .content { 
-            position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); /* Идеально по центру */
-            z-index: 10; width: 90%; max-width: 1000px; /* Сделал окно очень широким */
+            position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); 
+            z-index: 10; width: 90%; max-width: 1000px; 
             text-align: center; display: none; 
         }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; font-size: 3.5rem; padding-bottom: 20px; }
         
         .step { 
-            background: rgba(0, 0, 0, 0.9); padding: 60px; /* Отступы в 2 раза больше */
+            background: rgba(0, 0, 0, 0.9); padding: 60px; 
             border-radius: 20px; border: 2px solid #444; margin-top: 20px; 
             display: none; box-shadow: 0 0 30px rgba(0,0,0,0.8);
         }
@@ -115,16 +115,20 @@
 
     <script>
         const audio = document.getElementById('audio');
-        const playlist = ["Bodies.mp3", "Gorillaz.mp3", "Nickelback.mp3"];
+        const playlist = ["Gorillaz.mp3", "Bodies.mp3", "Nickelback.mp3"];
         let currentTrack = 0;
         let currentStep = 1;
 
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
-            { q: "Вопрос 2", a: ["ответ2"] }, { q: "Вопрос 3", a: ["ответ3"] },
-            { q: "Вопрос 4", a: ["ответ4"] }, { q: "Вопрос 5", a: ["ответ5"] },
-            { q: "Вопрос 6", a: ["ответ6"] }, { q: "Вопрос 7", a: ["ответ7"] },
-            { q: "Вопрос 8", a: ["ответ8"] }, { q: "Вопрос 9", a: ["ответ9"] },
+            { q: "Какое слово ты обычно произносишь, когда куда-то заходишь?", a: ["привет"] },
+            { q: "Вопрос 3", a: ["ответ3"] },
+            { q: "Вопрос 4", a: ["ответ4"] },
+            { q: "Вопрос 5", a: ["ответ5"] },
+            { q: "Вопрос 6", a: ["ответ6"] },
+            { q: "Вопрос 7", a: ["ответ7"] },
+            { q: "Вопрос 8", a: ["ответ8"] },
+            { q: "Вопрос 9", a: ["ответ9"] },
             { q: "Вопрос 10", a: ["ответ10"] }
         ];
 
@@ -183,7 +187,6 @@
             currentStep++;
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
-                // Сдвиг по тропинке
                 const pos = (currentStep - 1) * 7.5;
                 document.getElementById('avatar-ilya').style.left = (pos) + '%';
                 document.getElementById('avatar-alice').style.left = (pos) + '%';
