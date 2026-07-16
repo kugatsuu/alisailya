@@ -42,11 +42,37 @@
         .alice { background-color: #337ab7; top: 60px; }
 
         .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0.5; transition: opacity 0.8s ease; }
-        .content { position: relative; z-index: 10; padding: 30px 20px; max-width: 600px; margin: 0 auto; display: none; }
-        .step { background: rgba(0, 0, 0, 0.85); padding: 30px; border-radius: 15px; border: 1px solid #444; margin-top: 20px; display: none; }
+        
+        /* КОНТЕНТ (ЦЕНТРАЛЬНОЕ ОГРОМНОЕ ОКНО) */
+        .content { 
+            position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); /* Идеально по центру */
+            z-index: 10; width: 90%; max-width: 1000px; /* Сделал окно очень широким */
+            text-align: center; display: none; 
+        }
+        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; font-size: 3.5rem; padding-bottom: 20px; }
+        
+        .step { 
+            background: rgba(0, 0, 0, 0.9); padding: 60px; /* Отступы в 2 раза больше */
+            border-radius: 20px; border: 2px solid #444; margin-top: 20px; 
+            display: none; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
         .step.active { display: block; }
-        input { width: 100%; padding: 15px; background: #111; border: 1px solid var(--gold); color: white; border-radius: 5px; margin-bottom: 15px; font-size: 1.1rem; }
-        .submit-btn { width: 100%; padding: 15px; background: var(--red); color: white; border: none; cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.1rem; }
+        
+        /* ОГРОМНЫЙ ТЕКСТ ВОПРОСА */
+        .step p { font-size: 2.5rem; margin-bottom: 40px; color: #fff; }
+        
+        /* ОГРОМНОЕ ПОЛЕ И КНОПКА */
+        input { 
+            width: 100%; padding: 25px; background: #111; border: 3px solid var(--gold); 
+            color: white; border-radius: 10px; margin-bottom: 30px; 
+            font-size: 2.2rem; text-align: center; box-sizing: border-box;
+        }
+        .submit-btn { 
+            width: 100%; padding: 25px; background: var(--red); color: white; border: none; 
+            cursor: pointer; font-family: 'Cinzel', serif; font-size: 2.2rem; 
+            border-radius: 10px; transition: 0.3s;
+        }
+        .submit-btn:hover { background: var(--gold); color: black; transform: scale(1.02); }
         
         #reveal-img { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; z-index: 10000; opacity: 0; transition: all 4s ease-in-out; border: 5px solid var(--gold); display: none; }
         #reveal-img.expanded { width: 100vw; height: 100vh; opacity: 1; }
