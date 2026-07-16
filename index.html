@@ -8,6 +8,7 @@
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
         body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
+        /* ЭКРАН ВХОДА */
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { 
             font-family: 'Cinzel', serif; font-size: 4rem; margin-bottom: 40px; color: #fff;
@@ -20,14 +21,15 @@
         }
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* СТИЛЬ ДЛЯ ФОТОК */
+        /* ФОТКИ - БЕСКОНЕЧНЫЙ ДОЖДЬ */
         .falling-photo { 
             position: fixed; 
             border: 2px solid var(--gold); 
+            opacity: 0.25; 
             z-index: 1; 
             pointer-events: none;
-            opacity: 0; /* Изначально невидимы */
-            transition: opacity 0.5s ease; /* Плавное появление */
+            opacity: 0; 
+            transition: opacity 0.5s ease;
         }
 
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
@@ -65,7 +67,7 @@
 
     <script>
         const audio = document.getElementById('audio');
-        const playlist = ["Bodies.mp3", "Gorillaz.mp3", "Nickelback.mp3"]; // Начало с Bodies
+        const playlist = ["Bodies.mp3", "Gorillaz.mp3", "Nickelback.mp3"];
         let currentTrack = 0;
 
         audio.onended = function() {
@@ -91,24 +93,24 @@
                 img.src = file;
                 img.className = 'falling-photo';
                 
-                // Принудительные стили до добавления в DOM
+                // РАЗМЕР УВЕЛИЧЕН (300-600px)
+                const w = Math.floor(Math.random() * 300) + 300;
+                
                 img.style.position = 'fixed';
-                img.style.top = '-600px'; 
-                img.style.left = (Math.random() * 90) + 'vw';
-                img.style.width = (Math.floor(Math.random() * 200) + 200) + 'px';
+                img.style.top = '-800px'; 
+                img.style.width = w + 'px';
+                img.style.left = (Math.random() * 80) + 'vw';
                 
                 img.style.animation = `fall ${Math.random() * 10 + 15}s linear infinite`;
                 img.style.animationDelay = (i * 1.5) + 's';
                 
                 document.body.appendChild(img);
-                
-                // Показываем фото только через 50мс, когда браузер уже поставил их за экран
                 setTimeout(() => { img.style.opacity = '0.25'; }, 50);
             });
         }
 
         const style = document.createElement('style');
-        style.innerHTML = `@keyframes fall { from { top: -600px; } to { top: 110vh; } }`;
+        style.innerHTML = `@keyframes fall { from { top: -800px; } to { top: 110vh; } }`;
         document.head.appendChild(style);
 
         function checkAnswer(step) {
