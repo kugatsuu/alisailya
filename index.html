@@ -5,47 +5,38 @@
     <title>Dota 2: Legendary Gift</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; --panel: rgba(22, 27, 34, 0.85); }
+        :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
         body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
         /* ЭКРАН ВХОДА */
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { 
-            font-family: 'Cinzel', serif; font-size: 5rem; margin-bottom: 40px; color: #fff;
-            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--gold), 0 0 40px var(--gold), 0 0 70px var(--gold);
-            line-height: 1.1;
+            font-family: 'Cinzel', serif; font-size: 4rem; margin-bottom: 40px; color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--gold), 0 0 40px var(--gold);
         }
         button { 
             background: transparent; color: var(--gold); border: 2px solid var(--gold); 
             padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; 
             border-radius: 5px; transition: 0.3s; text-transform: uppercase; box-shadow: 0 0 10px var(--gold);
         }
-        button:hover { background: var(--gold); color: black; box-shadow: 0 0 30px var(--gold); transform: scale(1.1); }
+        button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* БЕСКОНЕЧНЫЙ ДОЖДЬ ИЗ ФОТО */
+        /* ФОТКИ - БЕСКОНЕЧНЫЙ ДОЖДЬ */
         .falling-photo { 
             position: fixed; 
             border: 2px solid var(--gold); 
             opacity: 0.3; 
             z-index: 1; 
-            animation: fall linear infinite; /* INFINITE - Ключ к бесконечности */
-            pointer-events: none; 
-        }
-        @keyframes fall { 
-            0% { transform: translateY(-300px); } 
-            100% { transform: translateY(110vh); } 
+            pointer-events: none;
+            /* Прямая анимация через JS стили, чтобы точно работало */
         }
 
-        /* ОСНОВНОЙ КОНТЕНТ */
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
-        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); padding-bottom: 10px; }
-        .step { background: var(--panel); backdrop-filter: blur(8px); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
-        .step.active { display: block; animation: fadeIn 0.5s; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; margin-top: 10px; box-sizing: border-box; }
-        .submit-btn { margin-top: 15px; width: 100%; background: var(--red); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; font-family: 'Cinzel', serif; font-size: 1rem; }
-        
-        #final-prize { text-align: center; display: none; margin-top: 30px; padding: 30px; border: 2px solid var(--gold); }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
+        .step { background: rgba(22, 27, 34, 0.85); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
+        .step.active { display: block; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; box-sizing: border-box; }
+        .submit-btn { margin-top: 15px; width: 100%; background: var(--red); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -63,23 +54,15 @@
 
     <div class="content" id="main-content">
         <h1>Тайная Лавка</h1>
-        
         <div id="step1" class="step active">
-            <p>Вопрос 1: Впиши сюда свой вопрос?</p>
+            <p>Вопрос 1: Впиши вопрос?</p>
             <input type="text" id="answer1" placeholder="Ответ...">
             <button class="submit-btn" onclick="checkAnswer(1)">Проверить</button>
         </div>
-
         <div id="step2" class="step">
-            <p>Вопрос 2: Впиши сюда свой вопрос?</p>
+            <p>Вопрос 2: Впиши вопрос?</p>
             <input type="text" id="answer2" placeholder="Ответ...">
             <button class="submit-btn" onclick="checkAnswer(2)">Проверить</button>
-        </div>
-
-        <div id="final-prize" class="step">
-            <h2>GG WP! Защита снята</h2>
-            <p>Ваш код от замка:</p>
-            <h1 style="font-size: 3rem; margin: 20px 0;">732</h1>
         </div>
     </div>
 
@@ -87,45 +70,44 @@
         const audio = document.getElementById('audio');
         const photoFiles = [];
         for(let i = 1; i <= 16; i++) { photoFiles.push(`p${i}.jpg`); }
-        const answers = { 1: "ответ1", 2: "ответ2" }; 
+        const answers = { 1: "ответ1", 2: "ответ2" };
 
         function startExperience() {
             audio.volume = 0.5;
             audio.play();
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            createFallingPhotos();
-        }
-
-        function createFallingPhotos() {
-            photoFiles.forEach((file, index) => {
+            
+            // Запуск анимации
+            photoFiles.forEach((file, i) => {
                 const img = document.createElement('img');
                 img.src = file;
                 img.className = 'falling-photo';
                 
-                // Рандомные параметры
-                img.style.width = Math.floor(Math.random() * (200 - 100 + 1) + 100) + 'px';
-                img.style.left = Math.random() * 95 + 'vw';
+                // Настройки размера и позиции
+                const w = Math.floor(Math.random() * 100) + 100;
+                img.style.width = w + 'px';
+                img.style.left = (Math.random() * 90) + 'vw';
                 
-                // Случайный старт по вертикали, чтобы они не падали строем
-                img.style.top = Math.random() * -1000 + 'px'; 
-                
-                img.style.animationDuration = (Math.random() * 15 + 10) + 's';
-                img.style.animationDelay = (index * 1.5) + 's';
+                // Анимация прямо здесь, чтобы точно сработала
+                img.style.animation = `fall ${Math.random() * 10 + 10}s linear infinite`;
+                img.style.animationDelay = (i * 1.5) + 's';
                 
                 document.body.appendChild(img);
             });
         }
 
+        // Анимация ключей прямо через JS, чтобы браузер их 100% увидел
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes fall { from { top: -300px; } to { top: 110vh; } }`;
+        document.head.appendChild(style);
+
         function checkAnswer(step) {
-            const val = document.getElementById('answer' + step).value.toLowerCase().trim();
-            if (val === answers[step]) {
+            if (document.getElementById('answer' + step).value.toLowerCase().trim() === answers[step]) {
                 document.getElementById('step' + step).style.display = 'none';
                 if (step < 2) document.getElementById('step' + (step + 1)).classList.add('active');
-                else document.getElementById('final-prize').style.display = 'block';
-            } else {
-                alert("Неверно, герой! Попробуй еще раз.");
-            }
+                else alert("GG WP! Защита снята. Код: 732");
+            } else { alert("Неверно!"); }
         }
     </script>
 </body>
