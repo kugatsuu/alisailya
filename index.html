@@ -9,18 +9,33 @@
         body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
-        .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); }
-        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 30px 80px; font-family: 'Cinzel', serif; font-size: 2rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
+        .overlay-content h1 { 
+            font-family: 'Cinzel', serif; font-size: 4rem; margin-bottom: 40px; color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--gold), 0 0 40px var(--gold);
+        }
+        button { 
+            background: transparent; color: var(--gold); border: 2px solid var(--gold); 
+            padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; 
+            border-radius: 5px; transition: 0.3s; text-transform: uppercase; box-shadow: 0 0 10px var(--gold);
+        }
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        .falling-photo { position: fixed; border: 2px solid var(--gold); opacity: 0.25; z-index: 1; pointer-events: none; }
-        .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 800px; margin: 0 auto; display: none; }
+        /* Фото скрыты по умолчанию */
+        .falling-photo { 
+            position: fixed; 
+            border: 2px solid var(--gold); 
+            z-index: 1; 
+            pointer-events: none;
+            opacity: 0; 
+            transition: opacity 0.8s ease;
+        }
+
+        .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
-        
-        .step { background: rgba(22, 27, 34, 0.9); padding: 50px; border-radius: 15px; border: 2px solid #333; margin-top: 30px; display: none; }
+        .step { background: rgba(22, 27, 34, 0.85); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
         .step.active { display: block; }
-        input { width: 100%; padding: 24px; font-size: 1.5rem; background: #000; border: 2px solid var(--gold); color: white; border-radius: 8px; box-sizing: border-box; margin-bottom: 20px; }
-        .submit-btn { width: 100%; padding: 24px; font-size: 1.5rem; background: var(--red); color: white; border: none; cursor: pointer; border-radius: 8px; font-family: 'Cinzel', serif; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; box-sizing: border-box; }
+        .submit-btn { margin-top: 15px; width: 100%; background: var(--red); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; }
         
         #reveal-img {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -39,18 +54,18 @@
         </div>
     </div>
 
-    <audio id="audio" loop></audio>
+    <audio id="audio"></audio>
     <img id="reveal-img" src="a1.jpg">
 
     <div class="content" id="main-content">
         <h1>Тайная Лавка</h1>
         <div id="step1" class="step active">
-            <p style="font-size: 1.5rem;">Кто озвучивает фразу "я люблю когда гмом"?</p>
+            <p>Кто озвучивает фразу "я люблю когда гмом"?</p>
             <input type="text" id="answer1" placeholder="Ответ...">
             <button class="submit-btn" onclick="checkAnswer(1)">Проверить</button>
         </div>
         <div id="step2" class="step">
-            <p style="font-size: 1.5rem;">Вопрос 2: Впиши вопрос?</p>
+            <p>Вопрос 2: Впиши вопрос?</p>
             <input type="text" id="answer2" placeholder="Ответ...">
             <button class="submit-btn" onclick="checkAnswer(2)">Проверить</button>
         </div>
@@ -61,16 +76,23 @@
         const playlist = ["Bodies.mp3", "Gorillaz.mp3", "Nickelback.mp3"];
         let currentTrack = 0;
 
-        audio.onended = () => { currentTrack = (currentTrack + 1) % playlist.length; audio.src = playlist[currentTrack]; audio.play(); };
+        audio.onended = () => { 
+            currentTrack = (currentTrack + 1) % playlist.length; 
+            audio.src = playlist[currentTrack]; 
+            audio.play(); 
+        };
 
+        // Загрузка фото от p1 до p23
         const photoFiles = [];
-        for(let i = 1; i <= 16; i++) { photoFiles.push(`p${i}.jpg`); }
+        for(let i = 1; i <= 23; i++) { photoFiles.push(`p${i}.jpg`); }
+        
         const answers = { 1: ["анастасия"], 2: ["ответ2"] };
 
         function startExperience() {
-            audio.volume = 0.4;
+            audio.volume = 0.25; // Уменьшил громкость до 25%
             audio.src = playlist[currentTrack];
             audio.play();
+            
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
@@ -78,22 +100,36 @@
                 const img = document.createElement('img');
                 img.src = file;
                 img.className = 'falling-photo';
-                const w = Math.floor(Math.random() * 300) + 300;
-                img.style.width = w + 'px';
+                
+                // --- НАСТРОЙКИ СТИЛЯ ДО ВСТАВКИ В ДОМ ---
+                img.style.position = 'fixed';
+                img.style.top = '-800px'; 
                 img.style.left = (Math.random() * 80) + 'vw';
-                img.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
-                img.style.animationDelay = (i * 0.8) + 's';
+                img.style.width = (Math.floor(Math.random() * 300) + 300) + 'px';
+                
+                // Добавляем на страницу
                 document.body.appendChild(img);
+                
+                // Запуск анимации через короткий таймаут
+                setTimeout(() => {
+                    img.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
+                    img.style.animationDelay = (i * 0.8) + 's';
+                    img.style.opacity = '0.25';
+                }, 50);
             });
         }
 
+        // Анимация падения
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes fall { from { top: -800px; } to { top: 110vh; } }`;
+        document.head.appendChild(style);
+
         async function checkAnswer(step) {
             const val = document.getElementById('answer' + step).value.toLowerCase().trim();
-            
             if (answers[step].includes(val)) {
                 if (step === 1) {
                     audio.pause(); 
-                    const quote = new Audio('gol.mp3'); // Здесь теперь gol.mp3
+                    const quote = new Audio('gol.mp3');
                     const img = document.getElementById('reveal-img');
                     img.style.display = 'block';
                     
@@ -112,10 +148,6 @@
                 }
             } else { alert("Неверно!"); }
         }
-
-        const style = document.createElement('style');
-        style.innerHTML = `@keyframes fall { from { top: -800px; } to { top: 110vh; } }`;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
