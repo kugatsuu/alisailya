@@ -25,10 +25,9 @@
         .falling-photo { 
             position: fixed; 
             border: 2px solid var(--gold); 
-            opacity: 0.3; 
+            opacity: 0.25; 
             z-index: 1; 
             pointer-events: none;
-            /* Прямая анимация через JS стили, чтобы точно работало */
         }
 
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
@@ -78,28 +77,25 @@
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
-            // Запуск анимации
             photoFiles.forEach((file, i) => {
                 const img = document.createElement('img');
                 img.src = file;
                 img.className = 'falling-photo';
                 
-                // Настройки размера и позиции
-                const w = Math.floor(Math.random() * 100) + 100;
+                // Размер от 200px до 400px (в два раза больше прежнего)
+                const w = Math.floor(Math.random() * 200) + 200;
                 img.style.width = w + 'px';
                 img.style.left = (Math.random() * 90) + 'vw';
                 
-                // Анимация прямо здесь, чтобы точно сработала
-                img.style.animation = `fall ${Math.random() * 10 + 10}s linear infinite`;
+                img.style.animation = `fall ${Math.random() * 10 + 15}s linear infinite`;
                 img.style.animationDelay = (i * 1.5) + 's';
                 
                 document.body.appendChild(img);
             });
         }
 
-        // Анимация ключей прямо через JS, чтобы браузер их 100% увидел
         const style = document.createElement('style');
-        style.innerHTML = `@keyframes fall { from { top: -300px; } to { top: 110vh; } }`;
+        style.innerHTML = `@keyframes fall { from { top: -400px; } to { top: 110vh; } }`;
         document.head.appendChild(style);
 
         function checkAnswer(step) {
