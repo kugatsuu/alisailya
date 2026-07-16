@@ -20,14 +20,14 @@
         }
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* ИСПРАВЛЕННЫЙ СТИЛЬ ДЛЯ ФОТОК */
+        /* СТИЛЬ ДЛЯ ФОТОК */
         .falling-photo { 
             position: fixed; 
-            top: -600px; /* СРАЗУ СТАВИМ ИХ ЗА ПРЕДЕЛЫ ЭКРАНА */
             border: 2px solid var(--gold); 
-            opacity: 0.25; 
             z-index: 1; 
             pointer-events: none;
+            opacity: 0; /* Изначально невидимы */
+            transition: opacity 0.5s ease; /* Плавное появление */
         }
 
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
@@ -65,7 +65,7 @@
 
     <script>
         const audio = document.getElementById('audio');
-        const playlist = ["Gorillaz.mp3", "Bodies.mp3", "Nickelback.mp3"];
+        const playlist = ["Bodies.mp3", "Gorillaz.mp3", "Nickelback.mp3"]; // Начало с Bodies
         let currentTrack = 0;
 
         audio.onended = function() {
@@ -90,15 +90,20 @@
                 const img = document.createElement('img');
                 img.src = file;
                 img.className = 'falling-photo';
-                const w = Math.floor(Math.random() * 200) + 200;
-                img.style.width = w + 'px';
-                img.style.left = (Math.random() * 90) + 'vw';
                 
-                // Анимация
+                // Принудительные стили до добавления в DOM
+                img.style.position = 'fixed';
+                img.style.top = '-600px'; 
+                img.style.left = (Math.random() * 90) + 'vw';
+                img.style.width = (Math.floor(Math.random() * 200) + 200) + 'px';
+                
                 img.style.animation = `fall ${Math.random() * 10 + 15}s linear infinite`;
                 img.style.animationDelay = (i * 1.5) + 's';
                 
                 document.body.appendChild(img);
+                
+                // Показываем фото только через 50мс, когда браузер уже поставил их за экран
+                setTimeout(() => { img.style.opacity = '0.25'; }, 50);
             });
         }
 
