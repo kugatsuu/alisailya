@@ -43,34 +43,34 @@
 
         .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0.5; transition: opacity 0.8s ease; }
         
-        /* КОНТЕНТ (ЦЕНТРАЛЬНОЕ ОГРОМНОЕ ОКНО) */
+        /* КОНТЕНТ (УМЕНЬШЕНО ПО ТВОЕЙ ПРОСЬБЕ) */
         .content { 
             position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); 
-            z-index: 10; width: 90%; max-width: 1000px; 
+            z-index: 10; width: 90%; max-width: 800px; /* Уменьшил ширину */
             text-align: center; display: none; 
         }
-        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; font-size: 3.5rem; padding-bottom: 20px; }
+        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; font-size: 2.8rem; padding-bottom: 15px; }
         
         .step { 
-            background: rgba(0, 0, 0, 0.9); padding: 60px; 
-            border-radius: 20px; border: 2px solid #444; margin-top: 20px; 
-            display: none; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.9); padding: 40px; /* Уменьшил отступы */
+            border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
+            display: none; box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
         .step.active { display: block; }
         
-        /* ОГРОМНЫЙ ТЕКСТ ВОПРОСА */
-        .step p { font-size: 2.5rem; margin-bottom: 40px; color: #fff; }
+        /* ТЕКСТ ВОПРОСА */
+        .step p { font-size: 1.8rem; margin-bottom: 30px; color: #fff; }
         
-        /* ОГРОМНОЕ ПОЛЕ И КНОПКА */
+        /* ПОЛЕ И КНОПКА */
         input { 
-            width: 100%; padding: 25px; background: #111; border: 3px solid var(--gold); 
-            color: white; border-radius: 10px; margin-bottom: 30px; 
-            font-size: 2.2rem; text-align: center; box-sizing: border-box;
+            width: 100%; padding: 18px; background: #111; border: 2px solid var(--gold); 
+            color: white; border-radius: 8px; margin-bottom: 25px; 
+            font-size: 1.5rem; text-align: center; box-sizing: border-box;
         }
         .submit-btn { 
-            width: 100%; padding: 25px; background: var(--red); color: white; border: none; 
-            cursor: pointer; font-family: 'Cinzel', serif; font-size: 2.2rem; 
-            border-radius: 10px; transition: 0.3s;
+            width: 100%; padding: 18px; background: var(--red); color: white; border: none; 
+            cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.5rem; 
+            border-radius: 8px; transition: 0.3s;
         }
         .submit-btn:hover { background: var(--gold); color: black; transform: scale(1.02); }
         
@@ -87,7 +87,8 @@
         </div>
     </div>
 
-    <audio id="audio" loop></audio>
+    <!-- УБРАЛ атрибут loop, теперь песни будут переключаться -->
+    <audio id="audio"></audio>
     <img id="reveal-img" src="a1.jpg">
 
     <div class="lane-container" id="progress">
@@ -119,6 +120,13 @@
         let currentTrack = 0;
         let currentStep = 1;
 
+        // Переключение трека при завершении
+        audio.addEventListener('ended', () => {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            audio.src = playlist[currentTrack];
+            audio.play();
+        });
+
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
             { q: "Какое слово ты обычно произносишь, когда куда-то заходишь?", a: ["привет"] },
@@ -148,9 +156,13 @@
             img.src = `p${i}.jpg`;
             img.className = 'falling-photo';
             img.style.left = (Math.random() * 90) + 'vw';
-            img.style.width = (Math.floor(Math.random() * 200) + 150) + 'px';
-            img.style.top = '-500px';
+            
+            // ФОТО УВЕЛИЧЕНЫ В 2 РАЗА
+            img.style.width = (Math.floor(Math.random() * 400) + 300) + 'px'; 
+            
+            img.style.top = '-800px'; // Чтобы крупные фото спавнились выше за экраном
             document.body.appendChild(img);
+            
             setTimeout(() => {
                 img.style.animation = `fall ${Math.random() * 6 + 6}s linear`;
                 img.style.opacity = '0.5'; 
@@ -170,6 +182,7 @@
         async function checkAnswer(step) {
             const val = document.getElementById('answer' + step).value.toLowerCase().trim();
             if (quizData[step-1].a.includes(val)) {
+                
                 if (step === 1) {
                     audio.pause();
                     const quote = new Audio('gol.mp3');
@@ -177,8 +190,27 @@
                     img.style.display = 'block';
                     setTimeout(() => img.classList.add('expanded'), 50);
                     quote.play();
-                    quote.onended = () => { img.classList.remove('expanded'); img.style.display = 'none'; audio.play(); nextStep(); };
-                } else { nextStep(); }
+                    quote.onended = () => { 
+                        img.classList.remove('expanded'); 
+                        img.style.display = 'none'; 
+                        audio.play(); 
+                        nextStep(); 
+                    };
+                } 
+                // ЛОГИКА ДЛЯ 2-го ВОПРОСА
+                else if (step === 2) {
+                    audio.pause();
+                    const quote2 = new Audio('Privet.mp3');
+                    quote2.play();
+                    quote2.onended = () => { 
+                        audio.play(); 
+                        nextStep(); 
+                    };
+                } 
+                else { 
+                    nextStep(); 
+                }
+                
             } else { alert("Неверно!"); }
         }
 
