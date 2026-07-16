@@ -2,305 +2,105 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aegis of the Immortal | Распаковка</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>Dota 2: Legendary Gift</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --text-color: #e2d6b5;
-            --accent-red: #c23c2a;
-            --accent-gold: #e5c07b;
-            --dark-panel: #161b22;
-        }
+        :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; --panel: rgba(22, 27, 34, 0.9); }
+        body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow-x: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ЭКРАН ВХОДА */
+        #start-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
+        .overlay-content h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; margin-bottom: 30px; text-shadow: 0 0 10px var(--red); }
+        button { background: var(--red); color: white; border: none; padding: 15px 40px; font-family: 'Cinzel', serif; font-size: 1.2rem; cursor: pointer; border-radius: 5px; transition: 0.3s; text-transform: uppercase; }
+        button:hover { background: #e53935; box-shadow: 0 0 20px var(--red); transform: scale(1.05); }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at top center, #2a1114 0%, var(--bg-color) 60%);
-            color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
+        /* ДОЖДЬ ИЗ ФОТО */
+        .falling-photo { position: fixed; top: -200px; width: 120px; height: 160px; object-fit: cover; border: 2px solid var(--gold); opacity: 0.5; z-index: 50; animation: fall linear forwards; pointer-events: none; }
+        @keyframes fall { to { transform: translateY(110vh); } }
 
-        h1, h2, h3 {
-            font-family: 'Cinzel', serif;
-            color: var(--accent-gold);
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-            padding-top: 30px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            color: var(--accent-red);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .header p {
-            max-width: 600px;
-            margin: 0 auto;
-            font-size: 1.1rem;
-            color: #aaa;
-        }
-
-        .quest-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .quest-step {
-            background: rgba(22, 27, 34, 0.8);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: center;
-            display: none; /* Скрыто по умолчанию, открывается скриптом */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: all 0.5s ease;
-        }
-
-        .quest-step.active {
-            display: block;
-            animation: fadeIn 1s;
-        }
-
-        /* МАГИЧЕСКАЯ ТРАНСФОРМАЦИЯ ФОТО */
-        .photo-transform {
-            position: relative;
-            width: 100%;
-            max-width: 300px;
-            aspect-ratio: 3/4;
-            margin: 0 auto 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid #444;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
-        }
-
-        .photo-real, .photo-dota {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 1.5s ease-in-out, filter 1.5s ease-in-out;
-        }
-
-        .photo-dota {
-            opacity: 0;
-            filter: brightness(3) blur(10px);
-        }
-
-        /* Класс, который добавляется при правильном ответе */
-        .transformed {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 30px rgba(229, 192, 123, 0.6);
-        }
-
-        .transformed .photo-real {
-            opacity: 0;
-        }
-
-        .transformed .photo-dota {
-            opacity: 1;
-            filter: brightness(1) blur(0);
-        }
-
-        .question-text {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            background: #0d1117;
-            border: 1px solid #555;
-            color: var(--accent-gold);
-            font-size: 1.1rem;
-            border-radius: 6px;
-            text-align: center;
-            margin-bottom: 15px;
-            outline: none;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--accent-gold);
-        }
-
-        button {
-            background: linear-gradient(180deg, #c23c2a 0%, #8b1f12 100%);
-            color: white;
-            border: 1px solid #ff6b5b;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            font-family: 'Cinzel', serif;
-            cursor: pointer;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            width: 100%;
-        }
-
-        button:hover {
-            box-shadow: 0 0 15px rgba(194, 60, 42, 0.8);
-            filter: brightness(1.2);
-        }
-
-        .error-msg {
-            color: #ff5252;
-            margin-top: 10px;
-            height: 20px;
-            font-size: 0.9rem;
-        }
-
-        /* ФИНАЛЬНЫЙ БЛОК: КОД ОТ ЗАМКА */
-        #final-prize {
-            display: none;
-            text-align: center;
-            background: rgba(229, 192, 123, 0.1);
-            border: 2px solid var(--accent-gold);
-            padding: 40px 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 40px rgba(229, 192, 123, 0.3);
-            animation: pulseGlow 2s infinite alternate;
-        }
-
-        .lock-code {
-            font-size: 4rem;
-            font-family: 'Cinzel', serif;
-            color: white;
-            letter-spacing: 10px;
-            margin: 20px 0;
-            text-shadow: 0 0 20px var(--accent-gold);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulseGlow {
-            from { box-shadow: 0 0 20px rgba(229, 192, 123, 0.2); }
-            to { box-shadow: 0 0 40px rgba(229, 192, 123, 0.6); }
-        }
+        /* КОНТЕНТ */
+        .content { padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
+        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); padding-bottom: 10px; }
+        .step { background: var(--panel); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s; }
+        input { width: 100%; padding: 10px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; margin-top: 10px; }
+        .submit-btn { margin-top: 15px; width: 100%; }
+        
+        #final-prize { text-align: center; display: none; margin-top: 30px; padding: 30px; border: 2px solid var(--gold); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Проверка связи</h1>
-        <p>Тысячи часов в Дискорде и 5000 километров позади. Эта коробка закрыта не просто так. Ответьте на вопросы, чтобы активировать заклинание трансформации и получить доступ к луту.</p>
+    <div id="start-overlay">
+        <div class="overlay-content">
+            <h1>Поздравляю вас Илья и Алиса<br>с днем рождения!!</h1>
+            <button onclick="startExperience()">Вперед</button>
+        </div>
     </div>
 
-    <div class="quest-container">
+    <!-- МУЗЫКА -->
+    <audio id="audio" loop>
+        <source src="Gorillaz.mp3" type="audio/mpeg">
+    </audio>
 
-        <!-- ВОПРОС 1 -->
-        <div id="step1" class="quest-step active">
-            <div id="photo1" class="photo-transform">
-                <!-- Замени на ссылку реального фото -->
-                <img class="photo-real" src="https://via.placeholder.com/300x400/222/aaa?text=Реальное+Фото+1" alt="Real">
-                <!-- Замени на сгенерированный ИИ-арт или видео (можно тег <video autoplay loop muted class="photo-dota">) -->
-                <img class="photo-dota" src="https://via.placeholder.com/300x400/1e222a/e5c07b?text=Dota+Hero+1" alt="Dota">
-            </div>
-            <p class="question-text">Вопрос 1: Впиши сюда первый вопрос про вас или Доту.</p>
-            <input type="text" id="answer1" placeholder="Ваш ответ">
-            <button onclick="checkAnswer(1)">Снять вард</button>
-            <div id="error1" class="error-msg"></div>
+    <div class="content" id="main-content">
+        <h1>Тайная Лавка</h1>
+        
+        <!-- КВИЗ -->
+        <div id="step1" class="step active">
+            <p>Вопрос 1: Впиши сюда свой вопрос?</p>
+            <input type="text" id="answer1" placeholder="Ответ...">
+            <button class="submit-btn" onclick="checkAnswer(1)">Проверить</button>
         </div>
 
-        <!-- ВОПРОС 2 -->
-        <div id="step2" class="quest-step">
-            <div id="photo2" class="photo-transform">
-                <!-- Замени на ссылку реального фото -->
-                <img class="photo-real" src="https://via.placeholder.com/300x400/222/aaa?text=Реальное+Фото+2" alt="Real">
-                <!-- Замени на сгенерированный ИИ-арт или ИИ-видео -->
-                <img class="photo-dota" src="https://via.placeholder.com/300x400/1e222a/e5c07b?text=Dota+Hero+2" alt="Dota">
-            </div>
-            <p class="question-text">Вопрос 2: Впиши сюда второй вопрос.</p>
-            <input type="text" id="answer2" placeholder="Ваш ответ">
-            <button onclick="checkAnswer(2)">Снять вард</button>
-            <div id="error2" class="error-msg"></div>
+        <div id="step2" class="step">
+            <p>Вопрос 2: Впиши сюда свой вопрос?</p>
+            <input type="text" id="answer2" placeholder="Ответ...">
+            <button class="submit-btn" onclick="checkAnswer(2)">Проверить</button>
         </div>
 
-        <!-- ФИНАЛ: КОД ОТ ЗАМКА -->
-        <div id="final-prize">
+        <!-- ФИНАЛ -->
+        <div id="final-prize" class="step">
             <h2>GG WP! Защита снята</h2>
-            <p style="margin-top: 15px; font-size: 1.1rem;">Ваши пиксели материализовались. Введите этот код на реальном замке, чтобы открыть коробку:</p>
-            
-            <!-- СЮДА ВПИШИ РЕАЛЬНЫЙ КОД ОТ ЗАМКА (Например, 1-2-3) -->
-            <div class="lock-code">732</div>
-            
-            <p style="color: #aaa;">Жду анбоксинг в Дискорде!</p>
+            <p>Ваш код от замка:</p>
+            <h1 style="font-size: 3rem; margin: 20px 0;">732</h1>
         </div>
-
     </div>
 
     <script>
-        // === НАСТРОЙКА ОТВЕТОВ ===
-        // Впиши сюда правильные ответы МАЛЕНЬКИМИ буквами.
-        // Можно указать несколько вариантов ответа через запятую.
-        const correctAnswers = {
-            1: ["ответ1", "первый ответ"],
-            2: ["ответ2"]
-        };
+        const audio = document.getElementById('audio');
+        const photoFiles = ['photo1.jpg', 'photo2.jpg', 'photo3.jpg']; // Названия твоих фото на GitHub
+        const answers = { 1: "ответ1", 2: "ответ2" }; // Твои ответы
+
+        function startExperience() {
+            audio.volume = 0.5;
+            audio.play();
+            document.getElementById('start-overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            createFallingPhotos();
+        }
+
+        function createFallingPhotos() {
+            photoFiles.forEach((file, index) => {
+                const img = document.createElement('img');
+                img.src = file;
+                img.className = 'falling-photo';
+                img.style.left = Math.random() * 80 + 10 + 'vw';
+                img.style.animationDuration = (Math.random() * 5 + 7) + 's';
+                img.style.animationDelay = (index * 1.5) + 's';
+                document.body.appendChild(img);
+            });
+        }
 
         function checkAnswer(step) {
-            const inputElement = document.getElementById(`answer${step}`);
-            const errorElement = document.getElementById(`error${step}`);
-            const photoContainer = document.getElementById(`photo${step}`);
-            
-            // Получаем текст пользователя, убираем пробелы по краям и переводим в нижний регистр
-            const userAnswer = inputElement.value.toLowerCase().trim();
-            
-            // Проверяем, есть ли ответ пользователя в массиве правильных ответов
-            if (correctAnswers[step].includes(userAnswer)) {
-                // Если верно: очищаем ошибку, блочим кнопку ввода
-                errorElement.textContent = "";
-                inputElement.disabled = true;
-                
-                // Запускаем красивую трансформацию фото (добавляется CSS класс)
-                photoContainer.classList.add("transformed");
-                
-                // Ждем 2.5 секунды, чтобы они успели посмотреть на трансформацию, затем показываем следующий шаг
-                setTimeout(() => {
-                    const nextStep = step + 1;
-                    const nextStepElement = document.getElementById(`step${nextStep}`);
-                    
-                    if (nextStepElement) {
-                        nextStepElement.classList.add("active");
-                        // Плавный скролл к следующему вопросу
-                        nextStepElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    } else {
-                        // Если следующего шага нет — это финал. Показываем код от замка!
-                        document.getElementById('final-prize').style.display = 'block';
-                        document.getElementById('final-prize').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }, 2500);
-
+            const val = document.getElementById('answer' + step).value.toLowerCase().trim();
+            if (val === answers[step]) {
+                document.getElementById('step' + step).style.display = 'none';
+                if (step < 2) document.getElementById('step' + (step + 1)).classList.add('active');
+                else document.getElementById('final-prize').classList.add('active');
             } else {
-                // Если ответ неверный
-                errorElement.textContent = "Промах! Попробуйте еще раз.";
-                
-                // Стряхиваем поле ввода (микро-анимация ошибки)
-                inputElement.style.transform = "translateX(5px)";
-                setTimeout(() => inputElement.style.transform = "translateX(-5px)", 100);
-                setTimeout(() => inputElement.style.transform = "translateX(0)", 200);
+                alert("Неверно, герой! Попробуй еще раз.");
             }
         }
     </script>
