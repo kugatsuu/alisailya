@@ -14,42 +14,34 @@
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
         /* ТРОПИНКА */
-        .lane-container { position: fixed; bottom: 40px; left: 10%; width: 80%; height: 100px; z-index: 50; display: flex; align-items: center; }
-        .lane-line { position: absolute; width: 100%; height: 12px; background: #2a2a2a; top: 60%; z-index: 1; border-radius: 6px; box-shadow: inset 0 2px 5px #000; }
-        .checkpoint { width: 30px; height: 30px; background: var(--red); clip-path: polygon(0% 0%, 100% 50%, 0% 100%); z-index: 2; opacity: 0.3; transition: 0.3s; }
-        .checkpoint.active { opacity: 1; box-shadow: 0 0 15px var(--red); }
-        .lock-icon { font-size: 2.5rem; margin-left: auto; z-index: 2; }
+        .lane-container { position: fixed; bottom: 40px; left: 15%; width: 70%; height: 80px; z-index: 50; display: flex; align-items: center; }
+        .lane-line { position: absolute; width: 100%; height: 8px; background: #2a2a2a; top: 50%; z-index: 1; border-radius: 4px; box-shadow: inset 0 2px 5px #000; }
+        .checkpoint { width: 25px; height: 25px; background: var(--red); clip-path: polygon(0% 0%, 100% 50%, 0% 100%); z-index: 2; opacity: 0.3; transition: 0.3s; margin: 0 5px; }
+        .checkpoint.active { opacity: 1; box-shadow: 0 0 10px var(--red); }
+        .lock-icon { font-size: 2rem; margin-left: auto; z-index: 2; }
 
-        /* ОТДЕЛЬНЫЕ СТИЛИ ДЛЯ ИЛЬИ И АЛИСЫ */
+        /* АВАТАРЫ */
         .avatar { 
-            position: absolute; width: 60px; height: 60px; border: 3px solid var(--gold); z-index: 3; 
-            transition: left 0.8s ease-in-out; display: flex; align-items: center; justify-content: center; 
-            font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 1px #000;
+            position: absolute; width: 50px; height: 50px; border: 2px solid var(--gold); 
+            border-radius: 5px; z-index: 3; transition: left 0.8s ease-in-out;
+            display: flex; align-items: center; justify-content: center; font-size: 9px;
+            color: #fff; text-shadow: 1px 1px 1px #000; cursor: help;
             overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.5);
             animation: run 0.4s infinite alternate;
         }
-        
-        /* Илья: Квадрат, черный стиль */
-        .ilya { background-color: #555; border-radius: 5px; }
-        .ilya-hair { background-color: #1a1a1a; height: 40%; width: 100%; position: absolute; top: 0; }
-        
-        /* Алиса: Скругленный квадрат, розовый стиль */
-        .alice { background-color: #88c; border-radius: 15px; }
-        .alice-hair { background-color: #ff85c1; height: 40%; width: 100%; position: absolute; top: 0; }
+        .tooltip { visibility: hidden; width: 220px; background-color: rgba(0,0,0,0.95); color: #fff; text-align: center; border-radius: 6px; padding: 12px; position: absolute; z-index: 100; bottom: 130%; left: 50%; margin-left: -110px; font-size: 13px; border: 1px solid var(--gold); line-height: 1.4; }
+        .avatar:hover .tooltip { visibility: visible; }
+        .ilya { background-color: #444; }
+        .alice { background-color: #88c; }
+        @keyframes run { 0% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-8px) rotate(5deg); } 100% { transform: translateY(0) rotate(-5deg); } }
 
-        @keyframes run { 
-            0% { transform: translateY(0) rotate(-5deg); } 
-            50% { transform: translateY(-12px) rotate(5deg); } 
-            100% { transform: translateY(0) rotate(-5deg); } 
-        }
-
-        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0.5; transition: opacity 0.8s ease; }
+        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 800px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
-        .step { background: rgba(22, 27, 34, 0.9); padding: 50px; border-radius: 15px; border: 2px solid #333; margin-top: 30px; display: none; }
+        .step { background: rgba(22, 27, 34, 0.9); padding: 40px; border-radius: 15px; border: 2px solid #333; margin-top: 30px; display: none; }
         .step.active { display: block; }
-        input { width: 100%; padding: 24px; font-size: 1.5rem; background: #000; border: 2px solid var(--gold); color: white; border-radius: 8px; box-sizing: border-box; margin-bottom: 20px; }
-        .submit-btn { width: 100%; padding: 24px; font-size: 1.5rem; background: var(--red); color: white; border: none; cursor: pointer; border-radius: 8px; font-family: 'Cinzel', serif; }
+        input { width: 100%; padding: 20px; background: #000; border: 2px solid var(--gold); color: white; border-radius: 8px; margin-bottom: 20px; }
+        .submit-btn { width: 100%; padding: 20px; background: var(--red); color: white; border: none; cursor: pointer; font-family: 'Cinzel', serif; }
         
         #reveal-img { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; z-index: 10000; opacity: 0; transition: all 4s ease-in-out; border: 5px solid var(--gold); display: none; }
         #reveal-img.expanded { width: 100vw; height: 100vh; opacity: 1; }
@@ -75,12 +67,13 @@
         <div class="checkpoint"></div>
         <div class="lock-icon">🔒</div>
         
-        <!-- Аватары -->
         <div class="avatar ilya" id="avatar-ilya" style="left: 0%;">
-            <div class="hair ilya-hair"></div>Илья
+            Илья
+            <div class="tooltip">Парень с душой размером с океан. Рядом с ним чувствуешь себя как за каменной стеной (даже если стена постоянно шутит)</div>
         </div>
         <div class="avatar alice" id="avatar-alice" style="left: 0%;">
-            <div class="hair alice-hair"></div>Алиса
+            Алиса
+            <div class="tooltip">Мой личный лучик света. С ней любой день становится ярче, а любая неудача — пустяком</div>
         </div>
     </div>
 
@@ -114,7 +107,7 @@
             stepDiv.className = 'step';
             stepDiv.id = 'step' + (index + 1);
             if(index === 0) stepDiv.classList.add('active');
-            stepDiv.innerHTML = `<p style="font-size: 1.5rem;">${item.q}</p><input type="text" id="answer${index + 1}" placeholder="Ответ..."><button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>`;
+            stepDiv.innerHTML = `<p>${item.q}</p><input type="text" id="answer${index + 1}" placeholder="Ответ..."><button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>`;
             quizArea.appendChild(stepDiv);
         });
 
@@ -123,13 +116,13 @@
             const img = document.createElement('img');
             img.src = `p${i}.jpg`;
             img.className = 'falling-photo';
-            img.style.left = (Math.random() * 80) + 'vw';
-            img.style.width = (Math.floor(Math.random() * 300) + 300) + 'px';
-            img.style.top = '-800px';
+            img.style.left = (Math.random() * 90) + 'vw';
+            img.style.width = (Math.floor(Math.random() * 200) + 150) + 'px';
+            img.style.top = '-500px';
             document.body.appendChild(img);
             
             setTimeout(() => {
-                img.style.animation = `fall ${Math.random() * 5 + 5}s linear`;
+                img.style.animation = `fall ${Math.random() * 6 + 6}s linear`;
                 img.style.opacity = '0.5'; 
             }, 50);
             img.addEventListener('animationend', () => img.remove());
@@ -141,7 +134,7 @@
             audio.play();
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            setInterval(spawnPhoto, 1500); 
+            setInterval(spawnPhoto, 2000); 
         }
 
         async function checkAnswer(step) {
@@ -165,8 +158,8 @@
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
                 const pos = (currentStep - 1) * 8.5;
-                document.getElementById('avatar-ilya').style.left = pos + '%';
-                document.getElementById('avatar-alice').style.left = (pos + 2) + '%';
+                document.getElementById('avatar-ilya').style.left = (pos) + '%';
+                document.getElementById('avatar-alice').style.left = (pos + 4) + '%';
                 const flags = document.querySelectorAll('.checkpoint');
                 flags[currentStep - 1].classList.add('active');
             } else {
