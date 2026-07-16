@@ -2,33 +2,34 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Dota 2: Legendary Quest</title>
+    <title>Dota 2: Legendary Birthday Quest</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
         body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
-        /* ЭКРАН ВХОДА */
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); }
         button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 30px 80px; font-family: 'Cinzel', serif; font-size: 2rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* ПИКСЕЛЬНЫЕ АВАТАРЫ */
-        .avatar-container { position: fixed; bottom: 40px; left: 10%; width: 80%; height: 50px; z-index: 50; }
-        .avatar { position: absolute; width: 40px; height: 40px; transition: left 0.8s ease-in-out; }
-        .ilya { background: var(--red); box-shadow: 0 0 10px var(--red); border-radius: 4px; } /* Красный - Илья */
-        .alice { background: #00bcd4; box-shadow: 0 0 10px #00bcd4; border-radius: 4px; } /* Синий - Алиса */
+        /* ИГРОВОЙ ИНТЕРФЕЙС ВНИЗУ */
+        .lane-container { position: fixed; bottom: 50px; left: 10%; width: 80%; height: 80px; z-index: 50; display: flex; align-items: center; }
+        .lane-line { position: absolute; width: 100%; height: 4px; background: #333; top: 50%; z-index: 1; }
+        .checkpoint { width: 30px; height: 30px; background: var(--red); clip-path: polygon(0% 0%, 100% 50%, 0% 100%); z-index: 2; opacity: 0.3; transition: 0.3s; }
+        .checkpoint.active { opacity: 1; box-shadow: 0 0 15px var(--red); }
+        .lock-icon { font-size: 2rem; margin-left: auto; }
 
-        /* ПРОГРЕСС-БАР */
-        .progress-bar { position: fixed; bottom: 20px; left: 10%; width: 80%; display: flex; justify-content: space-between; z-index: 40; }
-        .dot { width: 15px; height: 15px; background: #333; border-radius: 50%; }
-        .dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        /* ПИКСЕЛЬНЫЕ АВАТАРЫ (DOTA STYLE) */
+        .avatar { 
+            position: absolute; width: 50px; height: 50px; border: 3px solid #fff; 
+            border-radius: 50%; z-index: 3; transition: left 0.8s ease-in-out;
+            image-rendering: pixelated; background-size: cover;
+        }
+        .ilya { background-color: var(--red); box-shadow: 0 0 15px var(--red); }
+        .alice { background-color: #00bcd4; box-shadow: 0 0 15px #00bcd4; }
 
-        /* ФОТО */
         .falling-photo { position: fixed; border: 2px solid var(--gold); z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
-
-        /* КОНТЕНТ */
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 800px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
         .step { background: rgba(22, 27, 34, 0.9); padding: 50px; border-radius: 15px; border: 2px solid #333; margin-top: 30px; display: none; }
@@ -52,12 +53,20 @@
     <audio id="audio" loop></audio>
     <img id="reveal-img" src="a1.jpg">
 
-    <!-- Прогресс-бар -->
-    <div class="progress-bar" id="progress">
-        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-    </div>
-    <div class="avatar-container">
+    <!-- LANE -->
+    <div class="lane-container" id="progress">
+        <div class="lane-line"></div>
+        <div class="checkpoint active"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="checkpoint"></div>
+        <div class="lock-icon">🔒</div>
         <div class="avatar ilya" id="avatar-ilya" style="left: 0%;"></div>
         <div class="avatar alice" id="avatar-alice" style="left: 0%;"></div>
     </div>
@@ -73,7 +82,7 @@
         let currentTrack = 0;
         let currentStep = 1;
 
-        // --- ВОПРОСЫ (ДОБАВЬ СВОИ) ---
+        // --- ВОПРОСЫ (ЗАПОЛНИ ИХ) ---
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
             { q: "Вопрос 2", a: ["ответ2"] },
@@ -87,7 +96,6 @@
             { q: "Вопрос 10", a: ["ответ10"] }
         ];
 
-        // Создаем шаги
         const quizArea = document.getElementById('quiz-area');
         quizData.forEach((item, index) => {
             const stepDiv = document.createElement('div');
@@ -99,13 +107,12 @@
         });
 
         function startExperience() {
-            audio.volume = 0.15; // Еще тише (15%)
+            audio.volume = 0.15;
             audio.src = playlist[currentTrack];
             audio.play();
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
-            // Фото от 1 до 23
             for(let i = 1; i <= 23; i++) {
                 const img = document.createElement('img');
                 img.src = `p${i}.jpg`;
@@ -120,10 +127,9 @@
             }
         }
 
-        function checkAnswer(step) {
+        async function checkAnswer(step) {
             const val = document.getElementById('answer' + step).value.toLowerCase().trim();
             if (quizData[step-1].a.includes(val)) {
-                // Логика первого вопроса (звук)
                 if (step === 1) {
                     audio.pause();
                     const quote = new Audio('gol.mp3');
@@ -141,13 +147,12 @@
             currentStep++;
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
-                // Двигаем аватары
-                const pos = (currentStep - 1) * 10;
+                // Аватары двигаются по линии (всего 10 шагов)
+                const pos = (currentStep - 1) * 8.5; // Смещение
                 document.getElementById('avatar-ilya').style.left = pos + '%';
                 document.getElementById('avatar-alice').style.left = (pos + 2) + '%';
-                // Зажигаем точки
-                const dots = document.querySelectorAll('.dot');
-                dots[currentStep - 1].classList.add('active');
+                const flags = document.querySelectorAll('.checkpoint');
+                flags[currentStep - 1].classList.add('active');
             } else {
                 alert("GG WP! Защита снята. Код: 732");
             }
