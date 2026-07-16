@@ -3,51 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Dota 2: Legendary Gift</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; --panel: rgba(22, 27, 34, 0.85); }
-        body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow-x: hidden; min-height: 100vh; }
+        body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
         /* ЭКРАН ВХОДА */
-        #start-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
-        .overlay-content h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.5rem; margin-bottom: 30px; text-shadow: 0 0 10px var(--red); }
-        button { background: var(--red); color: white; border: none; padding: 15px 40px; font-family: 'Cinzel', serif; font-size: 1.2rem; cursor: pointer; border-radius: 5px; transition: 0.3s; text-transform: uppercase; }
-        button:hover { background: #e53935; box-shadow: 0 0 20px var(--red); transform: scale(1.05); }
+        #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
+        .overlay-content h1 { 
+            font-family: 'Cinzel', serif; font-size: 5rem; margin-bottom: 40px; color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--gold), 0 0 40px var(--gold), 0 0 70px var(--gold);
+            line-height: 1.1;
+        }
+        button { 
+            background: transparent; color: var(--gold); border: 2px solid var(--gold); 
+            padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; 
+            border-radius: 5px; transition: 0.3s; text-transform: uppercase; box-shadow: 0 0 10px var(--gold);
+        }
+        button:hover { background: var(--gold); color: black; box-shadow: 0 0 30px var(--gold); transform: scale(1.1); }
 
-        /* ДОЖДЬ ИЗ ФОТО - ФОНОВЫЙ СЛОЙ */
+        /* БЕСКОНЕЧНЫЙ ДОЖДЬ ИЗ ФОТО */
         .falling-photo { 
             position: fixed; 
-            top: -300px; 
             border: 2px solid var(--gold); 
-            opacity: 0.3; /* Чуть прозрачнее, чтобы не отвлекали */
-            z-index: 1;   /* Самый нижний слой */
-            animation: fall linear forwards; 
+            opacity: 0.3; 
+            z-index: 1; 
+            animation: fall linear infinite; /* INFINITE - Ключ к бесконечности */
             pointer-events: none; 
         }
-        @keyframes fall { to { transform: translateY(110vh); } }
+        @keyframes fall { 
+            0% { transform: translateY(-300px); } 
+            100% { transform: translateY(110vh); } 
+        }
 
-        /* ОСНОВНОЙ КОНТЕНТ - ПЕРЕДНИЙ ПЛАН */
-        .content { 
-            position: relative; 
-            z-index: 10; /* Слой выше фоток */
-            padding: 50px 20px; 
-            max-width: 600px; 
-            margin: 0 auto; 
-            display: none; 
-        }
+        /* ОСНОВНОЙ КОНТЕНТ */
+        .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); padding-bottom: 10px; }
-        .step { 
-            background: var(--panel); 
-            backdrop-filter: blur(5px); /* Размытие фона для читаемости */
-            padding: 30px; 
-            border-radius: 10px; 
-            border: 1px solid #333; 
-            margin-top: 20px; 
-            display: none; 
-        }
+        .step { background: var(--panel); backdrop-filter: blur(8px); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
         .step.active { display: block; animation: fadeIn 0.5s; }
-        input { width: 100%; padding: 10px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; margin-top: 10px; box-sizing: border-box; }
-        .submit-btn { margin-top: 15px; width: 100%; background: var(--red); color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; margin-top: 10px; box-sizing: border-box; }
+        .submit-btn { margin-top: 15px; width: 100%; background: var(--red); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; font-family: 'Cinzel', serif; font-size: 1rem; }
         
         #final-prize { text-align: center; display: none; margin-top: 30px; padding: 30px; border: 2px solid var(--gold); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -57,7 +52,7 @@
 
     <div id="start-overlay">
         <div class="overlay-content">
-            <h1>Поздравляю вас Илья и Алиса<br>с днем рождения!!</h1>
+            <h1>Congrats Илья and Алиса<br>happy birthday</h1>
             <button onclick="startExperience()">Вперед</button>
         </div>
     </div>
@@ -92,7 +87,6 @@
         const audio = document.getElementById('audio');
         const photoFiles = [];
         for(let i = 1; i <= 16; i++) { photoFiles.push(`p${i}.jpg`); }
-        
         const answers = { 1: "ответ1", 2: "ответ2" }; 
 
         function startExperience() {
@@ -108,11 +102,17 @@
                 const img = document.createElement('img');
                 img.src = file;
                 img.className = 'falling-photo';
-                const randomWidth = Math.floor(Math.random() * (200 - 100 + 1) + 100);
-                img.style.width = randomWidth + 'px';
-                img.style.left = Math.random() * 90 + 'vw';
-                img.style.animationDuration = (Math.random() * 8 + 10) + 's';
-                img.style.animationDelay = (index * 1.2) + 's';
+                
+                // Рандомные параметры
+                img.style.width = Math.floor(Math.random() * (200 - 100 + 1) + 100) + 'px';
+                img.style.left = Math.random() * 95 + 'vw';
+                
+                // Случайный старт по вертикали, чтобы они не падали строем
+                img.style.top = Math.random() * -1000 + 'px'; 
+                
+                img.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                img.style.animationDelay = (index * 1.5) + 's';
+                
                 document.body.appendChild(img);
             });
         }
