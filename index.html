@@ -93,7 +93,6 @@
                 img.src = file;
                 img.className = 'falling-photo';
                 
-                // РАЗМЕР УВЕЛИЧЕН
                 const w = Math.floor(Math.random() * 300) + 300;
                 
                 img.style.position = 'fixed';
@@ -101,9 +100,9 @@
                 img.style.width = w + 'px';
                 img.style.left = (Math.random() * 80) + 'vw';
                 
-                // СКОРОСТЬ УВЕЛИЧЕНА (1.5x быстрее)
-                img.style.animation = `fall ${Math.random() * 7 + 10}s linear infinite`;
-                img.style.animationDelay = (i * 1.5) + 's';
+                // ЕЩЕ БЫСТРЕЕ: диапазон 5-10 секунд
+                img.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
+                img.style.animationDelay = (i * 0.8) + 's';
                 
                 document.body.appendChild(img);
                 setTimeout(() => { img.style.opacity = '0.25'; }, 50);
