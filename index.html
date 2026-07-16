@@ -5,8 +5,8 @@
     <title>Dota 2: Legendary Gift</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; --panel: rgba(22, 27, 34, 0.9); }
-        body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow-x: hidden; }
+        :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; --panel: rgba(22, 27, 34, 0.85); }
+        body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow-x: hidden; min-height: 100vh; }
 
         /* ЭКРАН ВХОДА */
         #start-overlay { position: fixed; inset: 0; background: black; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
@@ -14,17 +14,40 @@
         button { background: var(--red); color: white; border: none; padding: 15px 40px; font-family: 'Cinzel', serif; font-size: 1.2rem; cursor: pointer; border-radius: 5px; transition: 0.3s; text-transform: uppercase; }
         button:hover { background: #e53935; box-shadow: 0 0 20px var(--red); transform: scale(1.05); }
 
-        /* ДОЖДЬ ИЗ ФОТО */
-        .falling-photo { position: fixed; top: -200px; width: 120px; height: 160px; object-fit: cover; border: 2px solid var(--gold); opacity: 0.5; z-index: 50; animation: fall linear forwards; pointer-events: none; }
+        /* ДОЖДЬ ИЗ ФОТО - ФОНОВЫЙ СЛОЙ */
+        .falling-photo { 
+            position: fixed; 
+            top: -300px; 
+            border: 2px solid var(--gold); 
+            opacity: 0.3; /* Чуть прозрачнее, чтобы не отвлекали */
+            z-index: 1;   /* Самый нижний слой */
+            animation: fall linear forwards; 
+            pointer-events: none; 
+        }
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* КОНТЕНТ */
-        .content { padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
+        /* ОСНОВНОЙ КОНТЕНТ - ПЕРЕДНИЙ ПЛАН */
+        .content { 
+            position: relative; 
+            z-index: 10; /* Слой выше фоток */
+            padding: 50px 20px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            display: none; 
+        }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); padding-bottom: 10px; }
-        .step { background: var(--panel); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
+        .step { 
+            background: var(--panel); 
+            backdrop-filter: blur(5px); /* Размытие фона для читаемости */
+            padding: 30px; 
+            border-radius: 10px; 
+            border: 1px solid #333; 
+            margin-top: 20px; 
+            display: none; 
+        }
         .step.active { display: block; animation: fadeIn 0.5s; }
-        input { width: 100%; padding: 10px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; margin-top: 10px; }
-        .submit-btn { margin-top: 15px; width: 100%; }
+        input { width: 100%; padding: 10px; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; margin-top: 10px; box-sizing: border-box; }
+        .submit-btn { margin-top: 15px; width: 100%; background: var(--red); color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; }
         
         #final-prize { text-align: center; display: none; margin-top: 30px; padding: 30px; border: 2px solid var(--gold); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -39,7 +62,6 @@
         </div>
     </div>
 
-    <!-- МУЗЫКА -->
     <audio id="audio" loop>
         <source src="Gorillaz.mp3" type="audio/mpeg">
     </audio>
@@ -47,7 +69,6 @@
     <div class="content" id="main-content">
         <h1>Тайная Лавка</h1>
         
-        <!-- КВИЗ -->
         <div id="step1" class="step active">
             <p>Вопрос 1: Впиши сюда свой вопрос?</p>
             <input type="text" id="answer1" placeholder="Ответ...">
@@ -60,7 +81,6 @@
             <button class="submit-btn" onclick="checkAnswer(2)">Проверить</button>
         </div>
 
-        <!-- ФИНАЛ -->
         <div id="final-prize" class="step">
             <h2>GG WP! Защита снята</h2>
             <p>Ваш код от замка:</p>
@@ -70,8 +90,10 @@
 
     <script>
         const audio = document.getElementById('audio');
-        const photoFiles = ['photo1.jpg', 'photo2.jpg', 'photo3.jpg']; // Названия твоих фото на GitHub
-        const answers = { 1: "ответ1", 2: "ответ2" }; // Твои ответы
+        const photoFiles = [];
+        for(let i = 1; i <= 16; i++) { photoFiles.push(`p${i}.jpg`); }
+        
+        const answers = { 1: "ответ1", 2: "ответ2" }; 
 
         function startExperience() {
             audio.volume = 0.5;
@@ -86,9 +108,11 @@
                 const img = document.createElement('img');
                 img.src = file;
                 img.className = 'falling-photo';
-                img.style.left = Math.random() * 80 + 10 + 'vw';
-                img.style.animationDuration = (Math.random() * 5 + 7) + 's';
-                img.style.animationDelay = (index * 1.5) + 's';
+                const randomWidth = Math.floor(Math.random() * (200 - 100 + 1) + 100);
+                img.style.width = randomWidth + 'px';
+                img.style.left = Math.random() * 90 + 'vw';
+                img.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                img.style.animationDelay = (index * 1.2) + 's';
                 document.body.appendChild(img);
             });
         }
@@ -98,7 +122,7 @@
             if (val === answers[step]) {
                 document.getElementById('step' + step).style.display = 'none';
                 if (step < 2) document.getElementById('step' + (step + 1)).classList.add('active');
-                else document.getElementById('final-prize').classList.add('active');
+                else document.getElementById('final-prize').style.display = 'block';
             } else {
                 alert("Неверно, герой! Попробуй еще раз.");
             }
