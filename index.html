@@ -22,14 +22,9 @@
         button:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
         /* ФОТКИ - БЕСКОНЕЧНЫЙ ДОЖДЬ */
-        .falling-photo { 
-            position: fixed; 
-            border: 2px solid var(--gold); 
-            opacity: 0.25; 
-            z-index: 1; 
-            pointer-events: none;
-        }
+        .falling-photo { position: fixed; border: 2px solid var(--gold); opacity: 0.25; z-index: 1; pointer-events: none; }
 
+        /* ОСНОВНОЙ КОНТЕНТ */
         .content { position: relative; z-index: 10; padding: 50px 20px; max-width: 600px; margin: 0 auto; display: none; }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); }
         .step { background: rgba(22, 27, 34, 0.85); padding: 30px; border-radius: 10px; border: 1px solid #333; margin-top: 20px; display: none; }
@@ -47,9 +42,7 @@
         </div>
     </div>
 
-    <audio id="audio" loop>
-        <source src="Gorillaz.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="audio"></audio>
 
     <div class="content" id="main-content">
         <h1>Тайная Лавка</h1>
@@ -67,13 +60,25 @@
 
     <script>
         const audio = document.getElementById('audio');
+        const playlist = ["Gorillaz.mp3", "Bodies.mp3", "Nickelback.mp3"];
+        let currentTrack = 0;
+
+        audio.onended = function() {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            audio.src = playlist[currentTrack];
+            audio.play();
+        };
+
         const photoFiles = [];
         for(let i = 1; i <= 16; i++) { photoFiles.push(`p${i}.jpg`); }
         const answers = { 1: "ответ1", 2: "ответ2" };
 
         function startExperience() {
-            audio.volume = 0.5;
+            // Громкость 0.3 (фоновая)
+            audio.volume = 0.3;
+            audio.src = playlist[currentTrack];
             audio.play();
+            
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
@@ -81,15 +86,11 @@
                 const img = document.createElement('img');
                 img.src = file;
                 img.className = 'falling-photo';
-                
-                // Размер от 200px до 400px (в два раза больше прежнего)
                 const w = Math.floor(Math.random() * 200) + 200;
                 img.style.width = w + 'px';
                 img.style.left = (Math.random() * 90) + 'vw';
-                
                 img.style.animation = `fall ${Math.random() * 10 + 15}s linear infinite`;
                 img.style.animationDelay = (i * 1.5) + 's';
-                
                 document.body.appendChild(img);
             });
         }
