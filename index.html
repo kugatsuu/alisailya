@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Dota 2: Legendary Quest</title>
     
-    <!-- ПРЕДЗАГРУЗКА КРИТИЧЕСКИХ ФАЙЛОВ ВО ВРЕМЯ 30-СЕКУНДНОГО ОЖИДАНИЯ -->
+    <!-- ПРЕДЗАГРУЗКА КРИТИЧЕСКИХ ФАЙЛОВ -->
     <link rel="preload" href="a1.jpg" as="image">
     <link rel="preload" href="a2.png" as="image">
     <link rel="preload" href="bu.mp4" as="video">
@@ -47,8 +47,6 @@
             text-align: center; padding: 2px;
         }
         .avatar:hover { transform: scale(1.1); z-index: 11; }
-        
-        /* АНИМАЦИЯ БЕГА (НАРУТО СТАЙЛ) */
         .running { transform: rotate(20deg) skewX(-10deg) !important; }
         
         /* ТУЛТИПЫ */
@@ -65,7 +63,7 @@
         .ilya { background-color: #a33; top: 0px; }
         .alice { background-color: #337ab7; top: 60px; }
 
-        /* ФОТО НА ФОНЕ */
+        /* ФОТО */
         .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; will-change: transform, top, left; }
         
         /* КОНТЕНТ */
@@ -79,7 +77,8 @@
         .step { 
             background: rgba(0, 0, 0, 0.9); padding: 40px; 
             border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
-            display: none; box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            display: none; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            transition: box-shadow 0.1s ease; /* Для плавности визуализатора */
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -124,14 +123,13 @@
     <div id="start-overlay">
         <div class="overlay-content">
             <h1>Congrats Илья and Алиса<br>happy birthday</h1>
-            <!-- ТАЙМЕР НА 30 СЕКУНД -->
             <button id="start-btn" disabled onclick="startExperience()">Вперед (30)</button>
             <p id="loading-text">Подождите пожалуйста несколько секунд, чтобы контент прогрузился для лучшего опыта.</p>
         </div>
     </div>
 
-    <!-- ДОБАВЛЕН preload="auto" ДЛЯ АУДИО И ВИДЕО -->
-    <audio id="audio" preload="auto"></audio>
+    <!-- crossorigin нужен, чтобы визуализатор мог читать аудио без ошибок на сервере Vercel -->
+    <audio id="audio" preload="auto" crossorigin="anonymous"></audio>
     
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
     <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
@@ -183,6 +181,15 @@
         let currentTrack = 0;
         let currentStep = 1;
         let isSpecialAudioPlaying = false; 
+
+        // ПЕРЕМЕННЫЕ ДЛЯ АУДИО ВИЗУАЛИЗАЦИИ
+        let audioCtx;
+        let analyser;
+        let dataArray;
+
+        // ПЕРЕМЕННЫЕ ДЛЯ ФОТО
+        let currentPhotoIndex = 1;
+        let isRandomPhotos = false;
 
         function changeTrackWithFade() {
             if (isSpecialAudioPlaying) return; 
@@ -237,8 +244,19 @@
             quizArea.appendChild(stepDiv);
         });
 
+        // НОВАЯ ЛОГИКА ФОТО: СНАЧАЛА ПО ПОРЯДКУ 1..31, ЗАТЕМ РАНДОМ
         function spawnPhoto() {
-            const i = Math.floor(Math.random() * 23) + 1;
+            let i;
+            if (!isRandomPhotos) {
+                i = currentPhotoIndex;
+                currentPhotoIndex++;
+                if (currentPhotoIndex > 31) {
+                    isRandomPhotos = true; // С этого момента будут случайные
+                }
+            } else {
+                i = Math.floor(Math.random() * 31) + 1;
+            }
+
             const img = document.createElement('img');
             img.src = `p${i}.jpg`;
             img.className = 'falling-photo';
@@ -258,10 +276,56 @@
             img.addEventListener('animationend', () => img.remove());
         }
 
+        // АУДИО ВИЗУАЛИЗАТОР
+        function initVisualizer() {
+            if (audioCtx) return; // Чтобы не запустить дважды
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioCtx.createMediaElementSource(audio);
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            
+            visualizeLoop();
+        }
+
+        function visualizeLoop() {
+            requestAnimationFrame(visualizeLoop);
+            if (!analyser) return;
+            analyser.getByteFrequencyData(dataArray);
+
+            // Вычисляем бас (берем первые 15 частот)
+            let bassSum = 0;
+            for(let i = 0; i < 15; i++) {
+                bassSum += dataArray[i];
+            }
+            let bassAvg = bassSum / 15; // от 0 до 255
+
+            const activeStep = document.querySelector('.step.active');
+            if (activeStep) {
+                // Если звук не играет, будет базовое черное свечение
+                if (bassAvg < 10) {
+                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.8)`;
+                } else {
+                    // Музыка играет: добавляем золотое пульсирующее свечение поверх черного
+                    const glow = 15 + (bassAvg / 2); // Интенсивность размытия
+                    const spread = bassAvg / 15;     // Размах свечения
+                    const alpha = Math.min(0.8, 0.2 + (bassAvg / 255)); // Прозрачность от громкости
+                    
+                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.8), 0 0 ${glow}px ${spread}px rgba(229, 192, 123, ${alpha})`;
+                }
+            }
+        }
+
         function startExperience() {
             audio.volume = 0.15;
             audio.src = playlist[currentTrack];
             audio.play();
+            
+            // Запускаем визуализатор после клика (требование браузеров)
+            initVisualizer();
+
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
@@ -310,7 +374,7 @@
                 }
                 else { nextStep(); }
                 
-                inputField.value = ''; // Очищаем поле после правильного ответа
+                inputField.value = ''; 
                 
             } else { 
                 inputField.classList.add('shake');
@@ -327,7 +391,6 @@
                 
                 setTimeout(() => document.getElementById('answer' + currentStep).focus(), 100);
                 
-                // ТОЛЬКО ИЛЬЯ И АЛИСА
                 const avatars = [document.getElementById('avatar-ilya'), document.getElementById('avatar-alice')];
                 
                 const pos = (currentStep - 1) * 10;
