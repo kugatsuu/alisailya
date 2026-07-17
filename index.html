@@ -90,12 +90,13 @@
             text-align: center; display: none; 
         }
         
-        /* УЛУЧШЕННЫЙ АУДИО ВИЗУАЛИЗАТОР (Очень быстрый отклик) */
+        /* ОКОШКО ВОПРОСА (ОЧЕНЬ БЫСТРЫЙ И РЕЗКИЙ ВИЗУАЛИЗАТОР) */
         .step { 
             background: rgba(0, 0, 0, 0.9); padding: 40px; 
             border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
             display: none; transform-origin: center center;
-            transition: box-shadow 0.05s ease, transform 0.05s ease, border-color 0.05s ease; 
+            /* Ускоряем transition для мгновенного отклика на бит */
+            transition: box-shadow 0.05s ease-out, transform 0.05s ease-out, border-color 0.05s ease-out; 
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -174,7 +175,7 @@
         <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
         <div class="checkpoint"></div>
         
-        <!-- КРАСИВЫЙ ЗАМОК -->
+        <!-- СИММЕТРИЧНЫЙ ЗАМОК -->
         <div class="lock"></div>
         
         <div class="avatar ilya" id="avatar-ilya" style="left: 0%;">
@@ -188,7 +189,6 @@
     </div>
 
     <div class="content" id="main-content">
-        <!-- УБРАНА НАДПИСЬ ТАЙНАЯ ЛАВКА -->
         <div id="quiz-area"></div>
     </div>
 
@@ -262,7 +262,6 @@
             feed.className = 'kill-feed';
             feed.innerHTML = text;
             
-            // Расчет БЕЗОПАСНЫХ зон (Верх, Низ, Лево, Право), чтобы не лезло на вопросы
             const zone = Math.floor(Math.random() * 4);
             let topPos, leftPos;
             
@@ -384,7 +383,7 @@
             img.addEventListener('animationend', () => img.remove());
         }
 
-        // КРАСИВЫЙ МНОГОСЛОЙНЫЙ АУДИО ВИЗУАЛИЗАТОР
+        // ОБНОВЛЕННЫЙ, ЧЕТКИЙ И РЕЗКИЙ АУДИО ВИЗУАЛИЗАТОР
         function initVisualizer() {
             if (audioCtx) return; 
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -403,35 +402,41 @@
             if (!analyser) return;
             analyser.getByteFrequencyData(dataArray);
 
-            let bassSum = 0;
-            for(let i = 0; i < 15; i++) {
-                bassSum += dataArray[i];
-            }
-            let bassAvg = bassSum / 15; 
+            // Разделяем частоты: Глубокий бас (для удара/размера) и Средний бас (для свечения)
+            let deepBassSum = 0;
+            for(let i = 1; i <= 5; i++) deepBassSum += dataArray[i];
+            let deepBassAvg = deepBassSum / 5; 
+
+            let midBassSum = 0;
+            for(let i = 6; i <= 15; i++) midBassSum += dataArray[i];
+            let midBassAvg = midBassSum / 10;
 
             const activeStep = document.querySelector('.step.active');
 
             if (activeStep) {
-                if (bassAvg < 10) {
-                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.8)`;
+                if (deepBassAvg < 15 && midBassAvg < 15) {
+                    // Спокойное состояние (тишина)
+                    activeStep.style.boxShadow = `0 0 20px rgba(0,0,0,0.9)`;
                     activeStep.style.transform = `scale(1)`;
                     activeStep.style.borderColor = `#444`;
                 } else {
-                    const bassIntensity = bassAvg / 255; 
-                    const glow1 = 15 + (bassIntensity * 25); 
-                    const glow2 = 30 + (bassIntensity * 50);
-                    const alpha = 0.4 + (bassIntensity * 0.6); 
-                    const scale = 1 + (bassIntensity * 0.04); 
-                    
-                    // Сложный тройной неон + внутреннее свечение
+                    // Возведение в степень дает эффект РЕЗКОГО всплеска (нелинейность)
+                    const intensity = Math.pow(deepBassAvg / 255, 1.2); 
+                    const midIntensity = Math.pow(midBassAvg / 255, 1.2);
+
+                    const scale = 1 + (intensity * 0.05); // Резкий прыжок размера
+                    const coreGlow = 5 + (intensity * 15); // Белое/светлое ядро свечения
+                    const midGlow = 20 + (midIntensity * 40); // Золотое свечение
+                    const outerGlow = 40 + (intensity * 80); // Красная аура
+
                     activeStep.style.boxShadow = `
-                        0 0 30px rgba(0,0,0,0.9), 
-                        0 0 ${glow1}px rgba(229, 192, 123, ${alpha}), 
-                        0 0 ${glow2}px rgba(194, 60, 42, ${alpha * 0.5}),
-                        inset 0 0 ${glow1 / 2}px rgba(229, 192, 123, ${alpha * 0.3})
+                        0 0 ${coreGlow}px rgba(255, 235, 180, ${0.4 + intensity * 0.6}), 
+                        0 0 ${midGlow}px rgba(229, 192, 123, ${0.3 + midIntensity * 0.5}), 
+                        0 0 ${outerGlow}px rgba(194, 60, 42, ${0.2 + intensity * 0.4}),
+                        inset 0 0 ${15 + intensity * 20}px rgba(229, 192, 123, ${0.2 + intensity * 0.3})
                     `;
                     activeStep.style.transform = `scale(${scale})`;
-                    activeStep.style.borderColor = `rgba(229, 192, 123, ${0.5 + bassIntensity})`;
+                    activeStep.style.borderColor = `rgba(229, 192, 123, ${0.5 + intensity})`;
                 }
             }
         }
@@ -508,12 +513,17 @@
             }
         }
 
+        // ИСПРАВЛЕН БАГ С ЗАВИСАНИЕМ ВИЗУАЛИЗАТОРА ПОСЛЕ 1 ВОПРОСА
         function nextStep() {
-            document.getElementById('step' + currentStep).style.display = 'none';
+            const oldStep = document.getElementById('step' + currentStep);
+            oldStep.style.display = 'none';
+            oldStep.classList.remove('active'); // Обязательно убираем класс active у старого вопроса!
+            
             currentStep++;
             
             if (currentStep <= 10) {
-                document.getElementById('step' + currentStep).classList.add('active');
+                const newStep = document.getElementById('step' + currentStep);
+                newStep.classList.add('active'); // Добавляем новому
                 
                 setTimeout(() => document.getElementById('answer' + currentStep).focus(), 100);
                 
