@@ -4,26 +4,36 @@
     <meta charset="UTF-8">
     <title>Dota 2: Legendary Quest</title>
     
-    <!-- ПРЕДЗАГРУЗКА КРИТИЧЕСКИХ ФАЙЛОВ -->
     <link rel="preload" href="a1.jpg" as="image">
     <link rel="preload" href="a2.png" as="image">
     <link rel="preload" href="bu.mp4" as="video">
     <link rel="preload" href="gol.mp3" as="audio">
     <link rel="preload" href="Privet.mp3" as="audio">
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
+        :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; --terminal-green: #4af626; }
         body { margin: 0; background: var(--bg); font-family: 'Roboto', sans-serif; color: #e2d6b5; overflow: hidden; min-height: 100vh; }
 
-        #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
-        .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); }
+        /* ЭКРАН ЗАГРУЗКИ */
+        #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); margin-bottom: 20px; }
         
-        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
+        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 15px 50px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; margin-bottom: 20px; }
         button:hover:not(:disabled) { background: var(--gold); color: black; box-shadow: 0 0 15px var(--gold); }
         button:disabled { border-color: #555; color: #555; cursor: not-allowed; }
         
-        #loading-text { font-family: 'Roboto', sans-serif; font-size: 1.2rem; color: #888; margin-top: 25px; transition: color 0.5s; text-shadow: 1px 1px 2px #000; }
+        /* ТЕРМИНАЛ ЗАГРУЗКИ */
+        #terminal { 
+            width: 80%; max-width: 600px; height: 180px; background: rgba(10, 15, 20, 0.9); 
+            border: 1px solid #333; border-radius: 8px; padding: 15px; 
+            text-align: left; font-family: monospace; font-size: 14px; 
+            color: var(--terminal-green); overflow: hidden; box-shadow: inset 0 0 10px #000;
+        }
+        .log-line { margin-bottom: 8px; opacity: 0; animation: typeLine 0.1s forwards; text-shadow: 0 0 5px var(--terminal-green); }
+        @keyframes typeLine { to { opacity: 1; } }
+        .log-warn { color: #e5c07b; text-shadow: 0 0 5px #e5c07b; }
+        .log-err { color: var(--red); text-shadow: 0 0 5px var(--red); }
 
         /* ТРОПА */
         .lane-container { position: fixed; bottom: 50px; left: 10%; width: 80%; height: 120px; z-index: 50; display: flex; align-items: center; justify-content: space-between; }
@@ -35,7 +45,10 @@
         .checkpoint.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
         .checkpoint.active::before { display: block; }
         
-        .ancient { width: 50px; height: 50px; background: #e5c07b; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); box-shadow: 0 0 25px var(--gold); z-index: 2; }
+        /* КРАСИВЫЙ ЗАМОЧЕК */
+        .lock { width: 34px; height: 26px; background: #e5c07b; border-radius: 6px; position: relative; box-shadow: 0 0 15px var(--gold); margin-left: auto; z-index: 2; display: flex; justify-content: center; align-items: center; }
+        .lock::before { content: ''; position: absolute; width: 16px; height: 18px; border: 5px solid #e5c07b; border-bottom: none; border-radius: 12px 12px 0 0; top: -18px; left: 4px; box-sizing: border-box; }
+        .lock::after { content: ''; width: 6px; height: 10px; background: #0d1117; border-radius: 3px; }
 
         /* АВАТАРЫ */
         .avatar { 
@@ -77,8 +90,7 @@
         .step { 
             background: rgba(0, 0, 0, 0.9); padding: 40px; 
             border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
-            display: none; box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            transition: box-shadow 0.1s ease; /* Для плавности визуализатора */
+            display: none; transition: box-shadow 0.1s ease; /* Для плавности визуализатора */
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -90,7 +102,7 @@
             color: white; border-radius: 8px; margin-bottom: 25px; 
             font-size: 1.5rem; text-align: center; box-sizing: border-box; transition: 0.3s;
         }
-        input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 15px rgba(229, 192, 123, 0.5); }
+        input:focus { outline: none; border-color: var(--gold); }
         input::placeholder { color: #666; }
         
         .submit-btn { 
@@ -124,12 +136,12 @@
         <div class="overlay-content">
             <h1>Congrats Илья and Алиса<br>happy birthday</h1>
             <button id="start-btn" disabled onclick="startExperience()">Вперед (30)</button>
-            <p id="loading-text">Подождите пожалуйста несколько секунд, чтобы контент прогрузился для лучшего опыта.</p>
+            <div id="terminal"></div>
         </div>
     </div>
 
-    <!-- crossorigin нужен, чтобы визуализатор мог читать аудио без ошибок на сервере Vercel -->
-    <audio id="audio" preload="auto" crossorigin="anonymous"></audio>
+    <!-- УБРАН crossorigin, ТЕПЕРЬ ВИЗУАЛИЗАТОР РАБОТАЕТ! -->
+    <audio id="audio" preload="auto"></audio>
     
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
     <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
@@ -141,7 +153,9 @@
         <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
         <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
         <div class="checkpoint"></div>
-        <div class="ancient"></div>
+        
+        <!-- КРАСИВЫЙ ЗАМОЧЕК -->
+        <div class="lock"></div>
         
         <div class="avatar ilya" id="avatar-ilya" style="left: 0%;">
             Илья
@@ -159,11 +173,40 @@
     </div>
 
     <script>
+        // ЛОГИКА ТЕРМИНАЛА С ШУТКАМИ 
+        const terminalLogs = [
+            "[SYS] Инициализация тайного лобби...",
+            "[SYS] Подключение к серверам Dota 2...",
+            "<span class='log-err'>[ERROR] Илья снова ферст-пикнул Techies. Команда в шоке.</span>",
+            "[WAIT] Расстановка мин по всему лесу. Просьба подождать...",
+            "<span class='log-warn'>[OK] Алиса взяла Witch Doctor. Ситуация под контролем.</span>",
+            "[WAIT] Брошен кокос! Летит... летит... отскок в крипа.",
+            "[SYS] Оооояяяяя! Загрузка касочек...",
+            "<span class='log-err'>[ERROR] Илья заминировал Рошпит. Сервер лагает.</span>",
+            "[OK] Покупка вардов (хотя зачем они на 2к ММР?)...",
+            "[SYS] Синхронизация воспоминаний 2024 года...",
+            "<span class='log-warn'>[OK] Все файлы загружены. Защита активна. Можно начинать!</span>"
+        ];
+        
+        const terminal = document.getElementById('terminal');
+        let logIndex = 0;
+        // Шутки печатаются каждые 2.7 секунды, чтобы как раз уложиться в 30 сек
+        const logTimer = setInterval(() => {
+            if (logIndex < terminalLogs.length) {
+                const line = document.createElement('div');
+                line.className = 'log-line';
+                line.innerHTML = terminalLogs[logIndex];
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight; // Автоскролл вниз
+                logIndex++;
+            } else {
+                clearInterval(logTimer);
+            }
+        }, 2700);
+
         // ТАЙМЕР ЗАГРУЗКИ 30 СЕКУНД
         let timeLeft = 30;
         const startBtn = document.getElementById('start-btn');
-        const loadText = document.getElementById('loading-text');
-
         const timerInterval = setInterval(() => {
             timeLeft--;
             startBtn.innerText = `Вперед (${timeLeft})`;
@@ -171,8 +214,7 @@
                 clearInterval(timerInterval);
                 startBtn.disabled = false;
                 startBtn.innerText = "Вперед";
-                loadText.innerText = "Контент загружен. Можно начинать!";
-                loadText.style.color = "var(--gold)";
+                startBtn.style.transform = "scale(1.1)";
             }
         }, 1000);
 
@@ -187,7 +229,7 @@
         let analyser;
         let dataArray;
 
-        // ПЕРЕМЕННЫЕ ДЛЯ ФОТО
+        // ПЕРЕМЕННЫЕ ДЛЯ ФОТО (СНАЧАЛА 1..31, ПОТОМ РАНДОМ)
         let currentPhotoIndex = 1;
         let isRandomPhotos = false;
 
@@ -244,16 +286,18 @@
             quizArea.appendChild(stepDiv);
         });
 
-        // НОВАЯ ЛОГИКА ФОТО: СНАЧАЛА ПО ПОРЯДКУ 1..31, ЗАТЕМ РАНДОМ
+        // СПАВН ФОТОГРАФИЙ
         function spawnPhoto() {
             let i;
+            // Пока не дошли до 31, выдаем по порядку
             if (!isRandomPhotos) {
                 i = currentPhotoIndex;
                 currentPhotoIndex++;
                 if (currentPhotoIndex > 31) {
-                    isRandomPhotos = true; // С этого момента будут случайные
+                    isRandomPhotos = true; // Дальше пойдет рандом
                 }
             } else {
+                // Рандом от 1 до 31
                 i = Math.floor(Math.random() * 31) + 1;
             }
 
@@ -276,9 +320,9 @@
             img.addEventListener('animationend', () => img.remove());
         }
 
-        // АУДИО ВИЗУАЛИЗАТОР
+        // АУДИО ВИЗУАЛИЗАТОР (ПОЧИНЕН!)
         function initVisualizer() {
-            if (audioCtx) return; // Чтобы не запустить дважды
+            if (audioCtx) return; 
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioCtx.createMediaElementSource(audio);
             analyser = audioCtx.createAnalyser();
@@ -295,25 +339,24 @@
             if (!analyser) return;
             analyser.getByteFrequencyData(dataArray);
 
-            // Вычисляем бас (берем первые 15 частот)
             let bassSum = 0;
             for(let i = 0; i < 15; i++) {
                 bassSum += dataArray[i];
             }
-            let bassAvg = bassSum / 15; // от 0 до 255
+            let bassAvg = bassSum / 15; 
 
             const activeStep = document.querySelector('.step.active');
+            const inputField = activeStep ? activeStep.querySelector('input') : null;
+
             if (activeStep) {
-                // Если звук не играет, будет базовое черное свечение
                 if (bassAvg < 10) {
-                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.8)`;
+                    activeStep.style.boxShadow = `0 0 20px rgba(0,0,0,0.8)`;
                 } else {
-                    // Музыка играет: добавляем золотое пульсирующее свечение поверх черного
-                    const glow = 15 + (bassAvg / 2); // Интенсивность размытия
-                    const spread = bassAvg / 15;     // Размах свечения
-                    const alpha = Math.min(0.8, 0.2 + (bassAvg / 255)); // Прозрачность от громкости
+                    const glow = 15 + (bassAvg / 2); 
+                    const spread = bassAvg / 20;     
+                    const alpha = Math.min(0.8, 0.2 + (bassAvg / 255)); 
                     
-                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.8), 0 0 ${glow}px ${spread}px rgba(229, 192, 123, ${alpha})`;
+                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.9), 0 0 ${glow}px ${spread}px rgba(229, 192, 123, ${alpha})`;
                 }
             }
         }
@@ -323,7 +366,7 @@
             audio.src = playlist[currentTrack];
             audio.play();
             
-            // Запускаем визуализатор после клика (требование браузеров)
+            // Инициализация визуализатора после клика
             initVisualizer();
 
             document.getElementById('start-overlay').style.display = 'none';
@@ -331,6 +374,7 @@
             
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
+            // Спавним фотки
             setInterval(spawnPhoto, 2000); 
         }
 
