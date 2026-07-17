@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Dota 2: Legendary Quest</title>
+    
+    <!-- ПРЕДЗАГРУЗКА КРИТИЧЕСКИХ ФАЙЛОВ ВО ВРЕМЯ 30-СЕКУНДНОГО ОЖИДАНИЯ -->
+    <link rel="preload" href="a1.jpg" as="image">
+    <link rel="preload" href="a2.png" as="image">
+    <link rel="preload" href="bu.mp4" as="video">
+    <link rel="preload" href="gol.mp3" as="audio">
+    <link rel="preload" href="Privet.mp3" as="audio">
+    
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0d1117; --gold: #e5c07b; --red: #c23c2a; }
@@ -32,7 +40,7 @@
         /* АВАТАРЫ */
         .avatar { 
             position: absolute; width: 45px; height: 45px; border: 2px solid var(--gold); 
-            z-index: 10; transition: left 0.8s ease-in-out, transform 0.3s;
+            z-index: 10; transition: left 0.8s ease-in-out, transform 0.3s ease;
             display: flex; align-items: center; justify-content: center; 
             font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000;
             border-radius: 4px; cursor: help; box-shadow: 0 0 10px rgba(0,0,0,0.5);
@@ -40,7 +48,10 @@
         }
         .avatar:hover { transform: scale(1.1); z-index: 11; }
         
-        /* TOOLTIPS */
+        /* АНИМАЦИЯ БЕГА (НАРУТО СТАЙЛ) */
+        .running { transform: rotate(20deg) skewX(-10deg) !important; }
+        
+        /* ТУЛТИПЫ */
         .tooltip { 
             visibility: hidden; width: 450px; max-width: 80vw;
             background-color: rgba(0,0,0,0.95); color: #fff; text-align: center; 
@@ -54,7 +65,7 @@
         .ilya { background-color: #a33; top: 0px; }
         .alice { background-color: #337ab7; top: 60px; }
 
-        /* ОПТИМИЗАЦИЯ ФОТО */
+        /* ФОТО НА ФОНЕ */
         .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; will-change: transform, top, left; }
         
         /* КОНТЕНТ */
@@ -75,7 +86,6 @@
         
         .step p { font-size: 1.8rem; margin-bottom: 30px; color: #fff; line-height: 1.4; }
         
-        /* ПОЛЕ ВВОДА (С фокусом) */
         input { 
             width: 100%; padding: 18px; background: #111; border: 2px solid #444; 
             color: white; border-radius: 8px; margin-bottom: 25px; 
@@ -84,7 +94,6 @@
         input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 15px rgba(229, 192, 123, 0.5); }
         input::placeholder { color: #666; }
         
-        /* КНОПКА */
         .submit-btn { 
             width: 100%; padding: 18px; background: var(--red); color: white; border: none; 
             cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.5rem; 
@@ -92,7 +101,6 @@
         }
         .submit-btn:hover { background: var(--gold); color: black; transform: scale(1.02); }
 
-        /* ТРЯСКА ПРИ ОШИБКЕ */
         .shake { animation: shake 0.4s; border-color: var(--red) !important; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 50% {transform: translateX(10px);} 75% {transform: translateX(-10px);} }
         
@@ -116,15 +124,18 @@
     <div id="start-overlay">
         <div class="overlay-content">
             <h1>Congrats Илья and Алиса<br>happy birthday</h1>
-            <button id="start-btn" disabled onclick="startExperience()">Вперед (15)</button>
+            <!-- ТАЙМЕР НА 30 СЕКУНД -->
+            <button id="start-btn" disabled onclick="startExperience()">Вперед (30)</button>
             <p id="loading-text">Подождите пожалуйста несколько секунд, чтобы контент прогрузился для лучшего опыта.</p>
         </div>
     </div>
 
-    <audio id="audio"></audio>
-    <img id="reveal-img-1" class="reveal-media" src="a1.jpg">
-    <img id="reveal-img-2" class="reveal-media" src="a2.jpg">
-    <video id="reveal-vid-3" class="reveal-media" src="bu.mp4"></video>
+    <!-- ДОБАВЛЕН preload="auto" ДЛЯ АУДИО И ВИДЕО -->
+    <audio id="audio" preload="auto"></audio>
+    
+    <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
+    <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
+    <video id="reveal-vid-3" class="reveal-media" src="bu.mp4" preload="auto"></video>
 
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
@@ -150,8 +161,8 @@
     </div>
 
     <script>
-        // ТАЙМЕР ЗАГРУЗКИ
-        let timeLeft = 15;
+        // ТАЙМЕР ЗАГРУЗКИ 30 СЕКУНД
+        let timeLeft = 30;
         const startBtn = document.getElementById('start-btn');
         const loadText = document.getElementById('loading-text');
 
@@ -217,7 +228,6 @@
             stepDiv.id = 'step' + (index + 1);
             if(index === 0) stepDiv.classList.add('active');
             
-            // ДОБАВЛЕНА ПОДДЕРЖКА КЛАВИШИ ENTER В input (onkeydown)
             stepDiv.innerHTML = `
                 <p>${item.q}</p>
                 <input type="text" id="answer${index + 1}" placeholder="Ваш ответ..." 
@@ -255,7 +265,6 @@
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
-            // Ставим фокус на первое поле ввода
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
             setInterval(spawnPhoto, 2000); 
@@ -301,8 +310,9 @@
                 }
                 else { nextStep(); }
                 
+                inputField.value = ''; // Очищаем поле после правильного ответа
+                
             } else { 
-                // АНИМАЦИЯ ОШИБКИ
                 inputField.classList.add('shake');
                 setTimeout(() => inputField.classList.remove('shake'), 400);
             }
@@ -315,20 +325,32 @@
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
                 
-                // Авто-фокус на следующее поле
                 setTimeout(() => document.getElementById('answer' + currentStep).focus(), 100);
                 
+                // ТОЛЬКО ИЛЬЯ И АЛИСА
+                const avatars = [document.getElementById('avatar-ilya'), document.getElementById('avatar-alice')];
+                
                 const pos = (currentStep - 1) * 10;
-                document.getElementById('avatar-ilya').style.left = pos + '%';
-                document.getElementById('avatar-alice').style.left = pos + '%';
+                avatars.forEach(av => {
+                    av.classList.add('running');
+                    av.style.left = pos + '%';
+                });
+                
+                setTimeout(() => {
+                    avatars.forEach(av => av.classList.remove('running'));
+                }, 800);
                 
                 const flags = document.querySelectorAll('.checkpoint');
                 flags[currentStep - 1].classList.add('active');
             } else {
-                document.getElementById('avatar-ilya').style.left = '100%';
-                document.getElementById('avatar-alice').style.left = '100%';
+                const avatars = [document.getElementById('avatar-ilya'), document.getElementById('avatar-alice')];
+                avatars.forEach(av => {
+                    av.classList.add('running');
+                    av.style.left = '100%';
+                });
                 
                 setTimeout(() => {
+                    avatars.forEach(av => av.classList.remove('running'));
                     alert("GG WP! Защита снята. Код: 732");
                 }, 800);
             }
