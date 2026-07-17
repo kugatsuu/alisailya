@@ -19,35 +19,39 @@
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); margin-bottom: 20px; }
         
-        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 15px 50px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; margin-bottom: 20px; }
+        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 15px 50px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; margin-bottom: 25px; }
         button:hover:not(:disabled) { background: var(--gold); color: black; box-shadow: 0 0 15px var(--gold); }
         button:disabled { border-color: #555; color: #555; cursor: not-allowed; }
         
-        /* ТЕРМИНАЛ ЗАГРУЗКИ */
+        /* УВЕЛИЧЕННЫЙ ТЕРМИНАЛ ЗАГРУЗКИ */
         #terminal { 
-            width: 80%; max-width: 600px; height: 180px; background: rgba(10, 15, 20, 0.9); 
-            border: 1px solid #333; border-radius: 8px; padding: 15px; 
-            text-align: left; font-family: monospace; font-size: 14px; 
-            color: var(--terminal-green); overflow: hidden; box-shadow: inset 0 0 10px #000;
+            width: 90%; max-width: 800px; height: 320px; background: rgba(10, 15, 20, 0.95); 
+            border: 2px solid #333; border-radius: 8px; padding: 25px; 
+            text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 1.2rem; 
+            color: var(--terminal-green); overflow-y: auto; box-shadow: inset 0 0 20px #000, 0 0 15px rgba(74, 246, 38, 0.1);
+            line-height: 1.6;
         }
+        #terminal::-webkit-scrollbar { width: 8px; }
+        #terminal::-webkit-scrollbar-track { background: #111; }
+        #terminal::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
         .log-line { margin-bottom: 8px; opacity: 0; animation: typeLine 0.1s forwards; text-shadow: 0 0 5px var(--terminal-green); }
         @keyframes typeLine { to { opacity: 1; } }
-        .log-warn { color: #e5c07b; text-shadow: 0 0 5px #e5c07b; }
-        .log-err { color: var(--red); text-shadow: 0 0 5px var(--red); }
+        .log-warn { color: #e5c07b; text-shadow: 0 0 5px #e5c07b; font-weight: bold; }
+        .log-err { color: var(--red); text-shadow: 0 0 5px var(--red); font-weight: bold; }
 
-        /* ТРОПА */
+        /* ТРОПА И ФЛАЖКИ */
         .lane-container { position: fixed; bottom: 50px; left: 10%; width: 80%; height: 120px; z-index: 50; display: flex; align-items: center; justify-content: space-between; }
         .lane-line { position: absolute; width: 100%; height: 10px; background: #1a1a1a; top: 50%; z-index: 1; border-radius: 5px; border: 1px solid #333; box-shadow: inset 0 2px 5px #000; }
         
-        /* ФЛАЖКИ */
         .checkpoint { width: 8px; height: 40px; background: #444; z-index: 2; transition: 0.3s; position: relative; border-radius: 2px; }
         .checkpoint::before { content: ''; position: absolute; top: -14px; left: 0; width: 22px; height: 14px; background: var(--red); display: none; clip-path: polygon(0 0, 100% 50%, 0 100%); }
         .checkpoint.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
         .checkpoint.active::before { display: block; }
         
-        /* КРАСИВЫЙ ЗАМОЧЕК */
-        .lock { width: 34px; height: 26px; background: #e5c07b; border-radius: 6px; position: relative; box-shadow: 0 0 15px var(--gold); margin-left: auto; z-index: 2; display: flex; justify-content: center; align-items: center; }
-        .lock::before { content: ''; position: absolute; width: 16px; height: 18px; border: 5px solid #e5c07b; border-bottom: none; border-radius: 12px 12px 0 0; top: -18px; left: 4px; box-sizing: border-box; }
+        /* СИММЕТРИЧНЫЙ ЗАМОК */
+        .lock { width: 34px; height: 26px; background: #e5c07b; border-radius: 6px; position: relative; box-shadow: 0 0 15px var(--gold); z-index: 2; display: flex; justify-content: center; align-items: center; }
+        .lock::before { content: ''; position: absolute; width: 18px; height: 16px; border: 5px solid #e5c07b; border-bottom: none; border-radius: 14px 14px 0 0; top: -16px; left: 50%; transform: translateX(-50%); box-sizing: border-box; }
         .lock::after { content: ''; width: 6px; height: 10px; background: #0d1117; border-radius: 3px; }
 
         /* АВАТАРЫ */
@@ -79,7 +83,7 @@
         /* ФОТО */
         .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; will-change: transform, top, left; }
         
-        /* КОНТЕНТ */
+        /* КОНТЕНТ В ЦЕНТРЕ */
         .content { 
             position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); 
             z-index: 10; width: 90%; max-width: 800px; 
@@ -87,13 +91,15 @@
         }
         h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; font-size: 2.8rem; padding-bottom: 15px; }
         
+        /* ОКОШКО ВОПРОСА (ВИЗУАЛИЗАТОР) */
         .step { 
             background: rgba(0, 0, 0, 0.9); padding: 40px; 
             border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
-            display: none; transition: box-shadow 0.1s ease; /* Для плавности визуализатора */
+            display: none; transform-origin: center center;
+            transition: box-shadow 0.1s ease, transform 0.1s ease, border-color 0.1s ease; 
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         
         .step p { font-size: 1.8rem; margin-bottom: 30px; color: #fff; line-height: 1.4; }
         
@@ -115,6 +121,22 @@
         .shake { animation: shake 0.4s; border-color: var(--red) !important; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 50% {transform: translateX(10px);} 75% {transform: translateX(-10px);} }
         
+        /* KILL FEED (СМЕШНЫЕ ВСТАВКИ) */
+        .kill-feed {
+            position: fixed; z-index: 1000; font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: bold;
+            color: white; text-shadow: 2px 2px 5px black, 0 0 10px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.7); border-left: 5px solid var(--red);
+            padding: 12px 25px; border-radius: 4px; pointer-events: none; opacity: 0;
+            animation: killFeedAnim 5s ease-in-out forwards;
+        }
+        @keyframes killFeedAnim {
+            0% { opacity: 0; transform: translateY(30px) scale(0.8); }
+            10% { opacity: 1; transform: translateY(0) scale(1.1); }
+            15% { transform: scale(1); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-30px); }
+        }
+
         /* МЕДИА */
         .reveal-media { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
@@ -123,7 +145,6 @@
             background-color: #000; object-fit: contain; pointer-events: none;
         }
         .reveal-media.expanded { width: 100vw; height: 100vh; opacity: 1; }
-
         @keyframes moveLR { from { left: -600px; transform: rotate(-5deg); } to { left: 110vw; transform: rotate(5deg); } }
         @keyframes moveTB { from { top: -600px; transform: rotate(-5deg); } to { top: 110vh; transform: rotate(5deg); } }
         @keyframes moveRL { from { left: 110vw; transform: rotate(5deg); } to { left: -600px; transform: rotate(-5deg); } }
@@ -135,12 +156,13 @@
     <div id="start-overlay">
         <div class="overlay-content">
             <h1>Congrats Илья and Алиса<br>happy birthday</h1>
-            <button id="start-btn" disabled onclick="startExperience()">Вперед (30)</button>
+            <!-- ТАЙМЕР ИЗМЕНЕН НА 60 СЕКУНД -->
+            <button id="start-btn" disabled onclick="startExperience()">Вперед (60)</button>
             <div id="terminal"></div>
         </div>
     </div>
 
-    <!-- УБРАН crossorigin, ТЕПЕРЬ ВИЗУАЛИЗАТОР РАБОТАЕТ! -->
+    <!-- МУЗЫКА (АВТОМАТИЧЕСКИ НЕ ИГРАЕТ ДО НАЖАТИЯ КНОПКИ) -->
     <audio id="audio" preload="auto"></audio>
     
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
@@ -154,7 +176,7 @@
         <div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
         <div class="checkpoint"></div>
         
-        <!-- КРАСИВЫЙ ЗАМОЧЕК -->
+        <!-- КРАСИВЫЙ ЗАМОК -->
         <div class="lock"></div>
         
         <div class="avatar ilya" id="avatar-ilya" style="left: 0%;">
@@ -173,39 +195,47 @@
     </div>
 
     <script>
-        // ЛОГИКА ТЕРМИНАЛА С ШУТКАМИ 
+        // ЛОГИКА ТЕРМИНАЛА С ШУТКАМИ НА 60 СЕКУНД
         const terminalLogs = [
             "[SYS] Инициализация тайного лобби...",
             "[SYS] Подключение к серверам Dota 2...",
-            "<span class='log-err'>[ERROR] Илья снова ферст-пикнул Techies. Команда в шоке.</span>",
-            "[WAIT] Расстановка мин по всему лесу. Просьба подождать...",
+            "<span class='log-err'>[ERROR] Илья снова ферст-пикнул Techies. Команда пишет 'GG' до выхода крипов.</span>",
+            "[WAIT] Расстановка мин по всему лесу. Лесник плачет в углу...",
             "<span class='log-warn'>[OK] Алиса взяла Witch Doctor. Ситуация под контролем.</span>",
-            "[WAIT] Брошен кокос! Летит... летит... отскок в крипа.",
-            "[SYS] Оооояяяяя! Загрузка касочек...",
-            "<span class='log-err'>[ERROR] Илья заминировал Рошпит. Сервер лагает.</span>",
-            "[OK] Покупка вардов (хотя зачем они на 2к ММР?)...",
-            "[SYS] Синхронизация воспоминаний 2024 года...",
-            "<span class='log-warn'>[OK] Все файлы загружены. Защита активна. Можно начинать!</span>"
+            "[WAIT] Брошен кокос! Летит... летит... отскок в лесного крипа. Классика.",
+            "[SYS] Оооояяяяя! Загрузка касочек... Эффективность хила 146%.",
+            "<span class='log-err'>[ERROR] Илья заминировал Рошпит. Сервер лагает от количества бочек.</span>",
+            "[SYS] Поиск команды... Найдены 4 подпиваса.",
+            "[WAIT] Алиса ставит Death Ward (WUB WUB WUB). Раздаются крики врагов.",
+            "<span class='log-warn'>[INFO] Илья делает суицид (Blast Off!) в толпу. Никто не умер, но было эффектно.</span>",
+            "[SYS] Покупка вардов... Ошибка: саппорты покупают Аганим.",
+            "[OK] Подключение к голосовому чату. Обнаружены неадекваты. Мут всех.",
+            "[WAIT] Алиса хилит команду... Команда с криками убегает от хила.",
+            "<span class='log-err'>[ERROR] Минёр в команде = игра на 2 часа. Заказывайте пиццу.</span>",
+            "[SYS] Вражеский керри наступил на красную мину. Минус нервы.",
+            "[SYS] Синхронизация общих воспоминаний...",
+            "<span class='log-warn'>[OK] Проверка файлов завершена. Защита активна.</span>",
+            "<span class='log-warn'>[SYS] Готовность 100%. Нажмите ВПЕРЕД, чтобы начать.</span>"
         ];
         
         const terminal = document.getElementById('terminal');
         let logIndex = 0;
-        // Шутки печатаются каждые 2.7 секунды, чтобы как раз уложиться в 30 сек
+        // Шутки печатаются каждые 3.1 секунды (как раз хватает на 60 секунд)
         const logTimer = setInterval(() => {
             if (logIndex < terminalLogs.length) {
                 const line = document.createElement('div');
                 line.className = 'log-line';
                 line.innerHTML = terminalLogs[logIndex];
                 terminal.appendChild(line);
-                terminal.scrollTop = terminal.scrollHeight; // Автоскролл вниз
+                terminal.scrollTop = terminal.scrollHeight;
                 logIndex++;
             } else {
                 clearInterval(logTimer);
             }
-        }, 2700);
+        }, 3100);
 
-        // ТАЙМЕР ЗАГРУЗКИ 30 СЕКУНД
-        let timeLeft = 30;
+        // ТАЙМЕР ЗАГРУЗКИ 60 СЕКУНД
+        let timeLeft = 60;
         const startBtn = document.getElementById('start-btn');
         const timerInterval = setInterval(() => {
             timeLeft--;
@@ -218,18 +248,42 @@
             }
         }, 1000);
 
+        // ЛОГИКА KILL FEED (СМЕШНЫЕ ВСТАВКИ)
+        const killFeedTexts = [
+            "<span style='color: #c23c2a;'>FIRST BLOOD!</span> Алиса застилила фраг у керри.",
+            "<span style='color: #e5c07b;'>DOUBLE KILL!</span> Илья подорвал курьера с чужими шмотками.",
+            "<span style='color: #c23c2a;'>TRIPLE KILL!</span> Кокос Алисы бесконечно скачет по троим.",
+            "<span style='color: #ff00ff;'>RAMPAGE!</span> Илья заминировал фонтан и взорвал всю команду!",
+            "<span style='color: #ffaa00;'>GODLIKE!</span> Алиса выхилила тимейта с 1 ХП.",
+            "<span style='color: #00ffff;'>HOLY SHIT!</span> Илья купил Рапиру на Минёра!",
+            "<span style='color: #c23c2a;'>OWNAGE!</span> Враги ливнули из-за мин в лесу."
+        ];
+
+        function spawnKillFeed() {
+            const text = killFeedTexts[Math.floor(Math.random() * killFeedTexts.length)];
+            const feed = document.createElement('div');
+            feed.className = 'kill-feed';
+            feed.innerHTML = text;
+            
+            // Рандомная позиция на экране
+            feed.style.top = (Math.random() * 70 + 10) + 'vh';
+            feed.style.left = (Math.random() * 60 + 10) + 'vw';
+            
+            document.body.appendChild(feed);
+            
+            // Удаляем элемент после завершения анимации
+            feed.addEventListener('animationend', () => feed.remove());
+        }
+
         const audio = document.getElementById('audio');
         const playlist = ["Nickelback.mp3", "Gorillaz.mp3", "Bodies.mp3", "ak47.mp3", "paparoach.mp3"];
         let currentTrack = 0;
         let currentStep = 1;
         let isSpecialAudioPlaying = false; 
 
-        // ПЕРЕМЕННЫЕ ДЛЯ АУДИО ВИЗУАЛИЗАЦИИ
         let audioCtx;
         let analyser;
         let dataArray;
-
-        // ПЕРЕМЕННЫЕ ДЛЯ ФОТО (СНАЧАЛА 1..31, ПОТОМ РАНДОМ)
         let currentPhotoIndex = 1;
         let isRandomPhotos = false;
 
@@ -286,18 +340,15 @@
             quizArea.appendChild(stepDiv);
         });
 
-        // СПАВН ФОТОГРАФИЙ
         function spawnPhoto() {
             let i;
-            // Пока не дошли до 31, выдаем по порядку
             if (!isRandomPhotos) {
                 i = currentPhotoIndex;
                 currentPhotoIndex++;
                 if (currentPhotoIndex > 31) {
-                    isRandomPhotos = true; // Дальше пойдет рандом
+                    isRandomPhotos = true; 
                 }
             } else {
-                // Рандом от 1 до 31
                 i = Math.floor(Math.random() * 31) + 1;
             }
 
@@ -320,7 +371,6 @@
             img.addEventListener('animationend', () => img.remove());
         }
 
-        // АУДИО ВИЗУАЛИЗАТОР (ПОЧИНЕН!)
         function initVisualizer() {
             if (audioCtx) return; 
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -346,27 +396,32 @@
             let bassAvg = bassSum / 15; 
 
             const activeStep = document.querySelector('.step.active');
-            const inputField = activeStep ? activeStep.querySelector('input') : null;
 
             if (activeStep) {
                 if (bassAvg < 10) {
-                    activeStep.style.boxShadow = `0 0 20px rgba(0,0,0,0.8)`;
+                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.8)`;
+                    activeStep.style.transform = `scale(1)`;
+                    activeStep.style.borderColor = `#444`;
                 } else {
-                    const glow = 15 + (bassAvg / 2); 
-                    const spread = bassAvg / 20;     
-                    const alpha = Math.min(0.8, 0.2 + (bassAvg / 255)); 
+                    const glow = 20 + (bassAvg); 
+                    const spread = bassAvg / 6;     
+                    const alpha = Math.min(0.9, 0.3 + (bassAvg / 255)); 
+                    const scale = 1 + (bassAvg / 4000); 
                     
                     activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.9), 0 0 ${glow}px ${spread}px rgba(229, 192, 123, ${alpha})`;
+                    activeStep.style.transform = `scale(${scale})`;
+                    activeStep.style.borderColor = `rgba(229, 192, 123, ${alpha})`;
                 }
             }
         }
 
         function startExperience() {
+            // КЛИК ПО КНОПКЕ "ВПЕРЕД" ЗАПУСКАЕТ ВСЕ:
+            
             audio.volume = 0.15;
             audio.src = playlist[currentTrack];
-            audio.play();
+            audio.play(); // Музыка заиграла!
             
-            // Инициализация визуализатора после клика
             initVisualizer();
 
             document.getElementById('start-overlay').style.display = 'none';
@@ -374,8 +429,10 @@
             
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
-            // Спавним фотки
             setInterval(spawnPhoto, 2000); 
+            
+            // ЗАПУСКАЕМ КИЛЛ ФИД (шутки всплывают каждые 7 секунд)
+            setInterval(spawnKillFeed, 7000);
         }
 
         async function checkAnswer(step) {
