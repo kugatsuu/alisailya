@@ -23,7 +23,7 @@
         button:hover:not(:disabled) { background: var(--gold); color: black; box-shadow: 0 0 15px var(--gold); }
         button:disabled { border-color: #555; color: #555; cursor: not-allowed; }
         
-        /* УВЕЛИЧЕННЫЙ ТЕРМИНАЛ ЗАГРУЗКИ */
+        /* ТЕРМИНАЛ ЗАГРУЗКИ */
         #terminal { 
             width: 90%; max-width: 800px; height: 320px; background: rgba(10, 15, 20, 0.95); 
             border: 2px solid #333; border-radius: 8px; padding: 25px; 
@@ -89,14 +89,13 @@
             z-index: 10; width: 90%; max-width: 800px; 
             text-align: center; display: none; 
         }
-        h1 { font-family: 'Cinzel', serif; color: var(--gold); text-align: center; border-bottom: 2px solid var(--red); margin-top: 0; font-size: 2.8rem; padding-bottom: 15px; }
         
-        /* ОКОШКО ВОПРОСА (ВИЗУАЛИЗАТОР) */
+        /* УЛУЧШЕННЫЙ АУДИО ВИЗУАЛИЗАТОР (Очень быстрый отклик) */
         .step { 
             background: rgba(0, 0, 0, 0.9); padding: 40px; 
             border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
             display: none; transform-origin: center center;
-            transition: box-shadow 0.1s ease, transform 0.1s ease, border-color 0.1s ease; 
+            transition: box-shadow 0.05s ease, transform 0.05s ease, border-color 0.05s ease; 
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -156,13 +155,12 @@
     <div id="start-overlay">
         <div class="overlay-content">
             <h1>Congrats Илья and Алиса<br>happy birthday</h1>
-            <!-- ТАЙМЕР ИЗМЕНЕН НА 60 СЕКУНД -->
             <button id="start-btn" disabled onclick="startExperience()">Вперед (60)</button>
             <div id="terminal"></div>
         </div>
     </div>
 
-    <!-- МУЗЫКА (АВТОМАТИЧЕСКИ НЕ ИГРАЕТ ДО НАЖАТИЯ КНОПКИ) -->
+    <!-- МУЗЫКА -->
     <audio id="audio" preload="auto"></audio>
     
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
@@ -190,12 +188,12 @@
     </div>
 
     <div class="content" id="main-content">
-        <h1>Тайная Лавка</h1>
+        <!-- УБРАНА НАДПИСЬ ТАЙНАЯ ЛАВКА -->
         <div id="quiz-area"></div>
     </div>
 
     <script>
-        // ЛОГИКА ТЕРМИНАЛА С ШУТКАМИ НА 60 СЕКУНД
+        // ЛОГИКА ТЕРМИНАЛА 
         const terminalLogs = [
             "[SYS] Инициализация тайного лобби...",
             "[SYS] Подключение к серверам Dota 2...",
@@ -220,7 +218,6 @@
         
         const terminal = document.getElementById('terminal');
         let logIndex = 0;
-        // Шутки печатаются каждые 3.1 секунды (как раз хватает на 60 секунд)
         const logTimer = setInterval(() => {
             if (logIndex < terminalLogs.length) {
                 const line = document.createElement('div');
@@ -248,7 +245,7 @@
             }
         }, 1000);
 
-        // ЛОГИКА KILL FEED (СМЕШНЫЕ ВСТАВКИ)
+        // ЛОГИКА KILL FEED (НЕ ПЕРЕКРЫВАЕТ ЦЕНТР)
         const killFeedTexts = [
             "<span style='color: #c23c2a;'>FIRST BLOOD!</span> Алиса застилила фраг у керри.",
             "<span style='color: #e5c07b;'>DOUBLE KILL!</span> Илья подорвал курьера с чужими шмотками.",
@@ -265,13 +262,28 @@
             feed.className = 'kill-feed';
             feed.innerHTML = text;
             
-            // Рандомная позиция на экране
-            feed.style.top = (Math.random() * 70 + 10) + 'vh';
-            feed.style.left = (Math.random() * 60 + 10) + 'vw';
+            // Расчет БЕЗОПАСНЫХ зон (Верх, Низ, Лево, Право), чтобы не лезло на вопросы
+            const zone = Math.floor(Math.random() * 4);
+            let topPos, leftPos;
+            
+            if (zone === 0) { // Верх
+                topPos = Math.random() * 10 + 5; 
+                leftPos = Math.random() * 60 + 10; 
+            } else if (zone === 1) { // Низ
+                topPos = Math.random() * 10 + 80; 
+                leftPos = Math.random() * 60 + 10; 
+            } else if (zone === 2) { // Лево
+                topPos = Math.random() * 50 + 20; 
+                leftPos = Math.random() * 10 + 5; 
+            } else { // Право
+                topPos = Math.random() * 50 + 20; 
+                leftPos = Math.random() * 10 + 75; 
+            }
+            
+            feed.style.top = topPos + 'vh';
+            feed.style.left = leftPos + 'vw';
             
             document.body.appendChild(feed);
-            
-            // Удаляем элемент после завершения анимации
             feed.addEventListener('animationend', () => feed.remove());
         }
 
@@ -311,10 +323,11 @@
         let animDirection = 0;
         setInterval(() => { animDirection = (animDirection + 1) % 4; }, 10000); 
 
+        // ИСПРАВЛЕН ВОПРОС ПРО АНТОНА
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия", "настя", "настена"] },
             { q: "Как ты обычно с нами здороваешься, когда заходишь?", a: ["привет", "привет ребята", "привет, ребята"] },
-            { q: "В каком году был первый матч мой с Алисой?", a: ["2024"] },
+            { q: "В каком году был первый матч Антона с Алисой?", a: ["2024"] },
             { q: "Вопрос 4", a: ["ответ4"] },
             { q: "Вопрос 5", a: ["ответ5"] },
             { q: "Вопрос 6", a: ["ответ6"] },
@@ -371,6 +384,7 @@
             img.addEventListener('animationend', () => img.remove());
         }
 
+        // КРАСИВЫЙ МНОГОСЛОЙНЫЙ АУДИО ВИЗУАЛИЗАТОР
         function initVisualizer() {
             if (audioCtx) return; 
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -403,24 +417,29 @@
                     activeStep.style.transform = `scale(1)`;
                     activeStep.style.borderColor = `#444`;
                 } else {
-                    const glow = 20 + (bassAvg); 
-                    const spread = bassAvg / 6;     
-                    const alpha = Math.min(0.9, 0.3 + (bassAvg / 255)); 
-                    const scale = 1 + (bassAvg / 4000); 
+                    const bassIntensity = bassAvg / 255; 
+                    const glow1 = 15 + (bassIntensity * 25); 
+                    const glow2 = 30 + (bassIntensity * 50);
+                    const alpha = 0.4 + (bassIntensity * 0.6); 
+                    const scale = 1 + (bassIntensity * 0.04); 
                     
-                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.9), 0 0 ${glow}px ${spread}px rgba(229, 192, 123, ${alpha})`;
+                    // Сложный тройной неон + внутреннее свечение
+                    activeStep.style.boxShadow = `
+                        0 0 30px rgba(0,0,0,0.9), 
+                        0 0 ${glow1}px rgba(229, 192, 123, ${alpha}), 
+                        0 0 ${glow2}px rgba(194, 60, 42, ${alpha * 0.5}),
+                        inset 0 0 ${glow1 / 2}px rgba(229, 192, 123, ${alpha * 0.3})
+                    `;
                     activeStep.style.transform = `scale(${scale})`;
-                    activeStep.style.borderColor = `rgba(229, 192, 123, ${alpha})`;
+                    activeStep.style.borderColor = `rgba(229, 192, 123, ${0.5 + bassIntensity})`;
                 }
             }
         }
 
         function startExperience() {
-            // КЛИК ПО КНОПКЕ "ВПЕРЕД" ЗАПУСКАЕТ ВСЕ:
-            
             audio.volume = 0.15;
             audio.src = playlist[currentTrack];
-            audio.play(); // Музыка заиграла!
+            audio.play(); 
             
             initVisualizer();
 
@@ -430,8 +449,6 @@
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
             setInterval(spawnPhoto, 2000); 
-            
-            // ЗАПУСКАЕМ КИЛЛ ФИД (шутки всплывают каждые 7 секунд)
             setInterval(spawnKillFeed, 7000);
         }
 
@@ -458,10 +475,18 @@
                     const media = document.getElementById('reveal-img-2'); 
                     media.style.display = 'block'; setTimeout(() => media.classList.add('expanded'), 50);
                     quote2.play();
-                    quote2.onended = () => { 
-                        media.classList.remove('expanded'); media.style.display = 'none'; 
-                        audio.volume = 0.15; audio.play(); isSpecialAudioPlaying = false; nextStep(); 
-                    };
+                    
+                    // РОВНО 4 СЕКУНДЫ
+                    setTimeout(() => { 
+                        quote2.pause();
+                        quote2.currentTime = 0;
+                        media.classList.remove('expanded'); 
+                        media.style.display = 'none'; 
+                        audio.volume = 0.15; 
+                        audio.play(); 
+                        isSpecialAudioPlaying = false; 
+                        nextStep(); 
+                    }, 4000);
                 } 
                 else if (step === 3) {
                     isSpecialAudioPlaying = true; audio.pause(); 
