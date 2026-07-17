@@ -10,14 +10,15 @@
 
         #start-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: center; }
         .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); }
+        
         button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 20px 60px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
-        button:hover { background: var(--gold); color: black; }
+        button:hover:not(:disabled) { background: var(--gold); color: black; box-shadow: 0 0 15px var(--gold); }
+        button:disabled { border-color: #555; color: #555; cursor: not-allowed; }
+        
+        #loading-text { font-family: 'Roboto', sans-serif; font-size: 1.2rem; color: #888; margin-top: 25px; transition: color 0.5s; text-shadow: 1px 1px 2px #000; }
 
-        /* ТРОПА - ИДЕАЛЬНОЕ РАСПРЕДЕЛЕНИЕ */
-        .lane-container { 
-            position: fixed; bottom: 50px; left: 10%; width: 80%; height: 120px; z-index: 50; 
-            display: flex; align-items: center; justify-content: space-between; 
-        }
+        /* ТРОПА */
+        .lane-container { position: fixed; bottom: 50px; left: 10%; width: 80%; height: 120px; z-index: 50; display: flex; align-items: center; justify-content: space-between; }
         .lane-line { position: absolute; width: 100%; height: 10px; background: #1a1a1a; top: 50%; z-index: 1; border-radius: 5px; border: 1px solid #333; box-shadow: inset 0 2px 5px #000; }
         
         /* ФЛАЖКИ */
@@ -26,34 +27,35 @@
         .checkpoint.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
         .checkpoint.active::before { display: block; }
         
-        /* ANCIENT (Замок) */
         .ancient { width: 50px; height: 50px; background: #e5c07b; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); box-shadow: 0 0 25px var(--gold); z-index: 2; }
 
         /* АВАТАРЫ */
         .avatar { 
             position: absolute; width: 45px; height: 45px; border: 2px solid var(--gold); 
-            z-index: 10; transition: left 0.8s ease-in-out;
+            z-index: 10; transition: left 0.8s ease-in-out, transform 0.3s;
             display: flex; align-items: center; justify-content: center; 
             font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000;
             border-radius: 4px; cursor: help; box-shadow: 0 0 10px rgba(0,0,0,0.5);
             text-align: center; padding: 2px;
         }
+        .avatar:hover { transform: scale(1.1); z-index: 11; }
         
-        /* УВЕЛИЧЕННЫЕ ИНФО-ОКНА (TOOLTIPS) */
+        /* TOOLTIPS */
         .tooltip { 
-            visibility: hidden; width: 450px; /* Увеличено в 2.5-3 раза */
+            visibility: hidden; width: 450px; max-width: 80vw;
             background-color: rgba(0,0,0,0.95); color: #fff; text-align: center; 
             border-radius: 12px; padding: 25px; position: absolute; z-index: 100; 
-            bottom: 140%; left: 50%; margin-left: -225px; /* Выравнивание по центру новой ширины */
+            bottom: 140%; left: 50%; transform: translateX(-50%);
             font-size: 20px; border: 2px solid var(--gold); line-height: 1.5; 
-            box-shadow: 0 0 20px var(--gold); 
+            box-shadow: 0 0 20px var(--gold); opacity: 0; transition: opacity 0.3s;
         }
-        .avatar:hover .tooltip { visibility: visible; }
+        .avatar:hover .tooltip { visibility: visible; opacity: 1; }
         
         .ilya { background-color: #a33; top: 0px; }
         .alice { background-color: #337ab7; top: 60px; }
 
-        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
+        /* ОПТИМИЗАЦИЯ ФОТО */
+        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; will-change: transform, top, left; }
         
         /* КОНТЕНТ */
         .content { 
@@ -68,35 +70,41 @@
             border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
             display: none; box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
-        .step.active { display: block; }
+        .step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* ТЕКСТ ВОПРОСА */
         .step p { font-size: 1.8rem; margin-bottom: 30px; color: #fff; line-height: 1.4; }
         
-        /* ПОЛЕ И КНОПКА */
+        /* ПОЛЕ ВВОДА (С фокусом) */
         input { 
-            width: 100%; padding: 18px; background: #111; border: 2px solid var(--gold); 
+            width: 100%; padding: 18px; background: #111; border: 2px solid #444; 
             color: white; border-radius: 8px; margin-bottom: 25px; 
-            font-size: 1.5rem; text-align: center; box-sizing: border-box;
+            font-size: 1.5rem; text-align: center; box-sizing: border-box; transition: 0.3s;
         }
+        input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 15px rgba(229, 192, 123, 0.5); }
+        input::placeholder { color: #666; }
+        
+        /* КНОПКА */
         .submit-btn { 
             width: 100%; padding: 18px; background: var(--red); color: white; border: none; 
             cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.5rem; 
             border-radius: 8px; transition: 0.3s;
         }
         .submit-btn:hover { background: var(--gold); color: black; transform: scale(1.02); }
+
+        /* ТРЯСКА ПРИ ОШИБКЕ */
+        .shake { animation: shake 0.4s; border-color: var(--red) !important; }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 50% {transform: translateX(10px);} 75% {transform: translateX(-10px);} }
         
-        /* АНИМАЦИИ ДЛЯ КАРТИНОК И ВИДЕО */
-        #reveal-img, #reveal-vid { 
+        /* МЕДИА */
+        .reveal-media { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             width: 100px; height: 100px; z-index: 10000; opacity: 0; 
             transition: all 2s ease-in-out; border: 5px solid var(--gold); display: none; 
-            background-color: #000;
+            background-color: #000; object-fit: contain; pointer-events: none;
         }
-        #reveal-vid { object-fit: contain; } /* Чтобы видео не искажалось */
-        #reveal-img.expanded, #reveal-vid.expanded { width: 100vw; height: 100vh; opacity: 1; }
+        .reveal-media.expanded { width: 100vw; height: 100vh; opacity: 1; }
 
-        /* 4 НАПРАВЛЕНИЯ АНИМАЦИИ */
         @keyframes moveLR { from { left: -600px; transform: rotate(-5deg); } to { left: 110vw; transform: rotate(5deg); } }
         @keyframes moveTB { from { top: -600px; transform: rotate(-5deg); } to { top: 110vh; transform: rotate(5deg); } }
         @keyframes moveRL { from { left: 110vw; transform: rotate(5deg); } to { left: -600px; transform: rotate(-5deg); } }
@@ -108,16 +116,15 @@
     <div id="start-overlay">
         <div class="overlay-content">
             <h1>Congrats Илья and Алиса<br>happy birthday</h1>
-            <button onclick="startExperience()">Вперед</button>
+            <button id="start-btn" disabled onclick="startExperience()">Вперед (15)</button>
+            <p id="loading-text">Подождите пожалуйста несколько секунд, чтобы контент прогрузился для лучшего опыта.</p>
         </div>
     </div>
 
-    <!-- Аудио для фона -->
     <audio id="audio"></audio>
-    <!-- Картинка-сюрприз -->
-    <img id="reveal-img" src="">
-    <!-- Видео-сюрприз для 3 вопроса -->
-    <video id="reveal-vid" src="bu.mp4"></video>
+    <img id="reveal-img-1" class="reveal-media" src="a1.jpg">
+    <img id="reveal-img-2" class="reveal-media" src="a2.jpg">
+    <video id="reveal-vid-3" class="reveal-media" src="bu.mp4"></video>
 
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
@@ -143,54 +150,55 @@
     </div>
 
     <script>
+        // ТАЙМЕР ЗАГРУЗКИ
+        let timeLeft = 15;
+        const startBtn = document.getElementById('start-btn');
+        const loadText = document.getElementById('loading-text');
+
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            startBtn.innerText = `Вперед (${timeLeft})`;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                startBtn.disabled = false;
+                startBtn.innerText = "Вперед";
+                loadText.innerText = "Контент загружен. Можно начинать!";
+                loadText.style.color = "var(--gold)";
+            }
+        }, 1000);
+
         const audio = document.getElementById('audio');
-        // Плейлист расширен
         const playlist = ["Nickelback.mp3", "Gorillaz.mp3", "Bodies.mp3", "ak47.mp3", "paparoach.mp3"];
         let currentTrack = 0;
         let currentStep = 1;
         let isSpecialAudioPlaying = false; 
 
-        // Функция плавной смены трека
         function changeTrackWithFade() {
             if (isSpecialAudioPlaying) return; 
-            
             let fadeOut = setInterval(() => {
-                if (audio.volume > 0.02) {
-                    audio.volume -= 0.02;
-                } else {
+                if (audio.volume > 0.02) { audio.volume -= 0.02; } 
+                else {
                     audio.volume = 0;
                     clearInterval(fadeOut);
-                    
-                    // Меняем песню
                     currentTrack = (currentTrack + 1) % playlist.length;
                     audio.src = playlist[currentTrack];
                     audio.play();
-                    
-                    // Плавно повышаем громкость
                     let fadeIn = setInterval(() => {
-                        if (audio.volume < 0.13) {
-                            audio.volume += 0.02;
-                        } else {
-                            audio.volume = 0.15;
-                            clearInterval(fadeIn);
-                        }
+                        if (audio.volume < 0.13) { audio.volume += 0.02; } 
+                        else { audio.volume = 0.15; clearInterval(fadeIn); }
                     }, 100);
                 }
             }, 100);
         }
 
-        // Смена трека каждую 1 минуту
         setInterval(changeTrackWithFade, 60000);
         audio.addEventListener('ended', changeTrackWithFade);
 
-        // СМЕНА НАПРАВЛЕНИЙ ФОТОГРАФИЙ
         let animDirection = 0;
-        setInterval(() => {
-            animDirection = (animDirection + 1) % 4;
-        }, 10000); 
+        setInterval(() => { animDirection = (animDirection + 1) % 4; }, 10000); 
 
         const quizData = [
-            { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
+            { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия", "настя", "настена"] },
             { q: "Как ты обычно с нами здороваешься, когда заходишь?", a: ["привет", "привет ребята", "привет, ребята"] },
             { q: "В каком году был первый матч мой с Алисой?", a: ["2024"] },
             { q: "Вопрос 4", a: ["ответ4"] },
@@ -208,7 +216,14 @@
             stepDiv.className = 'step';
             stepDiv.id = 'step' + (index + 1);
             if(index === 0) stepDiv.classList.add('active');
-            stepDiv.innerHTML = `<p>${item.q}</p><input type="text" id="answer${index + 1}" placeholder="Ответ..." autofocus><button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>`;
+            
+            // ДОБАВЛЕНА ПОДДЕРЖКА КЛАВИШИ ENTER В input (onkeydown)
+            stepDiv.innerHTML = `
+                <p>${item.q}</p>
+                <input type="text" id="answer${index + 1}" placeholder="Ваш ответ..." 
+                       onkeydown="if(event.key === 'Enter') checkAnswer(${index + 1})" autofocus>
+                <button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>
+            `;
             quizArea.appendChild(stepDiv);
         });
 
@@ -217,32 +232,19 @@
             const img = document.createElement('img');
             img.src = `p${i}.jpg`;
             img.className = 'falling-photo';
-            
             img.style.width = (Math.floor(Math.random() * 400) + 300) + 'px'; 
             
             let animName = '';
-            
-            if (animDirection === 0) { 
-                img.style.top = (Math.random() * 80) + 'vh';
-                animName = 'moveLR';
-            } else if (animDirection === 1) { 
-                img.style.left = (Math.random() * 90) + 'vw';
-                animName = 'moveTB';
-            } else if (animDirection === 2) { 
-                img.style.top = (Math.random() * 80) + 'vh';
-                animName = 'moveRL';
-            } else if (animDirection === 3) { 
-                img.style.left = (Math.random() * 90) + 'vw';
-                animName = 'moveBT';
-            }
+            if (animDirection === 0) { img.style.top = (Math.random() * 80) + 'vh'; animName = 'moveLR'; } 
+            else if (animDirection === 1) { img.style.left = (Math.random() * 90) + 'vw'; animName = 'moveTB'; } 
+            else if (animDirection === 2) { img.style.top = (Math.random() * 80) + 'vh'; animName = 'moveRL'; } 
+            else if (animDirection === 3) { img.style.left = (Math.random() * 90) + 'vw'; animName = 'moveBT'; }
 
             document.body.appendChild(img);
-            
             setTimeout(() => {
                 img.style.animation = `${animName} ${Math.random() * 6 + 6}s linear`;
                 img.style.opacity = '0.5'; 
             }, 50);
-            
             img.addEventListener('animationend', () => img.remove());
         }
 
@@ -252,84 +254,58 @@
             audio.play();
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
+            
+            // Ставим фокус на первое поле ввода
+            setTimeout(() => document.getElementById('answer1').focus(), 100);
+            
             setInterval(spawnPhoto, 2000); 
         }
 
         async function checkAnswer(step) {
-            const val = document.getElementById('answer' + step).value.toLowerCase().trim();
+            const inputField = document.getElementById('answer' + step);
+            const val = inputField.value.toLowerCase().trim();
+            
             if (quizData[step-1].a.includes(val)) {
                 
                 if (step === 1) {
-                    isSpecialAudioPlaying = true;
-                    audio.pause();
-                    
+                    isSpecialAudioPlaying = true; audio.pause();
                     const quote = new Audio('gol.mp3');
-                    const img = document.getElementById('reveal-img');
-                    img.src = 'a1.jpg';
-                    img.style.display = 'block';
-                    
-                    setTimeout(() => img.classList.add('expanded'), 50);
+                    const media = document.getElementById('reveal-img-1'); 
+                    media.style.display = 'block'; setTimeout(() => media.classList.add('expanded'), 50);
                     quote.play();
-                    
                     quote.onended = () => { 
-                        img.classList.remove('expanded'); 
-                        img.style.display = 'none'; 
-                        audio.volume = 0.15;
-                        audio.play(); 
-                        isSpecialAudioPlaying = false; 
-                        nextStep(); 
+                        media.classList.remove('expanded'); media.style.display = 'none'; 
+                        audio.volume = 0.15; audio.play(); isSpecialAudioPlaying = false; nextStep(); 
                     };
                 } 
                 else if (step === 2) {
-                    isSpecialAudioPlaying = true;
-                    audio.pause();
-                    
+                    isSpecialAudioPlaying = true; audio.pause();
                     const quote2 = new Audio('Privet.mp3');
-                    const img = document.getElementById('reveal-img');
-                    img.src = 'a2.jpg';
-                    img.style.display = 'block';
-                    
-                    setTimeout(() => img.classList.add('expanded'), 50);
+                    const media = document.getElementById('reveal-img-2'); 
+                    media.style.display = 'block'; setTimeout(() => media.classList.add('expanded'), 50);
                     quote2.play();
-                    
                     quote2.onended = () => { 
-                        img.classList.remove('expanded'); 
-                        img.style.display = 'none'; 
-                        audio.volume = 0.15;
-                        audio.play(); 
-                        isSpecialAudioPlaying = false; 
-                        nextStep(); 
+                        media.classList.remove('expanded'); media.style.display = 'none'; 
+                        audio.volume = 0.15; audio.play(); isSpecialAudioPlaying = false; nextStep(); 
                     };
                 } 
-                // ЛОГИКА ТРЕТЬЕГО ВОПРОСА (ВИДЕО)
                 else if (step === 3) {
-                    isSpecialAudioPlaying = true;
-                    audio.pause(); // Ставим музыку на паузу
-                    
-                    const vid = document.getElementById('reveal-vid');
-                    vid.style.display = 'block';
-                    
-                    // Плавное раскрытие
-                    setTimeout(() => vid.classList.add('expanded'), 50);
-                    
-                    // Запуск видео
-                    vid.play();
-                    
-                    // Когда видео закончится
-                    vid.onended = () => { 
-                        vid.classList.remove('expanded'); 
-                        vid.style.display = 'none'; 
-                        audio.volume = 0.15; 
-                        audio.play(); // Возвращаем музыку
-                        isSpecialAudioPlaying = false; 
-                        nextStep(); 
+                    isSpecialAudioPlaying = true; audio.pause(); 
+                    const media = document.getElementById('reveal-vid-3'); 
+                    media.style.display = 'block'; setTimeout(() => media.classList.add('expanded'), 50);
+                    media.play();
+                    media.onended = () => { 
+                        media.classList.remove('expanded'); media.style.display = 'none'; 
+                        audio.volume = 0.15; audio.play(); isSpecialAudioPlaying = false; nextStep(); 
                     };
                 }
-                else { 
-                    nextStep(); 
-                }
+                else { nextStep(); }
                 
-            } else { alert("Неверно!"); }
+            } else { 
+                // АНИМАЦИЯ ОШИБКИ
+                inputField.classList.add('shake');
+                setTimeout(() => inputField.classList.remove('shake'), 400);
+            }
         }
 
         function nextStep() {
@@ -338,6 +314,9 @@
             
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
+                
+                // Авто-фокус на следующее поле
+                setTimeout(() => document.getElementById('answer' + currentStep).focus(), 100);
                 
                 const pos = (currentStep - 1) * 10;
                 document.getElementById('avatar-ilya').style.left = pos + '%';
