@@ -95,7 +95,6 @@
             background: rgba(0, 0, 0, 0.9); padding: 40px; 
             border-radius: 15px; border: 2px solid #444; margin-top: 20px; 
             display: none; transform-origin: center center;
-            /* Ускоряем transition для мгновенного отклика на бит */
             transition: box-shadow 0.05s ease-out, transform 0.05s ease-out, border-color 0.05s ease-out; 
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
@@ -193,24 +192,31 @@
     </div>
 
     <script>
-        // ЛОГИКА ТЕРМИНАЛА 
+        // ЛОГИКА ТЕРМИНАЛА (ОБНОВЛЕНА И РАСШИРЕНА!)
         const terminalLogs = [
             "[SYS] Инициализация тайного лобби...",
             "[SYS] Подключение к серверам Dota 2...",
+            "[SYS] Анализ пинга... 999 мс. Играбельно.",
             "<span class='log-err'>[ERROR] Илья снова ферст-пикнул Techies. Команда пишет 'GG' до выхода крипов.</span>",
             "[WAIT] Расстановка мин по всему лесу. Лесник плачет в углу...",
             "<span class='log-warn'>[OK] Алиса взяла Witch Doctor. Ситуация под контролем.</span>",
             "[WAIT] Брошен кокос! Летит... летит... отскок в лесного крипа. Классика.",
+            "<span class='log-err'>[ERROR] Вражеский Пудж хукнул крипа. Снова.</span>",
             "[SYS] Оооояяяяя! Загрузка касочек... Эффективность хила 146%.",
             "<span class='log-err'>[ERROR] Илья заминировал Рошпит. Сервер лагает от количества бочек.</span>",
+            "<span class='log-warn'>[INFO] Антон пытается затащить эту катку. Шансы: 3%.</span>",
             "[SYS] Поиск команды... Найдены 4 подпиваса.",
             "[WAIT] Алиса ставит Death Ward (WUB WUB WUB). Раздаются крики врагов.",
             "<span class='log-warn'>[INFO] Илья делает суицид (Blast Off!) в толпу. Никто не умер, но было эффектно.</span>",
             "[SYS] Покупка вардов... Ошибка: саппорты покупают Аганим.",
+            "[WAIT] Илья ставит табличку 'Осторожно, мины'. Враги думают, что это блеф... Зря.",
             "[OK] Подключение к голосовому чату. Обнаружены неадекваты. Мут всех.",
             "[WAIT] Алиса хилит команду... Команда с криками убегает от хила.",
+            "<span class='log-warn'>[SYS] Сканирование таверны... Там подозрительно много наших.</span>",
             "<span class='log-err'>[ERROR] Минёр в команде = игра на 2 часа. Заказывайте пиццу.</span>",
+            "[SYS] Габен забирает ваши MMR... Успешно.",
             "[SYS] Вражеский керри наступил на красную мину. Минус нервы.",
+            "[WAIT] Алиса спамит 'Look at it go!'. Мораль команды повышена.",
             "[SYS] Синхронизация общих воспоминаний...",
             "<span class='log-warn'>[OK] Проверка файлов завершена. Защита активна.</span>",
             "<span class='log-warn'>[SYS] Готовность 100%. Нажмите ВПЕРЕД, чтобы начать.</span>"
@@ -218,6 +224,7 @@
         
         const terminal = document.getElementById('terminal');
         let logIndex = 0;
+        // 26 строк, печатаются каждые 2.2 секунды = примерно 58 секунд
         const logTimer = setInterval(() => {
             if (logIndex < terminalLogs.length) {
                 const line = document.createElement('div');
@@ -229,7 +236,7 @@
             } else {
                 clearInterval(logTimer);
             }
-        }, 3100);
+        }, 2200);
 
         // ТАЙМЕР ЗАГРУЗКИ 60 СЕКУНД
         let timeLeft = 60;
@@ -245,14 +252,23 @@
             }
         }, 1000);
 
-        // ЛОГИКА KILL FEED (НЕ ПЕРЕКРЫВАЕТ ЦЕНТР)
+        // ЛОГИКА KILL FEED (ОБНОВЛЕНА И РАСШИРЕНА!)
         const killFeedTexts = [
             "<span style='color: #c23c2a;'>FIRST BLOOD!</span> Алиса застилила фраг у керри.",
+            "<span style='color: #c23c2a;'>FIRST BLOOD!</span> Илья сделал суицид в лесных крипов.",
             "<span style='color: #e5c07b;'>DOUBLE KILL!</span> Илья подорвал курьера с чужими шмотками.",
+            "<span style='color: #e5c07b;'>DOUBLE KILL!</span> Вард Алисы сделал больше фрагов, чем кор.",
             "<span style='color: #c23c2a;'>TRIPLE KILL!</span> Кокос Алисы бесконечно скачет по троим.",
+            "<span style='color: #ffaa00;'>WICKED SICK!</span> Антон сгорел в войс-чат!",
+            "<span style='color: #00ffff;'>MONSTER KILL!</span> Вражеский мидер разбивает шмотки.",
             "<span style='color: #ff00ff;'>RAMPAGE!</span> Илья заминировал фонтан и взорвал всю команду!",
+            "<span style='color: #ff00ff;'>RAMPAGE!</span> Илья нажал одну кнопку. Минус 5.",
             "<span style='color: #ffaa00;'>GODLIKE!</span> Алиса выхилила тимейта с 1 ХП.",
             "<span style='color: #00ffff;'>HOLY SHIT!</span> Илья купил Рапиру на Минёра!",
+            "<span style='color: #00ffff;'>HOLY SHIT!</span> Команда противника удалила Доту.",
+            "<span style='color: #c23c2a;'>DOMINATING!</span> Алиса закинула кокос в Рошпит. Рошан в стане.",
+            "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Илья ставит зеленую мину прямо в файте.",
+            "<span style='color: #e5c07b;'>MEGA KILL!</span> Антон купил гем, но умер через секунду.",
             "<span style='color: #c23c2a;'>OWNAGE!</span> Враги ливнули из-за мин в лесу."
         ];
 
@@ -322,7 +338,6 @@
         let animDirection = 0;
         setInterval(() => { animDirection = (animDirection + 1) % 4; }, 10000); 
 
-        // ИСПРАВЛЕН ВОПРОС ПРО АНТОНА
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия", "настя", "настена"] },
             { q: "Как ты обычно с нами здороваешься, когда заходишь?", a: ["привет", "привет ребята", "привет, ребята"] },
@@ -383,7 +398,6 @@
             img.addEventListener('animationend', () => img.remove());
         }
 
-        // ОБНОВЛЕННЫЙ, ЧЕТКИЙ И РЕЗКИЙ АУДИО ВИЗУАЛИЗАТОР
         function initVisualizer() {
             if (audioCtx) return; 
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -402,7 +416,6 @@
             if (!analyser) return;
             analyser.getByteFrequencyData(dataArray);
 
-            // Разделяем частоты: Глубокий бас (для удара/размера) и Средний бас (для свечения)
             let deepBassSum = 0;
             for(let i = 1; i <= 5; i++) deepBassSum += dataArray[i];
             let deepBassAvg = deepBassSum / 5; 
@@ -415,19 +428,17 @@
 
             if (activeStep) {
                 if (deepBassAvg < 15 && midBassAvg < 15) {
-                    // Спокойное состояние (тишина)
                     activeStep.style.boxShadow = `0 0 20px rgba(0,0,0,0.9)`;
                     activeStep.style.transform = `scale(1)`;
                     activeStep.style.borderColor = `#444`;
                 } else {
-                    // Возведение в степень дает эффект РЕЗКОГО всплеска (нелинейность)
                     const intensity = Math.pow(deepBassAvg / 255, 1.2); 
                     const midIntensity = Math.pow(midBassAvg / 255, 1.2);
 
-                    const scale = 1 + (intensity * 0.05); // Резкий прыжок размера
-                    const coreGlow = 5 + (intensity * 15); // Белое/светлое ядро свечения
-                    const midGlow = 20 + (midIntensity * 40); // Золотое свечение
-                    const outerGlow = 40 + (intensity * 80); // Красная аура
+                    const scale = 1 + (intensity * 0.05); 
+                    const coreGlow = 5 + (intensity * 15); 
+                    const midGlow = 20 + (midIntensity * 40); 
+                    const outerGlow = 40 + (intensity * 80); 
 
                     activeStep.style.boxShadow = `
                         0 0 ${coreGlow}px rgba(255, 235, 180, ${0.4 + intensity * 0.6}), 
@@ -454,7 +465,9 @@
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
             setInterval(spawnPhoto, 2000); 
-            setInterval(spawnKillFeed, 7000);
+            
+            // Частота появления шуток увеличена до 5.5 секунд
+            setInterval(spawnKillFeed, 5500);
         }
 
         async function checkAnswer(step) {
@@ -481,7 +494,6 @@
                     media.style.display = 'block'; setTimeout(() => media.classList.add('expanded'), 50);
                     quote2.play();
                     
-                    // РОВНО 4 СЕКУНДЫ
                     setTimeout(() => { 
                         quote2.pause();
                         quote2.currentTime = 0;
@@ -513,17 +525,16 @@
             }
         }
 
-        // ИСПРАВЛЕН БАГ С ЗАВИСАНИЕМ ВИЗУАЛИЗАТОРА ПОСЛЕ 1 ВОПРОСА
         function nextStep() {
             const oldStep = document.getElementById('step' + currentStep);
             oldStep.style.display = 'none';
-            oldStep.classList.remove('active'); // Обязательно убираем класс active у старого вопроса!
+            oldStep.classList.remove('active'); 
             
             currentStep++;
             
             if (currentStep <= 10) {
                 const newStep = document.getElementById('step' + currentStep);
-                newStep.classList.add('active'); // Добавляем новому
+                newStep.classList.add('active'); 
                 
                 setTimeout(() => document.getElementById('answer' + currentStep).focus(), 100);
                 
