@@ -16,11 +16,11 @@
         /* ТРОПА - ИДЕАЛЬНОЕ РАСПРЕДЕЛЕНИЕ */
         .lane-container { 
             position: fixed; bottom: 50px; left: 10%; width: 80%; height: 120px; z-index: 50; 
-            display: flex; align-items: center; justify-content: space-between; /* Это убирает дыру в конце */
+            display: flex; align-items: center; justify-content: space-between; 
         }
         .lane-line { position: absolute; width: 100%; height: 10px; background: #1a1a1a; top: 50%; z-index: 1; border-radius: 5px; border: 1px solid #333; box-shadow: inset 0 2px 5px #000; }
         
-        /* ФЛАЖКИ (Сделал шире и крупнее) */
+        /* ФЛАЖКИ */
         .checkpoint { width: 8px; height: 40px; background: #444; z-index: 2; transition: 0.3s; position: relative; border-radius: 2px; }
         .checkpoint::before { content: ''; position: absolute; top: -14px; left: 0; width: 22px; height: 14px; background: var(--red); display: none; clip-path: polygon(0 0, 100% 50%, 0 100%); }
         .checkpoint.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
@@ -38,7 +38,16 @@
             border-radius: 4px; cursor: help; box-shadow: 0 0 10px rgba(0,0,0,0.5);
             text-align: center; padding: 2px;
         }
-        .tooltip { visibility: hidden; width: 220px; background-color: #000; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; bottom: 130%; left: 50%; margin-left: -110px; font-size: 12px; border: 1px solid var(--gold); line-height: 1.4; box-shadow: 0 0 10px var(--gold); }
+        
+        /* УВЕЛИЧЕННЫЕ ИНФО-ОКНА (TOOLTIPS) */
+        .tooltip { 
+            visibility: hidden; width: 450px; /* Увеличено в 2.5-3 раза */
+            background-color: rgba(0,0,0,0.95); color: #fff; text-align: center; 
+            border-radius: 12px; padding: 25px; position: absolute; z-index: 100; 
+            bottom: 140%; left: 50%; margin-left: -225px; /* Выравнивание по центру новой ширины */
+            font-size: 20px; border: 2px solid var(--gold); line-height: 1.5; 
+            box-shadow: 0 0 20px var(--gold); 
+        }
         .avatar:hover .tooltip { visibility: visible; }
         
         .ilya { background-color: #a33; top: 0px; }
@@ -62,7 +71,7 @@
         .step.active { display: block; }
         
         /* ТЕКСТ ВОПРОСА */
-        .step p { font-size: 1.8rem; margin-bottom: 30px; color: #fff; }
+        .step p { font-size: 1.8rem; margin-bottom: 30px; color: #fff; line-height: 1.4; }
         
         /* ПОЛЕ И КНОПКА */
         input { 
@@ -77,8 +86,15 @@
         }
         .submit-btn:hover { background: var(--gold); color: black; transform: scale(1.02); }
         
-        #reveal-img { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; z-index: 10000; opacity: 0; transition: all 2s ease-in-out; border: 5px solid var(--gold); display: none; }
-        #reveal-img.expanded { width: 100vw; height: 100vh; opacity: 1; }
+        /* АНИМАЦИИ ДЛЯ КАРТИНОК И ВИДЕО */
+        #reveal-img, #reveal-vid { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 100px; height: 100px; z-index: 10000; opacity: 0; 
+            transition: all 2s ease-in-out; border: 5px solid var(--gold); display: none; 
+            background-color: #000;
+        }
+        #reveal-vid { object-fit: contain; } /* Чтобы видео не искажалось */
+        #reveal-img.expanded, #reveal-vid.expanded { width: 100vw; height: 100vh; opacity: 1; }
 
         /* 4 НАПРАВЛЕНИЯ АНИМАЦИИ */
         @keyframes moveLR { from { left: -600px; transform: rotate(-5deg); } to { left: 110vw; transform: rotate(5deg); } }
@@ -98,7 +114,10 @@
 
     <!-- Аудио для фона -->
     <audio id="audio"></audio>
+    <!-- Картинка-сюрприз -->
     <img id="reveal-img" src="">
+    <!-- Видео-сюрприз для 3 вопроса -->
+    <video id="reveal-vid" src="bu.mp4"></video>
 
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
@@ -114,7 +133,7 @@
         </div>
         <div class="avatar alice" id="avatar-alice" style="left: 0%;">
             Алиса
-            <div class="tooltip">Мой личный лучик света. С ней любой день становится ярче, а любая неудача — пустяком</div>
+            <div class="tooltip">Лучик света. С ней любой день становится ярче, а любая неудача — пустяком</div>
         </div>
     </div>
 
@@ -125,28 +144,55 @@
 
     <script>
         const audio = document.getElementById('audio');
-        // Плейлист с Nickelback на первом месте
-        const playlist = ["Nickelback.mp3", "Gorillaz.mp3", "Bodies.mp3"];
+        // Плейлист расширен
+        const playlist = ["Nickelback.mp3", "Gorillaz.mp3", "Bodies.mp3", "ak47.mp3", "paparoach.mp3"];
         let currentTrack = 0;
         let currentStep = 1;
+        let isSpecialAudioPlaying = false; 
 
-        // Переключение фонового трека
-        audio.addEventListener('ended', () => {
-            currentTrack = (currentTrack + 1) % playlist.length;
-            audio.src = playlist[currentTrack];
-            audio.play();
-        });
+        // Функция плавной смены трека
+        function changeTrackWithFade() {
+            if (isSpecialAudioPlaying) return; 
+            
+            let fadeOut = setInterval(() => {
+                if (audio.volume > 0.02) {
+                    audio.volume -= 0.02;
+                } else {
+                    audio.volume = 0;
+                    clearInterval(fadeOut);
+                    
+                    // Меняем песню
+                    currentTrack = (currentTrack + 1) % playlist.length;
+                    audio.src = playlist[currentTrack];
+                    audio.play();
+                    
+                    // Плавно повышаем громкость
+                    let fadeIn = setInterval(() => {
+                        if (audio.volume < 0.13) {
+                            audio.volume += 0.02;
+                        } else {
+                            audio.volume = 0.15;
+                            clearInterval(fadeIn);
+                        }
+                    }, 100);
+                }
+            }, 100);
+        }
 
-        // ЛОГИКА СМЕНЫ НАПРАВЛЕНИЙ
-        let animDirection = 0; // 0: Слева-Направо, 1: Сверху-Вниз, 2: Справа-Налево, 3: Снизу-Вверх
+        // Смена трека каждую 1 минуту
+        setInterval(changeTrackWithFade, 60000);
+        audio.addEventListener('ended', changeTrackWithFade);
+
+        // СМЕНА НАПРАВЛЕНИЙ ФОТОГРАФИЙ
+        let animDirection = 0;
         setInterval(() => {
             animDirection = (animDirection + 1) % 4;
-        }, 10000); // Смена каждые 10 секунд
+        }, 10000); 
 
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия"] },
-            { q: "Какое слово ты обычно произносишь, когда куда-то заходишь?", a: ["привет"] },
-            { q: "Вопрос 3", a: ["ответ3"] },
+            { q: "Как ты обычно с нами здороваешься, когда заходишь?", a: ["привет", "привет ребята", "привет, ребята"] },
+            { q: "В каком году был первый матч мой с Алисой?", a: ["2024"] },
             { q: "Вопрос 4", a: ["ответ4"] },
             { q: "Вопрос 5", a: ["ответ5"] },
             { q: "Вопрос 6", a: ["ответ6"] },
@@ -172,22 +218,20 @@
             img.src = `p${i}.jpg`;
             img.className = 'falling-photo';
             
-            // Крупные фото
             img.style.width = (Math.floor(Math.random() * 400) + 300) + 'px'; 
             
             let animName = '';
             
-            // Выбираем откуда и куда лететь в зависимости от таймера
-            if (animDirection === 0) { // Слева-Направо
+            if (animDirection === 0) { 
                 img.style.top = (Math.random() * 80) + 'vh';
                 animName = 'moveLR';
-            } else if (animDirection === 1) { // Сверху-Вниз
+            } else if (animDirection === 1) { 
                 img.style.left = (Math.random() * 90) + 'vw';
                 animName = 'moveTB';
-            } else if (animDirection === 2) { // Справа-Налево
+            } else if (animDirection === 2) { 
                 img.style.top = (Math.random() * 80) + 'vh';
                 animName = 'moveRL';
-            } else if (animDirection === 3) { // Снизу-Вверх
+            } else if (animDirection === 3) { 
                 img.style.left = (Math.random() * 90) + 'vw';
                 animName = 'moveBT';
             }
@@ -216,7 +260,9 @@
             if (quizData[step-1].a.includes(val)) {
                 
                 if (step === 1) {
+                    isSpecialAudioPlaying = true;
                     audio.pause();
+                    
                     const quote = new Audio('gol.mp3');
                     const img = document.getElementById('reveal-img');
                     img.src = 'a1.jpg';
@@ -228,12 +274,16 @@
                     quote.onended = () => { 
                         img.classList.remove('expanded'); 
                         img.style.display = 'none'; 
+                        audio.volume = 0.15;
                         audio.play(); 
+                        isSpecialAudioPlaying = false; 
                         nextStep(); 
                     };
                 } 
                 else if (step === 2) {
+                    isSpecialAudioPlaying = true;
                     audio.pause();
+                    
                     const quote2 = new Audio('Privet.mp3');
                     const img = document.getElementById('reveal-img');
                     img.src = 'a2.jpg';
@@ -245,10 +295,36 @@
                     quote2.onended = () => { 
                         img.classList.remove('expanded'); 
                         img.style.display = 'none'; 
+                        audio.volume = 0.15;
                         audio.play(); 
+                        isSpecialAudioPlaying = false; 
                         nextStep(); 
                     };
                 } 
+                // ЛОГИКА ТРЕТЬЕГО ВОПРОСА (ВИДЕО)
+                else if (step === 3) {
+                    isSpecialAudioPlaying = true;
+                    audio.pause(); // Ставим музыку на паузу
+                    
+                    const vid = document.getElementById('reveal-vid');
+                    vid.style.display = 'block';
+                    
+                    // Плавное раскрытие
+                    setTimeout(() => vid.classList.add('expanded'), 50);
+                    
+                    // Запуск видео
+                    vid.play();
+                    
+                    // Когда видео закончится
+                    vid.onended = () => { 
+                        vid.classList.remove('expanded'); 
+                        vid.style.display = 'none'; 
+                        audio.volume = 0.15; 
+                        audio.play(); // Возвращаем музыку
+                        isSpecialAudioPlaying = false; 
+                        nextStep(); 
+                    };
+                }
                 else { 
                     nextStep(); 
                 }
@@ -263,7 +339,6 @@
             if (currentStep <= 10) {
                 document.getElementById('step' + currentStep).classList.add('active');
                 
-                // Идеально ровный сдвиг по 10%
                 const pos = (currentStep - 1) * 10;
                 document.getElementById('avatar-ilya').style.left = pos + '%';
                 document.getElementById('avatar-alice').style.left = pos + '%';
@@ -271,7 +346,6 @@
                 const flags = document.querySelectorAll('.checkpoint');
                 flags[currentStep - 1].classList.add('active');
             } else {
-                // Финальный прыжок на Древнего
                 document.getElementById('avatar-ilya').style.left = '100%';
                 document.getElementById('avatar-alice').style.left = '100%';
                 
