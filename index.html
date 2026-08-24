@@ -8,6 +8,7 @@
     <link rel="preload" href="a2.png" as="image">
     <link rel="preload" href="bu.mp4" as="video">
     <link rel="preload" href="collapse.mp4" as="video">
+    <link rel="preload" href="orion.mp4" as="video">
     <link rel="preload" href="Sun.mp3" as="audio">
     <link rel="preload" href="gol.mp3" as="audio">
     
@@ -235,7 +236,7 @@
     <div id="start-overlay">
         <canvas id="matrix-canvas"></canvas>
         <div class="overlay-content">
-            <h1>Поздравляю Ильюша и Алисик<br>с знаменательными днями!</h1>
+            <h1>С днем рождения<br>Илья и Алиса!</h1>
             <div id="terminal"></div>
             <button id="start-btn" disabled onclick="startExperience()">Вперед (60)</button>
         </div>
@@ -250,6 +251,7 @@
     <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
     <video id="reveal-vid-3" class="reveal-media" src="bu.mp4" preload="auto"></video>
     <video id="reveal-vid-4" class="reveal-media" src="collapse.mp4" preload="auto"></video>
+    <video id="reveal-vid-5" class="reveal-media" src="orion.mp4" preload="auto"></video>
 
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
@@ -500,15 +502,16 @@
             setTimeout(() => img.remove(), 35000); 
         }
 
+        /* === ВОПРОСЫ === */
         let currentStep = 1;
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия", "настя", "настена"] },
             { q: "Как ты обычно с нами здороваешься, когда заходишь?", a: ["привет", "привет ребята", "привет, ребята"] },
             { q: "В каком году был первый матч Антона с Алисой?", a: ["2024"] },
-            { q: "Сколько весит топор. Если известно что весит 1кг + полтопора?", a: ["2", "2 кг", "2 кило", "два"] },
-            { q: "Вопрос 5", a: ["ответ5"] },
-            { q: "Вопрос 6", a: ["ответ6"] },
-            { q: "Вопрос 7", a: ["ответ7"] },
+            { q: "Сколько весит топор. Если известно что весит 1кг + полтопора?", a: ["2", "2 кг", "2 кило", "два", "2кг"] },
+            { q: "Какое созвездие считается самым красивым?", a: ["орион", "пояс ориона"] },
+            { q: "УБЕЙ РОШАНА ЗА 10 СЕКУНД!", a: [], isRoshan: true }, // МИНИ-ИГРА №6
+            { q: "Кто круче Алеша Попович или Попа Алешович?", a: ["ANY"] }, // Принимает любой ответ
             { q: "Вопрос 8", a: ["ответ8"] },
             { q: "Вопрос 9", a: ["ответ9"] },
             { q: "Вопрос 10", a: ["ответ10"] }
@@ -516,19 +519,90 @@
 
         const quizArea = document.getElementById('quiz-area');
         quizData.forEach((item, index) => {
+            const stepNum = index + 1;
             const stepDiv = document.createElement('div');
             stepDiv.className = 'step';
-            stepDiv.id = 'step' + (index + 1);
-            if(index === 0) stepDiv.classList.add('active');
+            stepDiv.id = 'step' + stepNum;
+            if(stepNum === 1) stepDiv.classList.add('active');
             
-            stepDiv.innerHTML = `
-                <p>${item.q}</p>
-                <input type="text" id="answer${index + 1}" placeholder="Ваш ответ..." 
-                       onkeydown="if(event.key === 'Enter') checkAnswer(${index + 1})" autofocus>
-                <button class="submit-btn" onclick="checkAnswer(${index + 1})">Проверить</button>
-            `;
+            // ЕСЛИ ЭТО ВОПРОС 6 (РОШАН)
+            if (item.isRoshan) {
+                stepDiv.innerHTML = `
+                    <p style="color: var(--red); font-size: 2.5rem; text-shadow: 0 0 20px var(--red); text-transform: uppercase;">РОШАН НАПАДАЕТ!</p>
+                    <p style="font-size: 1.2rem; color: #ccc;">У тебя 10 секунд, чтобы сделать 40 ударов! Время пойдет после первого клика.</p>
+                    <div id="roshan-ui">
+                        <div style="width: 100%; background: #222; border: 2px solid #555; border-radius: 10px; margin-bottom: 15px; overflow: hidden;">
+                            <div id="roshan-hp" style="width: 100%; height: 25px; background: var(--red); transition: width 0.1s;"></div>
+                        </div>
+                        <h2 id="roshan-timer" style="color: var(--space-blue); margin-bottom: 15px; font-size: 2rem;">10.0 сек</h2>
+                        <button id="roshan-btn" onclick="hitRoshan()" style="font-size: 5rem; background: #111; width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--red); cursor: pointer; box-shadow: 0 0 30px var(--red); transition: transform 0.05s; padding: 0;">👹</button>
+                    </div>
+                `;
+            } else {
+                stepDiv.innerHTML = `
+                    <p>${item.q}</p>
+                    <input type="text" id="answer${stepNum}" placeholder="Ваш ответ..." 
+                           onkeydown="if(event.key === 'Enter') checkAnswer(${stepNum})" autofocus>
+                    <button class="submit-btn" onclick="checkAnswer(${stepNum})">Проверить</button>
+                `;
+            }
             quizArea.appendChild(stepDiv);
         });
+
+        /* === ЛОГИКА МИНИ-ИГРЫ С РОШАНОМ === */
+        let roshanHp = 40; 
+        let roshanMaxHp = 40;
+        let roshanTimer = 10.0;
+        let roshanInterval = null;
+        let roshanStarted = false;
+
+        function hitRoshan() {
+            if (roshanHp <= 0) return; // Уже мертв
+            
+            // Стартуем таймер при первом клике
+            if (!roshanStarted) {
+                roshanStarted = true;
+                roshanInterval = setInterval(() => {
+                    roshanTimer -= 0.1;
+                    document.getElementById('roshan-timer').innerText = roshanTimer.toFixed(1) + " сек";
+                    if (roshanTimer <= 0) {
+                        clearInterval(roshanInterval);
+                        if (roshanHp > 0) {
+                            // ПРОИГРАЛИ
+                            alert("Рошан оказался сильнее! Пробуем еще раз!");
+                            roshanHp = roshanMaxHp;
+                            roshanTimer = 10.0;
+                            roshanStarted = false;
+                            document.getElementById('roshan-hp').style.width = '100%';
+                            document.getElementById('roshan-timer').innerText = '10.0 сек';
+                            document.getElementById('roshan-timer').style.color = "var(--space-blue)";
+                        }
+                    }
+                }, 100);
+            }
+
+            roshanHp--;
+            document.getElementById('roshan-hp').style.width = (roshanHp / roshanMaxHp * 100) + '%';
+            
+            // Анимация удара
+            const btn = document.getElementById('roshan-btn');
+            btn.style.transform = 'scale(0.85)';
+            setTimeout(() => btn.style.transform = 'scale(1)', 50);
+
+            // ПОБЕДА
+            if (roshanHp <= 0) {
+                clearInterval(roshanInterval);
+                document.getElementById('roshan-timer').innerText = "РОШАН ПОВЕРЖЕН!";
+                document.getElementById('roshan-timer').style.color = "var(--matrix-green)";
+                btn.style.pointerEvents = 'none';
+                btn.innerHTML = '🛡️'; // Выпал Аегис
+                btn.style.borderColor = "var(--gold)";
+                btn.style.boxShadow = "0 0 40px var(--gold)";
+                setTimeout(() => {
+                    nextStep();
+                }, 1500);
+            }
+        }
 
         let audioCtx, analyser, dataArray;
         function initVisualizer() {
@@ -646,11 +720,22 @@
         async function checkAnswer(step) {
             if (isSpecialAudioPlaying) return; 
 
+            // Если это вопрос про Рошана, игнорируем обычный Enter
+            if (quizData[step-1].isRoshan) return;
+
             const inputField = document.getElementById('answer' + step);
             const submitBtn = inputField.nextElementSibling;
             const val = inputField.value.toLowerCase().trim();
             
-            if (quizData[step-1].a.includes(val)) {
+            // Если ответ ANY (Вопрос 7) - пропускаем при любой длине ввода
+            let isCorrect = false;
+            if (quizData[step-1].a.includes("ANY")) {
+                if (val.length > 0) isCorrect = true; 
+            } else {
+                isCorrect = quizData[step-1].a.includes(val);
+            }
+
+            if (isCorrect) {
                 inputField.classList.add('success-glow');
                 inputField.disabled = true;
                 submitBtn.disabled = true;
@@ -669,6 +754,8 @@
                         playMediaEvent('reveal-vid-3', null);
                     } else if (step === 4) {
                         playMediaEvent('reveal-vid-4', null); // Видео collapse.mp4
+                    } else if (step === 5) {
+                        playMediaEvent('reveal-vid-5', null); // Видео orion.mp4
                     } else {
                         nextStep();
                     }
@@ -690,7 +777,9 @@
                 const newStep = document.getElementById('step' + currentStep);
                 newStep.classList.add('active'); 
                 
-                setTimeout(() => document.getElementById('answer' + currentStep).focus(), 100);
+                // Ставим фокус в input, ЕСЛИ он есть (на Рошане его нет)
+                const nextInput = document.getElementById('answer' + currentStep);
+                if (nextInput) setTimeout(() => nextInput.focus(), 100);
                 
                 const pos = (currentStep - 1) * 10;
                 
