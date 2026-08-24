@@ -7,13 +7,13 @@
     <link rel="preload" href="a1.jpg" as="image">
     <link rel="preload" href="a2.png" as="image">
     <link rel="preload" href="bu.mp4" as="video">
+    <link rel="preload" href="collapse.mp4" as="video">
     <link rel="preload" href="Sun.mp3" as="audio">
     <link rel="preload" href="gol.mp3" as="audio">
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            /* КОСМИЧЕСКАЯ ЦВЕТОВАЯ ПАЛИТРА */
             --space-blue: #00d2ff; 
             --space-purple: #8a2387; 
             --neon-pink: #ff00ff;
@@ -46,19 +46,18 @@
             100% { opacity: 0.1; transform: scale(0.8); }
         }
 
-        /* --- ЭКРАН ЗАГРУЗКИ С МАТРИЦЕЙ --- */
+        /* --- ЭКРАН ЗАГРУЗКИ --- */
         #start-overlay { position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
         #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
         
         .overlay-content { z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
         .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: #fff; text-shadow: 0 0 20px var(--space-blue); margin-bottom: 30px; line-height: 1.2; }
         
-        /* КНОПКА ВПЕРЕД */
         button { background: rgba(0,0,0,0.9); color: var(--space-blue); border: 2px solid var(--space-blue); padding: 15px 60px; font-family: 'Cinzel', serif; font-size: 1.8rem; cursor: pointer; border-radius: 12px; transition: 0.3s; margin-top: 30px; font-weight: bold; text-shadow: 0 0 10px var(--space-blue); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
         button:hover:not(:disabled) { background: var(--space-blue); color: #000; box-shadow: 0 0 30px var(--space-blue); text-shadow: none; }
         button:disabled { border-color: #444; color: #666; cursor: not-allowed; box-shadow: none; text-shadow: none; }
         
-        /* ОГРОМНЫЙ И ЧЕТКИЙ ТЕРМИНАЛ */
+        /* ТЕРМИНАЛ ЗАГРУЗКИ */
         #terminal { 
             width: 95%; max-width: 900px; height: 400px; background: #000; 
             border: 2px solid var(--matrix-green); border-radius: 10px; padding: 30px; 
@@ -75,19 +74,18 @@
         .log-warn { color: #0ff; font-weight: bold; text-shadow: 0 0 5px #0ff; }
         .log-err { color: #fff; background: #900; padding: 2px 8px; font-weight: bold; border-radius: 3px; }
 
-        /* --- ТРОПА И ФЛАЖКИ (КОСМИЧЕСКИЕ) --- */
+        /* --- ТРОПА И ФЛАЖКИ --- */
         .lane-container { position: fixed; bottom: 50px; left: 10%; width: 80%; height: 120px; z-index: 50; display: flex; align-items: center; justify-content: space-between; }
         .lane-line { position: absolute; width: 100%; height: 6px; background: rgba(0, 210, 255, 0.2); top: 50%; z-index: 1; border-radius: 3px; box-shadow: 0 0 10px var(--space-blue); }
         
         .checkpoint { width: 8px; height: 35px; background: #111; z-index: 2; transition: 0.3s; position: relative; border-radius: 4px; border: 1px solid var(--space-purple); }
         .checkpoint.active { background: var(--space-blue); box-shadow: 0 0 20px var(--space-blue); border-color: #fff; }
         
-        /* СИММЕТРИЧНЫЙ КОСМИЧЕСКИЙ ЗАМОК */
         .lock { width: 34px; height: 26px; background: var(--space-purple); border-radius: 6px; position: relative; box-shadow: 0 0 25px var(--space-purple); z-index: 2; display: flex; justify-content: center; align-items: center; }
         .lock::before { content: ''; position: absolute; width: 18px; height: 16px; border: 5px solid var(--space-purple); border-bottom: none; border-radius: 14px 14px 0 0; top: -16px; left: 50%; transform: translateX(-50%); box-sizing: border-box; }
         .lock::after { content: ''; width: 6px; height: 10px; background: #000; border-radius: 3px; }
 
-        /* --- АВАТАРЫ (ИЛЬЯ И АЛИСА) --- */
+        /* --- АВАТАРЫ --- */
         .avatar { 
             position: absolute; width: 45px; height: 45px; border: 2px solid var(--space-blue); 
             z-index: 10; transition: left 0.8s ease-in-out;
@@ -98,7 +96,6 @@
             background-size: cover; background-position: center;
         }
         
-        /* Анимация прыжка аватаров */
         .avatar-jump { animation: avaJump 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards !important; }
         @keyframes avaJump {
             0% { transform: translateY(0) scale(1) rotate(0); }
@@ -132,34 +129,35 @@
             100% { transform: translateX(-600px); opacity: 0; }
         }
 
-        /* --- КОСМИЧЕСКАЯ БЕГУЩАЯ СТРОКА --- */
+        /* --- МЕДЛЕННАЯ БЕГУЩАЯ СТРОКА --- */
         #marquee-container {
-            position: fixed; top: 30px; left: 0; width: 100vw; z-index: 15;
+            position: fixed; top: 25px; left: 0; width: 100%; z-index: 15;
             overflow: hidden; pointer-events: none; display: none;
-            background: rgba(10, 15, 30, 0.6); 
-            padding: 12px 0;
-            border-top: 1px solid rgba(0, 210, 255, 0.4);
-            border-bottom: 1px solid rgba(0, 210, 255, 0.4);
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+            background: rgba(10, 15, 30, 0.5); 
+            padding: 15px 0;
+            border-top: 1px solid rgba(0, 210, 255, 0.3);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.1);
         }
         .marquee-text {
             display: inline-block; white-space: nowrap;
-            font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
-            color: #fff; text-shadow: 0 0 15px var(--space-blue), 0 0 30px var(--space-purple);
-            animation: marqueeScroll 18s linear infinite;
+            /* Прямой шрифт, НЕ курсив */
+            font-family: 'Roboto', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 1px;
+            color: #fff; text-shadow: 0 0 10px var(--space-blue), 0 0 20px var(--space-blue);
+            /* Очень плавно и медленно (60 секунд) */
+            animation: marqueeScroll 60s linear infinite;
         }
         @keyframes marqueeScroll {
             0% { transform: translateX(100vw); }
             100% { transform: translateX(-100%); }
         }
         
-        /* --- ЦЕНТРАЛЬНОЕ ОКНО --- */
+        /* --- ЦЕНТРАЛЬНОЕ ОКНО ВОПРОСА --- */
         .content { 
             position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); 
             z-index: 10; width: 90%; max-width: 800px; text-align: center; display: none; 
         }
         
-        /* КОСМИЧЕСКИЙ АУДИО ВИЗУАЛИЗАТОР */
         .step { 
             background: rgba(15, 12, 41, 0.85); padding: 45px; 
             border-radius: 15px; border: 2px solid var(--space-purple); margin-top: 20px; 
@@ -172,7 +170,6 @@
         
         .step p { font-size: 2rem; margin-bottom: 35px; color: #fff; line-height: 1.4; text-shadow: 0 0 10px var(--space-blue); font-weight: bold; }
         
-        /* ПОЛЯ ВВОДА */
         input { 
             width: 100%; padding: 20px; background: rgba(0, 0, 0, 0.7); border: 2px solid #444; 
             color: #fff; border-radius: 10px; margin-bottom: 30px; 
@@ -194,23 +191,36 @@
         }
         .submit-btn:hover:not(:disabled) { background: var(--space-blue); color: #000; box-shadow: 0 0 25px var(--space-blue); transform: scale(1.02); }
 
-        /* KILL FEED */
+        /* --- АНИМАЦИЯ ПАДАЮЩЕЙ ЗВЕЗДЫ --- */
+        .shooting-star {
+            position: fixed; width: 6px; height: 6px; background: #fff;
+            border-radius: 50%; box-shadow: 0 0 15px #fff, 0 0 25px var(--space-blue);
+            z-index: 6; pointer-events: none; transform-origin: center left;
+        }
+        .shooting-star::after {
+            content: ''; position: absolute; top: 50%; transform: translateY(-50%);
+            right: 3px; width: 120px; height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.8), #fff);
+        }
+
+        /* --- KILL FEED --- */
         .kill-feed {
             position: fixed; z-index: 5; font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: bold;
             color: white; text-shadow: 2px 2px 5px black, 0 0 15px rgba(0,0,0,1);
             background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), transparent); border-left: 4px solid var(--space-blue);
             padding: 12px 30px; border-radius: 4px; pointer-events: none; opacity: 0;
-            white-space: nowrap; animation: killFeedAnim 6s ease-in-out forwards;
+            white-space: nowrap; animation: killFeedAnim 6s ease-out forwards;
         }
+        /* Вспышка (explosion) при появлении текста */
         @keyframes killFeedAnim {
-            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
-            10% { opacity: 1; transform: translateY(0) scale(1.05); }
-            15% { transform: scale(1); }
+            0% { opacity: 0; transform: translateY(20px) scale(0.5); filter: brightness(3); }
+            5% { opacity: 1; transform: translateY(0) scale(1.1); filter: brightness(2); }
+            10% { transform: scale(1); filter: brightness(1); }
             80% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-20px); }
         }
 
-        /* МЕДИА СЮРПРИЗЫ */
+        /* --- МЕДИА СЮРПРИЗЫ --- */
         .reveal-media { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             width: 100px; height: 100px; z-index: 10000; opacity: 0; 
@@ -223,14 +233,14 @@
 </head>
 <body>
 
-    <!-- ЗВЕЗДНЫЙ ФОН (Генерируется в JS) -->
+    <!-- ЗВЕЗДНЫЙ ФОН -->
     <div id="space-bg"></div>
 
     <!-- ЭКРАН С МАТРИЦЕЙ И ТЕРМИНАЛОМ -->
     <div id="start-overlay">
         <canvas id="matrix-canvas"></canvas>
         <div class="overlay-content">
-            <h1>Поздравляю Ильюша и Алисик<br>с знаменательными днями!</h1>
+            <h1>С днем рождения<br>Илья и Алиса!</h1>
             <div id="terminal"></div>
             <button id="start-btn" disabled onclick="startExperience()">Вперед (60)</button>
         </div>
@@ -238,15 +248,17 @@
 
     <!-- БЕГУЩАЯ СТРОКА -->
     <div id="marquee-container">
-        <div class="marquee-text">Поздравляю Ильюша и Алисик с знаменательными днями! Я вас люблю ❤️</div>
+        <div class="marquee-text">Когда я смотрю на вас, я понимаю, что такое настоящая гармония. Вы — две половинки одного целого, два берега одной реки, два крыла одной птицы. Пусть ваш общий путь будет ровным и светлым, пусть встречные ветры только помогают вам двигаться вперед, а солнце всегда освещает дорогу. Желаю вам никогда не терять друг друга в суете дней, всегда находить время для тихих разговоров и громкого смеха. Пусть в вашем доме пахнет счастьем, а в сердцах никогда не гаснет та искра, которая когда-то свела вас вместе. Берегите друг друга и помните: вы — самая красивая история, которую я знаю. Я вас люблю ❤️</div>
     </div>
 
+    <!-- МЕДИА -->
     <audio id="audio" preload="auto"></audio>
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
     <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
     <video id="reveal-vid-3" class="reveal-media" src="bu.mp4" preload="auto"></video>
+    <video id="reveal-vid-4" class="reveal-media" src="collapse.mp4" preload="auto"></video>
 
-    <!-- ВОЗВРАЩЕННЫЕ АВАТАРЫ ИЛЬИ И АЛИСЫ -->
+    <!-- АВАТАРЫ ИЛЬИ И АЛИСЫ -->
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
         <div class="checkpoint active"></div><div class="checkpoint"></div><div class="checkpoint"></div>
@@ -285,7 +297,7 @@
             spaceBg.appendChild(star);
         }
 
-        /* === ЛОГИКА МАТРИЦЫ (Темно-зеленая, не бьет по глазам) === */
+        /* === ЛОГИКА МАТРИЦЫ === */
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -300,7 +312,7 @@
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#080'; // Темно-зеленый
+            ctx.fillStyle = '#080';
             ctx.font = fontSize + 'px monospace';
             for(let i = 0; i < drops.length; i++) {
                 const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
@@ -375,7 +387,7 @@
             }
         }, 1000);
 
-        /* === ОГРОМНЫЙ ПАК KILL FEED === */
+        /* === ОГРОМНЫЙ ПАК KILL FEED С ПАДАЮЩЕЙ ЗВЕЗДОЙ === */
         const killFeedTexts = [
             "<span style='color: var(--red);'>FIRST BLOOD!</span> Алиса застилила фраг у керри.",
             "<span style='color: var(--red);'>FIRST BLOOD!</span> Илья сделал суицид в лесных крипов.",
@@ -392,49 +404,54 @@
             "<span style='color: var(--red);'>DOMINATING!</span> Алиса закинула кокос в Рошпит. Рошан в стане.",
             "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Илья ставит зеленую мину прямо в файте.",
             "<span style='color: var(--space-blue);'>MEGA KILL!</span> Антон купил гем, но умер через секунду.",
-            "<span style='color: var(--red);'>OWNAGE!</span> Враги ливнули из-за мин в лесу.",
-            "<span style='color: #ffaa00;'>GODLIKE!</span> Илья на Рубике поднял врага в телекинез и скинул на клиф.",
-            "<span style='color: var(--red);'>DOMINATING!</span> Илья забыл купить телепорт.",
-            "<span style='color: var(--space-blue);'>MEGA KILL!</span> Алиса спасла мидера от смерти, но он вернулся и умер.",
-            "<span style='color: #00ffff;'>HOLY SHIT!</span> Илья (Oracle) спас врага своим ультом.",
-            "<span style='color: var(--space-purple);'>RAMPAGE!</span> Кто-то спер Аегис. Угадайте кто.",
-            "<span style='color: var(--red);'>FIRST BLOOD!</span> Минер взорвал сам себя на миду. Тактика!",
-            "<span style='color: var(--space-blue);'>DOUBLE KILL!</span> Курьер убит. В нем была Рапира Антона.",
-            "<span style='color: #00ffff;'>MONSTER KILL!</span> Алиса кидает каски прямо под фонтан врага.",
-            "<span style='color: var(--space-purple);'>RAMPAGE!</span> Илья поставил 50 мин в одном кусте.",
-            "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Антон фармит лес на 60-й минуте.",
-            "<span style='color: var(--space-blue);'>MEGA KILL!</span> Вражеский Снайпер не выдержал и ливнул.",
-            "<span style='color: var(--space-purple);'>RAMPAGE!</span> Алиса сделала Rampage одними касками.",
-            "<span style='color: var(--red);'>FIRST BLOOD!</span> Илья: 'Я только кнопочку нажму...'",
-            "<span style='color: #ffaa00;'>WICKED SICK!</span> Антон: 'Да я щас затащу, смотрите!'",
-            "<span style='color: var(--space-blue);'>DOUBLE KILL!</span> Кто не спрятался — тот наступил на мину.",
-            "<span style='color: #00ffff;'>HOLY SHIT!</span> Вард Алисы живет дольше, чем вся наша команда.",
-            "<span style='color: var(--red);'>DOMINATING!</span> Илья украл Black Hole, но дал его в одного саппорта.",
-            "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Антон пишет 'ez' после 80 минут пота.",
-            "<span style='color: var(--space-blue);'>MEGA KILL!</span> Алиса просто спамит смех Witch Doctor-а.",
-            "<span style='color: #00ffff;'>MONSTER KILL!</span> У Ильи 0 фрагов, но 100000 урона по героям."
+            "<span style='color: var(--red);'>OWNAGE!</span> Враги ливнули из-за мин в лесу."
         ];
 
-        function spawnKillFeed() {
-            const feed = document.createElement('div');
-            feed.className = 'kill-feed';
-            feed.innerHTML = killFeedTexts[Math.floor(Math.random() * killFeedTexts.length)];
-            
+        function spawnKillFeedAndStar() {
+            // Куда прилетит звезда (безопасные зоны)
             const zone = Math.floor(Math.random() * 4);
-            let t, l;
-            if (zone === 0) { t = Math.random() * 5 + 10; l = Math.random() * 40 + 10; } 
-            else if (zone === 1) { t = Math.random() * 5 + 80; l = Math.random() * 40 + 10; } 
-            else if (zone === 2) { t = Math.random() * 40 + 20; l = Math.random() * 5 + 2; } 
-            else { t = Math.random() * 40 + 20; l = Math.random() * 5 + 65; } 
+            let endT, endL;
+            if (zone === 0) { endT = Math.random() * 5 + 10; endL = Math.random() * 40 + 10; } 
+            else if (zone === 1) { endT = Math.random() * 5 + 80; endL = Math.random() * 40 + 10; } 
+            else if (zone === 2) { endT = Math.random() * 40 + 20; endL = Math.random() * 5 + 2; } 
+            else { endT = Math.random() * 40 + 20; endL = Math.random() * 5 + 65; } 
+
+            // Откуда летит (за краем экрана сверху)
+            let startT = -10;
+            let startL = Math.random() * 100;
+
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
             
-            feed.style.top = t + 'vh';
-            feed.style.left = l + 'vw';
+            const dx = (endL - startL) * window.innerWidth / 100;
+            const dy = (endT - startT) * window.innerHeight / 100;
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
             
-            document.body.appendChild(feed);
-            feed.addEventListener('animationend', () => feed.remove());
+            star.style.transform = `rotate(${angle}deg)`;
+            document.body.appendChild(star);
+            
+            // Анимация полета
+            const animation = star.animate([
+                { top: startT + 'vh', left: startL + 'vw' },
+                { top: endT + 'vh', left: endL + 'vw' }
+            ], { duration: 500, easing: 'ease-in' });
+
+            animation.onfinish = () => {
+                star.remove();
+                
+                // ВЗРЫВ! Появляется текст
+                const feed = document.createElement('div');
+                feed.className = 'kill-feed';
+                feed.innerHTML = killFeedTexts[Math.floor(Math.random() * killFeedTexts.length)];
+                feed.style.top = endT + 'vh';
+                feed.style.left = endL + 'vw';
+                
+                document.body.appendChild(feed);
+                feed.addEventListener('animationend', () => feed.remove());
+            };
         }
 
-        /* === МУЗЫКА КАЖДЫЕ 80 СЕКУНД (1 МИНУТА 20 СЕКУНД) === */
+        /* === МУЗЫКА КАЖДЫЕ 1 МИНУТУ 20 СЕКУНД (80 000 мс) === */
         const playlist = ["Sun.mp3", "porno.mp3", "Bullet.mp3", "london.mp3", "ak47.mp3", "paparoach.mp3", "Gorillaz.mp3"];
         let currentTrack = 0;
         let isSpecialAudioPlaying = false; 
@@ -489,7 +506,7 @@
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия", "настя", "настена"] },
             { q: "Как ты обычно с нами здороваешься, когда заходишь?", a: ["привет", "привет ребята", "привет, ребята"] },
             { q: "В каком году был первый матч Антона с Алисой?", a: ["2024"] },
-            { q: "Вопрос 4", a: ["ответ4"] },
+            { q: "Сколько весит топор. Если известно что весит 1кг + полтопора?", a: ["2", "2 кг", "2 кило", "два"] },
             { q: "Вопрос 5", a: ["ответ5"] },
             { q: "Вопрос 6", a: ["ответ6"] },
             { q: "Вопрос 7", a: ["ответ7"] },
@@ -580,7 +597,7 @@
             audio.play(); 
             initVisualizer();
 
-            // ТАЙМЕР МУЗЫКИ 1 МИНУТА 20 СЕКУНД (80 000 МС)
+            // ТАЙМЕР МУЗЫКИ (80 000 МС = 1 МИН 20 СЕК)
             musicFadeTimer = setInterval(changeTrackWithFade, 80000);
 
             document.getElementById('start-overlay').style.display = 'none';
@@ -589,7 +606,7 @@
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
             setInterval(spawnPhoto, 5000); 
-            setInterval(spawnKillFeed, 8000);
+            setInterval(spawnKillFeedAndStar, 8000);
         }
 
         /* === УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК МЕДИА === */
@@ -657,6 +674,8 @@
                         playMediaEvent('reveal-img-2', 'Privet.mp3', 4000); 
                     } else if (step === 3) {
                         playMediaEvent('reveal-vid-3', null);
+                    } else if (step === 4) {
+                        playMediaEvent('reveal-vid-4', null); // Запускаем collapse.mp4
                     } else {
                         nextStep();
                     }
