@@ -10,17 +10,18 @@
     <link rel="preload" href="Sun.mp3" as="audio">
     <link rel="preload" href="gol.mp3" as="audio">
     
-    <!-- Подключил шрифт Pacifico для бегущей строки -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Подключаем только чистые, красивые шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #e5c07b; --red: #c23c2a; --green: #4af626; --purple: #b829ff; --matrix-green: #0f0; }
         
-        /* СПОКОЙНЫЙ, ДОРОГОЙ ОДНОТОННЫЙ ФОН */
+        /* РОСКОШНЫЙ КОСМИЧЕСКИ-МИСТИЧЕСКИЙ ФОН */
         body { 
             margin: 0; 
-            background: linear-gradient(135deg, #07090e, #11141f, #0a0d14);
+            /* Глубокий, органичный градиент: ночной индиго, насыщенный фиолетовый, темный синий */
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             background-size: 200% 200%;
-            animation: calmGradient 15s ease infinite;
+            animation: calmGradient 20s ease infinite;
             font-family: 'Roboto', sans-serif; 
             color: #fff; 
             overflow: hidden; 
@@ -129,30 +130,34 @@
         }
         .capybara-container:hover .tooltip { visibility: visible; opacity: 1; }
 
-        /* ОГРОМНЫЕ И УСКОРЕННЫЕ ФОТОГРАФИИ "В ПОЕЗДЕ" */
+        /* ОГРОМНЫЕ ФОТОГРАФИИ "В ПОЕЗДЕ" */
         .falling-photo { 
             position: fixed; z-index: 1; pointer-events: none; opacity: 0; 
             width: 520px; 
             border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            /* Ускорено до 22 секунд (было 35) */
-            animation: moveTrain 22s linear forwards;
+            animation: moveTrain 35s linear forwards;
         }
         @keyframes moveTrain {
             0% { transform: translateX(110vw); opacity: 0; }
-            5% { opacity: 0.35; } 
-            95% { opacity: 0.35; }
+            5% { opacity: 0.25; } 
+            95% { opacity: 0.25; }
             100% { transform: translateX(-600px); opacity: 0; }
         }
 
-        /* ПЛАВАЮЩАЯ СТРОКА (ПОЗДРАВЛЕНИЕ) */
+        /* КРАСИВАЯ БЕГУЩАЯ СТРОКА НА ВСЮ ШИРИНУ */
         #marquee-container {
-            position: fixed; top: 20px; left: 0; width: 100%; z-index: 15;
+            position: fixed; top: 30px; left: 0; width: 100vw; z-index: 15;
             overflow: hidden; pointer-events: none; display: none;
+            background: rgba(0, 0, 0, 0.4); /* Легкая подложка для читаемости */
+            padding: 10px 0;
+            border-top: 1px solid rgba(229, 192, 123, 0.2);
+            border-bottom: 1px solid rgba(229, 192, 123, 0.2);
         }
         .marquee-text {
             display: inline-block; white-space: nowrap;
-            font-family: 'Pacifico', cursive; font-size: 2.8rem;
-            color: var(--gold); text-shadow: 0 0 15px var(--gold), 0 0 5px #fff;
+            /* Используем строгий, прямой и величественный шрифт, заглавными буквами */
+            font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
+            color: var(--gold); text-shadow: 0 0 15px var(--gold);
             animation: marqueeScroll 18s linear infinite;
         }
         @keyframes marqueeScroll {
@@ -162,13 +167,13 @@
         
         /* КОНТЕНТ В ЦЕНТРЕ */
         .content { 
-            position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); 
+            position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); 
             z-index: 10; width: 90%; max-width: 800px; text-align: center; display: none; 
         }
         
-        /* ОКОШКО ВОПРОСА (СПОКОЙНЫЙ ЗОЛОТОЙ ВИЗУАЛИЗАТОР) */
+        /* ОКОШКО ВОПРОСА */
         .step { 
-            background: rgba(13, 16, 23, 0.85); padding: 45px; 
+            background: rgba(10, 12, 18, 0.85); padding: 45px; 
             border-radius: 15px; border: 2px solid #333; margin-top: 20px; 
             display: none; transform-origin: center center;
             backdrop-filter: blur(8px);
@@ -200,7 +205,7 @@
         }
         .submit-btn:hover:not(:disabled) { background: var(--gold); color: black; transform: scale(1.02); }
 
-        /* ОГРОМНЫЙ ПАК KILL FEED (СМЕШНЫЕ ВСТАВКИ ЗА ТАБЛИЧКОЙ) */
+        /* KILL FEED */
         .kill-feed {
             position: fixed; z-index: 5; font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: bold;
             color: white; text-shadow: 2px 2px 5px black, 0 0 15px rgba(0,0,0,1);
@@ -239,7 +244,7 @@
         </div>
     </div>
 
-    <!-- БЕГУЩАЯ СТРОКА ПОЗДРАВЛЕНИЯ (скрыта до старта) -->
+    <!-- БЕГУЩАЯ СТРОКА (НА ВСЮ ШИРИНУ) -->
     <div id="marquee-container">
         <div class="marquee-text">С днем рождения, Алиса и Илья! Я вас люблю ❤️</div>
     </div>
@@ -426,6 +431,10 @@
         let currentTrack = 0;
         let isSpecialAudioPlaying = false; 
 
+        // ИСПРАВЛЕНА ОШИБКА РАННЕГО ЗАПУСКА:
+        // Таймер переключения музыки задается ТОЛЬКО после старта квеста (в функции startExperience)
+        let musicFadeTimer;
+
         function changeTrackWithFade() {
             if (isSpecialAudioPlaying) return; 
             let fadeOut = setInterval(() => {
@@ -444,10 +453,9 @@
             }, 100);
         }
         
-        setInterval(changeTrackWithFade, 50000);
         audio.addEventListener('ended', changeTrackWithFade);
 
-        /* === УСКОРЕННЫЕ И ОГРОМНЫЕ ФОТО В ПОЕЗДЕ === */
+        /* === ОГРОМНЫЕ ФОТО В ПОЕЗДЕ === */
         let currentPhotoIndex = 1;
         let isRandomPhotos = false;
 
@@ -467,8 +475,7 @@
             img.style.top = (Math.random() * 40 + 10) + 'vh'; 
             
             document.body.appendChild(img);
-            // Удаляем фото через 22 секунды (когда анимация закончится)
-            setTimeout(() => img.remove(), 22000); 
+            setTimeout(() => img.remove(), 35000); 
         }
 
         /* === ВОПРОСЫ === */
@@ -560,21 +567,22 @@
         function startExperience() {
             clearInterval(matrixInterval);
             
-            // Включаем бегущую строку
             marquee.style.display = 'block';
 
             audio.volume = 0.15;
-            audio.src = playlist[currentTrack];
+            audio.src = playlist[0]; // Явно задаем первый трек
             audio.play(); 
             initVisualizer();
+
+            // ЗАПУСКАЕМ ТАЙМЕР СМЕНЫ ТРЕКОВ ТОЛЬКО СЕЙЧАС (50 сек)
+            musicFadeTimer = setInterval(changeTrackWithFade, 50000);
 
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
-            // Спавним фото каждые 4 секунды
-            setInterval(spawnPhoto, 4000); 
+            setInterval(spawnPhoto, 5000); 
             setInterval(spawnKillFeed, 8000);
         }
 
