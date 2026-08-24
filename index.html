@@ -141,10 +141,8 @@
         }
         .marquee-text {
             display: inline-block; white-space: nowrap;
-            /* Прямой шрифт, НЕ курсив */
             font-family: 'Roboto', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 1px;
             color: #fff; text-shadow: 0 0 10px var(--space-blue), 0 0 20px var(--space-blue);
-            /* Очень плавно и медленно (60 секунд) */
             animation: marqueeScroll 60s linear infinite;
         }
         @keyframes marqueeScroll {
@@ -211,7 +209,6 @@
             padding: 12px 30px; border-radius: 4px; pointer-events: none; opacity: 0;
             white-space: nowrap; animation: killFeedAnim 6s ease-out forwards;
         }
-        /* Вспышка (explosion) при появлении текста */
         @keyframes killFeedAnim {
             0% { opacity: 0; transform: translateY(20px) scale(0.5); filter: brightness(3); }
             5% { opacity: 1; transform: translateY(0) scale(1.1); filter: brightness(2); }
@@ -233,32 +230,27 @@
 </head>
 <body>
 
-    <!-- ЗВЕЗДНЫЙ ФОН -->
     <div id="space-bg"></div>
 
-    <!-- ЭКРАН С МАТРИЦЕЙ И ТЕРМИНАЛОМ -->
     <div id="start-overlay">
         <canvas id="matrix-canvas"></canvas>
         <div class="overlay-content">
-            <h1>С днем рождения<br>Илья и Алиса!</h1>
+            <h1>Поздравляю Ильюша и Алисик<br>с знаменательными днями!</h1>
             <div id="terminal"></div>
             <button id="start-btn" disabled onclick="startExperience()">Вперед (60)</button>
         </div>
     </div>
 
-    <!-- БЕГУЩАЯ СТРОКА -->
     <div id="marquee-container">
-        <div class="marquee-text">Когда я смотрю на вас, я понимаю, что такое настоящая гармония. Вы — две половинки одного целого, два берега одной реки, два крыла одной птицы. Пусть ваш общий путь будет ровным и светлым, пусть встречные ветры только помогают вам двигаться вперед, а солнце всегда освещает дорогу. Желаю вам никогда не терять друг друга в суете дней, всегда находить время для тихих разговоров и громкого смеха. Пусть в вашем доме пахнет счастьем, а в сердцах никогда не гаснет та искра, которая когда-то свела вас вместе. Берегите друг друга и помните: вы — самая красивая история, которую я знаю. Я вас люблю ❤️</div>
+        <div class="marquee-text">Когда я смотрю на вас, я понимаю, что такое настоящая гармония. Вы — две половинки одного целого, два берега одной реки. Пусть ваш общий путь будет ровным и светлым, пусть встречные ветры только помогают вам двигаться вперед, а солнце всегда освещает дорогу. Желаю вам никогда не терять друг друга в суете дней, всегда находить время для тихих разговоров и громкого смеха. Пусть в вашем доме пахнет счастьем, а в сердцах никогда не гаснет та искра, которая когда-то свела вас вместе. Берегите друг друга и помните: вы — самая красивая история, которую я знаю. Я вас люблю ❤️</div>
     </div>
 
-    <!-- МЕДИА -->
     <audio id="audio" preload="auto"></audio>
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
     <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
     <video id="reveal-vid-3" class="reveal-media" src="bu.mp4" preload="auto"></video>
     <video id="reveal-vid-4" class="reveal-media" src="collapse.mp4" preload="auto"></video>
 
-    <!-- АВАТАРЫ ИЛЬИ И АЛИСЫ -->
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
         <div class="checkpoint active"></div><div class="checkpoint"></div><div class="checkpoint"></div>
@@ -323,7 +315,6 @@
         }
         const matrixInterval = setInterval(drawMatrix, 40);
 
-        /* === КЭШ === */
         const audio = document.getElementById('audio');
         let avatars = []; 
         const marquee = document.getElementById('marquee-container');
@@ -373,7 +364,6 @@
             }
         }, 2200);
 
-        /* === ТАЙМЕР СТАРТА === */
         let timeLeft = 60;
         const startBtn = document.getElementById('start-btn');
         const timerInterval = setInterval(() => {
@@ -387,7 +377,6 @@
             }
         }, 1000);
 
-        /* === ОГРОМНЫЙ ПАК KILL FEED С ПАДАЮЩЕЙ ЗВЕЗДОЙ === */
         const killFeedTexts = [
             "<span style='color: var(--red);'>FIRST BLOOD!</span> Алиса застилила фраг у керри.",
             "<span style='color: var(--red);'>FIRST BLOOD!</span> Илья сделал суицид в лесных крипов.",
@@ -404,11 +393,30 @@
             "<span style='color: var(--red);'>DOMINATING!</span> Алиса закинула кокос в Рошпит. Рошан в стане.",
             "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Илья ставит зеленую мину прямо в файте.",
             "<span style='color: var(--space-blue);'>MEGA KILL!</span> Антон купил гем, но умер через секунду.",
-            "<span style='color: var(--red);'>OWNAGE!</span> Враги ливнули из-за мин в лесу."
+            "<span style='color: var(--red);'>OWNAGE!</span> Враги ливнули из-за мин в лесу.",
+            "<span style='color: #ffaa00;'>GODLIKE!</span> Илья на Рубике поднял врага в телекинез и скинул на клиф.",
+            "<span style='color: var(--red);'>DOMINATING!</span> Илья забыл купить телепорт.",
+            "<span style='color: var(--space-blue);'>MEGA KILL!</span> Алиса спасла мидера от смерти, но он вернулся и умер.",
+            "<span style='color: #00ffff;'>HOLY SHIT!</span> Илья (Oracle) спас врага своим ультом.",
+            "<span style='color: var(--space-purple);'>RAMPAGE!</span> Кто-то спер Аегис. Угадайте кто.",
+            "<span style='color: var(--red);'>FIRST BLOOD!</span> Минер взорвал сам себя на миду. Тактика!",
+            "<span style='color: var(--space-blue);'>DOUBLE KILL!</span> Курьер убит. В нем была Рапира Антона.",
+            "<span style='color: #00ffff;'>MONSTER KILL!</span> Алиса кидает каски прямо под фонтан врага.",
+            "<span style='color: var(--space-purple);'>RAMPAGE!</span> Илья поставил 50 мин в одном кусте.",
+            "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Антон фармит лес на 60-й минуте.",
+            "<span style='color: var(--space-blue);'>MEGA KILL!</span> Вражеский Снайпер не выдержал и ливнул.",
+            "<span style='color: var(--space-purple);'>RAMPAGE!</span> Алиса сделала Rampage одними касками.",
+            "<span style='color: var(--red);'>FIRST BLOOD!</span> Илья: 'Я только кнопочку нажму...'",
+            "<span style='color: #ffaa00;'>WICKED SICK!</span> Антон: 'Да я щас затащу, смотрите!'",
+            "<span style='color: var(--space-blue);'>DOUBLE KILL!</span> Кто не спрятался — тот наступил на мину.",
+            "<span style='color: #00ffff;'>HOLY SHIT!</span> Вард Алисы живет дольше, чем вся наша команда.",
+            "<span style='color: var(--red);'>DOMINATING!</span> Илья украл Black Hole, но дал его в одного саппорта.",
+            "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Антон пишет 'ez' после 80 минут пота.",
+            "<span style='color: var(--space-blue);'>MEGA KILL!</span> Алиса просто спамит смех Witch Doctor-а.",
+            "<span style='color: #00ffff;'>MONSTER KILL!</span> У Ильи 0 фрагов, но 100000 урона по героям."
         ];
 
         function spawnKillFeedAndStar() {
-            // Куда прилетит звезда (безопасные зоны)
             const zone = Math.floor(Math.random() * 4);
             let endT, endL;
             if (zone === 0) { endT = Math.random() * 5 + 10; endL = Math.random() * 40 + 10; } 
@@ -416,7 +424,6 @@
             else if (zone === 2) { endT = Math.random() * 40 + 20; endL = Math.random() * 5 + 2; } 
             else { endT = Math.random() * 40 + 20; endL = Math.random() * 5 + 65; } 
 
-            // Откуда летит (за краем экрана сверху)
             let startT = -10;
             let startL = Math.random() * 100;
 
@@ -430,7 +437,6 @@
             star.style.transform = `rotate(${angle}deg)`;
             document.body.appendChild(star);
             
-            // Анимация полета
             const animation = star.animate([
                 { top: startT + 'vh', left: startL + 'vw' },
                 { top: endT + 'vh', left: endL + 'vw' }
@@ -438,8 +444,6 @@
 
             animation.onfinish = () => {
                 star.remove();
-                
-                // ВЗРЫВ! Появляется текст
                 const feed = document.createElement('div');
                 feed.className = 'kill-feed';
                 feed.innerHTML = killFeedTexts[Math.floor(Math.random() * killFeedTexts.length)];
@@ -451,7 +455,6 @@
             };
         }
 
-        /* === МУЗЫКА КАЖДЫЕ 1 МИНУТУ 20 СЕКУНД (80 000 мс) === */
         const playlist = ["Sun.mp3", "porno.mp3", "Bullet.mp3", "london.mp3", "ak47.mp3", "paparoach.mp3", "Gorillaz.mp3"];
         let currentTrack = 0;
         let isSpecialAudioPlaying = false; 
@@ -477,7 +480,6 @@
         
         audio.addEventListener('ended', changeTrackWithFade);
 
-        /* === ОГРОМНЫЕ ФОТО В ПОЕЗДЕ === */
         let currentPhotoIndex = 1;
         let isRandomPhotos = false;
 
@@ -493,14 +495,11 @@
             const img = document.createElement('img');
             img.src = `p${i}.jpg`;
             img.className = 'falling-photo';
-            
             img.style.top = (Math.random() * 40 + 10) + 'vh'; 
-            
             document.body.appendChild(img);
             setTimeout(() => img.remove(), 35000); 
         }
 
-        /* === ВОПРОСЫ === */
         let currentStep = 1;
         const quizData = [
             { q: "Кто озвучивает фразу 'я люблю когда гмом'?", a: ["анастасия", "настя", "настена"] },
@@ -531,7 +530,6 @@
             quizArea.appendChild(stepDiv);
         });
 
-        /* === КОСМИЧЕСКИЙ АУДИО ВИЗУАЛИЗАТОР === */
         let audioCtx, analyser, dataArray;
         function initVisualizer() {
             if (!audioCtx) {
@@ -585,10 +583,8 @@
             }
         }
 
-        /* === СТАРТ === */
         function startExperience() {
             clearInterval(matrixInterval);
-            
             avatars = [document.getElementById('avatar-ilya'), document.getElementById('avatar-alice')];
             marquee.style.display = 'block';
 
@@ -597,7 +593,6 @@
             audio.play(); 
             initVisualizer();
 
-            // ТАЙМЕР МУЗЫКИ (80 000 МС = 1 МИН 20 СЕК)
             musicFadeTimer = setInterval(changeTrackWithFade, 80000);
 
             document.getElementById('start-overlay').style.display = 'none';
@@ -609,7 +604,6 @@
             setInterval(spawnKillFeedAndStar, 8000);
         }
 
-        /* === УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК МЕДИА === */
         function playMediaEvent(mediaId, audioFile, duration = null) {
             isSpecialAudioPlaying = true;
             audio.pause();
@@ -649,7 +643,6 @@
             }
         }
 
-        /* === ПРОВЕРКА ОТВЕТА === */
         async function checkAnswer(step) {
             if (isSpecialAudioPlaying) return; 
 
@@ -675,7 +668,7 @@
                     } else if (step === 3) {
                         playMediaEvent('reveal-vid-3', null);
                     } else if (step === 4) {
-                        playMediaEvent('reveal-vid-4', null); // Запускаем collapse.mp4
+                        playMediaEvent('reveal-vid-4', null); // Видео collapse.mp4
                     } else {
                         nextStep();
                     }
@@ -686,7 +679,6 @@
             }
         }
 
-        /* === ПЕРЕХОД НА СЛЕДУЮЩИЙ ШАГ === */
         function nextStep() {
             const oldStep = document.getElementById('step' + currentStep);
             oldStep.style.display = 'none';
