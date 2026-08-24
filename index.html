@@ -12,100 +12,126 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #ffd700; --red: #ff2a2a; --green: #4af626; --purple: #b829ff; }
+        :root { --gold: #e5c07b; --red: #c23c2a; --green: #4af626; --purple: #b829ff; }
         
-        /* СОЧНЫЙ, ЖИВОЙ И СВЕТЛЫЙ ФОН */
+        /* СПОКОЙНЫЙ, ДОРОГОЙ ОДНОТОННЫЙ ФОН */
         body { 
             margin: 0; 
-            background: linear-gradient(45deg, #1a0b2e, #00332a, #2b0015, #110022);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: linear-gradient(135deg, #07090e, #11141f, #0a0d14);
+            background-size: 200% 200%;
+            animation: calmGradient 15s ease infinite;
             font-family: 'Roboto', sans-serif; 
             color: #fff; 
             overflow: hidden; 
             min-height: 100vh; 
         }
-        @keyframes gradientBG {
+        @keyframes calmGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
         /* ЭКРАН ЗАГРУЗКИ */
-        #start-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 25px var(--gold); margin-bottom: 20px; }
+        #start-overlay { position: fixed; inset: 0; background: rgba(5, 7, 10, 0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--gold); margin-bottom: 20px; }
         
-        button { background: rgba(0, 0, 0, 0.6); color: var(--gold); border: 2px solid var(--gold); padding: 15px 50px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; margin-bottom: 25px; font-weight: bold; text-shadow: 0 0 10px var(--gold); box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2); }
-        button:hover:not(:disabled) { background: var(--gold); color: black; box-shadow: 0 0 25px var(--gold); text-shadow: none; }
-        button:disabled { border-color: #555; color: #888; cursor: not-allowed; text-shadow: none; box-shadow: none; }
+        button { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 15px 50px; font-family: 'Cinzel', serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; transition: 0.3s; margin-bottom: 25px; font-weight: bold; }
+        button:hover:not(:disabled) { background: var(--gold); color: black; box-shadow: 0 0 20px var(--gold); }
+        button:disabled { border-color: #555; color: #666; cursor: not-allowed; }
         
         /* ТЕРМИНАЛ ЗАГРУЗКИ */
         #terminal { 
-            width: 90%; max-width: 800px; height: 320px; background: rgba(10, 15, 20, 0.9); 
-            border: 2px solid var(--green); border-radius: 8px; padding: 25px; 
+            width: 90%; max-width: 800px; height: 320px; background: rgba(5, 8, 12, 0.9); 
+            border: 1px solid #333; border-radius: 8px; padding: 25px; 
             text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 1.2rem; 
-            color: var(--green); overflow-y: auto; box-shadow: inset 0 0 30px #000, 0 0 20px rgba(74, 246, 38, 0.3);
+            color: #6a9fb5; overflow-y: auto; box-shadow: inset 0 0 20px #000;
             line-height: 1.6;
         }
         #terminal::-webkit-scrollbar { width: 8px; }
-        #terminal::-webkit-scrollbar-track { background: #111; }
-        #terminal::-webkit-scrollbar-thumb { background: var(--green); border-radius: 4px; }
+        #terminal::-webkit-scrollbar-track { background: #000; }
+        #terminal::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
-        .log-line { margin-bottom: 8px; opacity: 0; animation: typeLine 0.1s forwards; text-shadow: 0 0 8px var(--green); }
+        .log-line { margin-bottom: 8px; opacity: 0; animation: typeLine 0.1s forwards; }
         @keyframes typeLine { to { opacity: 1; } }
-        .log-warn { color: var(--gold); text-shadow: 0 0 8px var(--gold); font-weight: bold; }
-        .log-err { color: var(--red); text-shadow: 0 0 8px var(--red); font-weight: bold; }
+        .log-warn { color: var(--gold); font-weight: bold; }
+        .log-err { color: var(--red); font-weight: bold; }
 
         /* ТРОПА И ФЛАЖКИ */
         .lane-container { position: fixed; bottom: 60px; left: 10%; width: 80%; height: 120px; z-index: 50; display: flex; align-items: center; justify-content: space-between; }
-        .lane-line { position: absolute; width: 100%; height: 12px; background: rgba(0, 0, 0, 0.5); top: 50%; z-index: 1; border-radius: 6px; border: 2px solid #555; box-shadow: 0 0 10px #000; }
+        .lane-line { position: absolute; width: 100%; height: 8px; background: rgba(0, 0, 0, 0.6); top: 50%; z-index: 1; border-radius: 4px; border: 1px solid #222; }
         
-        .checkpoint { width: 10px; height: 45px; background: #333; z-index: 2; transition: 0.3s; position: relative; border-radius: 3px; border: 1px solid #000; }
-        .checkpoint::before { content: ''; position: absolute; top: -16px; left: 0; width: 26px; height: 16px; background: var(--red); display: none; clip-path: polygon(0 0, 100% 50%, 0 100%); filter: drop-shadow(0 0 5px var(--red)); }
-        .checkpoint.active { background: var(--gold); box-shadow: 0 0 20px var(--gold); border-color: #fff; }
+        .checkpoint { width: 8px; height: 35px; background: #222; z-index: 2; transition: 0.3s; position: relative; border-radius: 2px; }
+        .checkpoint::before { content: ''; position: absolute; top: -14px; left: 0; width: 20px; height: 12px; background: var(--red); display: none; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+        .checkpoint.active { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
         .checkpoint.active::before { display: block; }
         
         /* СИММЕТРИЧНЫЙ ЗАМОК */
-        .lock { width: 38px; height: 30px; background: var(--gold); border-radius: 6px; position: relative; box-shadow: 0 0 25px var(--gold); z-index: 2; display: flex; justify-content: center; align-items: center; }
-        .lock::before { content: ''; position: absolute; width: 20px; height: 18px; border: 6px solid var(--gold); border-bottom: none; border-radius: 16px 16px 0 0; top: -18px; left: 50%; transform: translateX(-50%); box-sizing: border-box; }
-        .lock::after { content: ''; width: 8px; height: 12px; background: #000; border-radius: 4px; }
+        .lock { width: 34px; height: 26px; background: var(--gold); border-radius: 6px; position: relative; box-shadow: 0 0 20px var(--gold); z-index: 2; display: flex; justify-content: center; align-items: center; }
+        .lock::before { content: ''; position: absolute; width: 18px; height: 16px; border: 5px solid var(--gold); border-bottom: none; border-radius: 14px 14px 0 0; top: -16px; left: 50%; transform: translateX(-50%); box-sizing: border-box; }
+        .lock::after { content: ''; width: 6px; height: 10px; background: #0d1117; border-radius: 3px; }
 
-        /* ЭЛЬФ (ОДИН АВАТАР) */
-        .elf-avatar { 
-            position: absolute; width: 60px; height: 60px; 
+        /* ПИКСЕЛЬНЫЙ ЭЛЬФ (МАРИО СТАЙЛ) */
+        .elf-container { 
+            position: absolute; width: 40px; height: 40px; 
             z-index: 20; transition: left 0.8s ease-in-out;
             display: flex; align-items: center; justify-content: center; 
-            font-size: 40px; filter: drop-shadow(0 0 15px var(--gold));
-            /* БЕГ НА МЕСТЕ */
-            animation: runInPlace 0.4s infinite alternate ease-in-out;
-            cursor: pointer;
-        }
-        @keyframes runInPlace {
-            0% { transform: translateY(0) rotate(-5deg); }
-            100% { transform: translateY(-10px) rotate(5deg); }
-        }
-        /* АНИМАЦИЯ ПРЫЖКА (ПЕРЕОПРЕДЕЛЯЕТ БЕГ) */
-        .elf-jump {
-            animation: elfJump 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
-        }
-        @keyframes elfJump {
-            0% { transform: translateY(0) scale(1) rotate(0); }
-            50% { transform: translateY(-80px) scale(1.3) rotate(15deg); }
-            100% { transform: translateY(0) scale(1) rotate(0); }
+            cursor: pointer; top: 30px;
         }
         
-        /* ТУЛТИП ДЛЯ ЭЛЬФА */
+        /* Анимация бега на месте */
+        .elf-running { animation: runWaddle 0.4s infinite alternate ease-in-out; }
+        @keyframes runWaddle {
+            0% { transform: translateY(0) rotate(-5deg); }
+            100% { transform: translateY(-6px) rotate(5deg); }
+        }
+
+        /* Анимация прыжка к следующему вопросу */
+        .elf-jump { animation: elfJump 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards !important; }
+        @keyframes elfJump {
+            0% { transform: translateY(0) scale(1) rotate(0); }
+            50% { transform: translateY(-70px) scale(1.2) rotate(15deg); }
+            100% { transform: translateY(0) scale(1) rotate(0); }
+        }
+
+        /* CSS-рисунок пиксельного героя */
+        .pixel-sprite {
+            width: 6px; height: 6px;
+            background: #ffccaa; /* Центр лица */
+            box-shadow: 
+                0 -6px #2ecc71, -6px -6px #2ecc71, 6px -6px #2ecc71, /* Шапочка */
+                -6px 0 #ffccaa, 6px 0 #000, /* Лицо и Глаз */
+                0 6px #2ecc71, -6px 6px #2ecc71, 6px 6px #2ecc71, /* Зеленое тело */
+                12px 6px #8b4513, 18px 0 #8b4513, 12px -6px #8b4513, /* Лук в руке */
+                -6px 12px #34495e, 6px 12px #34495e, /* Ноги */
+                -12px 18px #e74c3c, -6px 18px #e74c3c, 6px 18px #e74c3c, 12px 18px #e74c3c; /* Красные ботинки скорохода */
+            transform: scale(1.8);
+            margin-top: -10px;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));
+        }
+
         .tooltip { 
-            visibility: hidden; width: 300px; background-color: rgba(0,0,0,0.9); 
-            color: var(--gold); text-align: center; border-radius: 12px; padding: 15px; 
+            visibility: hidden; width: 280px; background-color: rgba(0,0,0,0.9); 
+            color: var(--gold); text-align: center; border-radius: 8px; padding: 12px; 
             position: absolute; z-index: 100; bottom: 120%; left: 50%; transform: translateX(-50%);
-            font-size: 18px; border: 2px solid var(--gold); box-shadow: 0 0 20px var(--gold); 
+            font-size: 16px; border: 1px solid var(--gold); box-shadow: 0 0 15px var(--gold); 
             opacity: 0; transition: opacity 0.3s; font-family: 'Roboto', sans-serif;
         }
-        .elf-avatar:hover .tooltip { visibility: visible; opacity: 1; }
+        .elf-container:hover .tooltip { visibility: visible; opacity: 1; }
 
-        /* ЯРКИЕ ФОТО БЕЗ ТЕМНОГО ФОНА */
-        .falling-photo { position: fixed; z-index: 1; pointer-events: none; opacity: 0; will-change: transform, top, left; filter: drop-shadow(0 0 15px rgba(0,0,0,0.5)); border-radius: 10px; }
+        /* ФОТОГРАФИИ "В ПОЕЗДЕ" (ПЛАВНО, ОДИН РАЗМЕР, СЛЕВА НАПРАВО) */
+        .falling-photo { 
+            position: fixed; z-index: 1; pointer-events: none; opacity: 0; 
+            width: 260px; /* Статичный аккуратный размер */
+            border-radius: 6px; box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            /* Фото едут медленно 28 секунд */
+            animation: moveTrain 28s linear forwards;
+        }
+        @keyframes moveTrain {
+            0% { transform: translateX(110vw); opacity: 0; }
+            5% { opacity: 0.25; } /* Приглушенная прозрачность */
+            95% { opacity: 0.25; }
+            100% { transform: translateX(-350px); opacity: 0; }
+        }
         
         /* КОНТЕНТ В ЦЕНТРЕ */
         .content { 
@@ -113,63 +139,66 @@
             z-index: 10; width: 90%; max-width: 800px; text-align: center; display: none; 
         }
         
-        /* ВЫРАЗИТЕЛЬНОЕ ОКОШКО ВОПРОСА (GLASSMORPHISM) */
+        /* ОКОШКО ВОПРОСА (СПОКОЙНЫЙ ЗОЛОТОЙ ВИЗУАЛИЗАТОР) */
         .step { 
-            background: rgba(20, 5, 30, 0.75); padding: 50px; 
-            border-radius: 20px; border: 3px solid var(--gold); margin-top: 20px; 
+            background: rgba(13, 16, 23, 0.85); padding: 45px; 
+            border-radius: 15px; border: 2px solid #333; margin-top: 20px; 
             display: none; transform-origin: center center;
-            backdrop-filter: blur(12px); /* Эффект стекла */
+            backdrop-filter: blur(8px);
             transition: box-shadow 0.05s ease-out, transform 0.05s ease-out, border-color 0.05s ease-out; 
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         
-        .step p { font-size: 2.2rem; margin-bottom: 40px; color: #fff; line-height: 1.4; text-shadow: 0 0 10px rgba(0,0,0,0.8); font-weight: bold; }
+        .step p { font-size: 1.8rem; margin-bottom: 35px; color: #fff; line-height: 1.4; text-shadow: 0 0 10px rgba(0,0,0,0.8); font-weight: bold; }
         
         /* ПОЛЯ ВВОДА И КНОПКИ */
         input { 
-            width: 100%; padding: 20px; background: rgba(0, 0, 0, 0.6); border: 2px solid var(--gold); 
-            color: var(--gold); border-radius: 10px; margin-bottom: 30px; 
-            font-size: 1.8rem; text-align: center; box-sizing: border-box; transition: 0.3s;
-            font-weight: bold; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            width: 100%; padding: 18px; background: rgba(0, 0, 0, 0.6); border: 2px solid #555; 
+            color: #fff; border-radius: 8px; margin-bottom: 25px; 
+            font-size: 1.6rem; text-align: center; box-sizing: border-box; transition: 0.3s;
         }
-        input:focus { outline: none; border-color: #fff; background: rgba(0, 0, 0, 0.8); box-shadow: 0 0 20px var(--gold); }
-        input::placeholder { color: #888; font-weight: normal; }
+        input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 15px rgba(229, 192, 123, 0.3); }
+        input::placeholder { color: #666; font-weight: normal; }
         input:disabled { opacity: 0.7; cursor: not-allowed; }
 
         /* ЭФФЕКТЫ ОТВЕТОВ */
-        .shake { animation: shake 0.4s; border-color: var(--red) !important; box-shadow: 0 0 25px var(--red) !important; }
+        .shake { animation: shake 0.4s; border-color: var(--red) !important; box-shadow: 0 0 20px var(--red) !important; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-15px);} 50% {transform: translateX(15px);} 75% {transform: translateX(-15px);} }
-        .success-glow { border-color: var(--green) !important; box-shadow: 0 0 40px var(--green), inset 0 0 20px var(--green) !important; color: var(--green); }
+        .success-glow { border-color: var(--green) !important; box-shadow: 0 0 25px var(--green), inset 0 0 15px var(--green) !important; color: var(--green); }
         
-        /* KILL FEED */
+        .submit-btn { 
+            width: 100%; padding: 18px; background: var(--red); color: white; border: none; 
+            cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.5rem; 
+            border-radius: 8px; transition: 0.3s;
+        }
+        .submit-btn:hover:not(:disabled) { background: var(--gold); color: black; transform: scale(1.02); }
+
+        /* KILL FEED (СМЕШНЫЕ ВСТАВКИ ЗА ТАБЛИЧКОЙ) */
         .kill-feed {
-            position: fixed; z-index: 5; font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: bold;
-            color: white; text-shadow: 2px 2px 5px black, 0 0 15px rgba(0,0,0,1);
-            background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), transparent); border-left: 6px solid var(--red);
-            padding: 15px 30px; border-radius: 4px; pointer-events: none; opacity: 0;
-            white-space: nowrap; animation: killFeedAnim 5s ease-in-out forwards;
+            position: fixed; z-index: 5; font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: bold;
+            color: white; text-shadow: 2px 2px 5px black, 0 0 10px rgba(0,0,0,1);
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.8), transparent); border-left: 4px solid var(--red);
+            padding: 10px 25px; border-radius: 4px; pointer-events: none; opacity: 0;
+            white-space: nowrap; animation: killFeedAnim 6s ease-in-out forwards;
         }
         @keyframes killFeedAnim {
-            0% { opacity: 0; transform: translateY(30px) scale(0.8); }
-            10% { opacity: 1; transform: translateY(0) scale(1.1); }
+            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+            10% { opacity: 1; transform: translateY(0) scale(1.05); }
             15% { transform: scale(1); }
             80% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 0; transform: translateY(-20px); }
         }
 
         /* МЕДИА СЮРПРИЗЫ */
         .reveal-media { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             width: 100px; height: 100px; z-index: 10000; opacity: 0; 
-            transition: all 1.5s ease-in-out; border: 5px solid var(--gold); display: none; 
-            background-color: #000; object-fit: contain; pointer-events: none; border-radius: 15px;
+            transition: all 1s ease-in-out; border: 4px solid var(--gold); display: none; 
+            background-color: #000; object-fit: contain; pointer-events: none; border-radius: 12px;
+            box-shadow: 0 0 30px #000;
         }
         .reveal-media.expanded { width: 100vw; height: 100vh; opacity: 1; border-width: 0; border-radius: 0; }
-        @keyframes moveLR { from { left: -600px; transform: rotate(-5deg); } to { left: 110vw; transform: rotate(5deg); } }
-        @keyframes moveTB { from { top: -600px; transform: rotate(-5deg); } to { top: 110vh; transform: rotate(5deg); } }
-        @keyframes moveRL { from { left: 110vw; transform: rotate(5deg); } to { left: -600px; transform: rotate(-5deg); } }
-        @keyframes moveBT { from { top: 110vh; transform: rotate(5deg); } to { top: -600px; transform: rotate(-5deg); } }
     </style>
 </head>
 <body>
@@ -182,7 +211,6 @@
         </div>
     </div>
 
-    <!-- МУЗЫКА И МЕДИА -->
     <audio id="audio" preload="auto"></audio>
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
     <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
@@ -197,9 +225,9 @@
         
         <div class="lock"></div>
         
-        <!-- ЭЛЬФ -->
-        <div class="elf-avatar" id="avatar-elf" style="left: 0%;">
-            🧝‍♂️🏹👟
+        <!-- ПИКСЕЛЬНЫЙ ЭЛЬФ-СКОРОХОД -->
+        <div class="elf-container elf-running" id="avatar-elf" style="left: 0%;">
+            <div class="pixel-sprite"></div>
             <div class="tooltip">Эльф-скороход готов к фарму!</div>
         </div>
     </div>
@@ -209,33 +237,32 @@
     </div>
 
     <script>
-        /* === КЭШ === */
         const audio = document.getElementById('audio');
         const elf = document.getElementById('avatar-elf');
         
-        /* === ЛОГИКА ТЕРМИНАЛА ЗАГРУЗКИ === */
+        /* === ЛОГИКА ТЕРМИНАЛА ЗАГРУЗКИ (ОБНОВЛЕННЫЕ ШУТКИ) === */
         const terminalLogs = [
             "[SYS] Инициализация тайного лобби...",
             "[SYS] Подключение к серверам Dota 2...",
             "[SYS] Анализ пинга... 999 мс. Играбельно.",
-            "<span class='log-err'>[ERROR] Илья снова ферст-пикнул Techies. Команда пишет 'GG' до выхода крипов.</span>",
-            "[WAIT] Расстановка мин по всему лесу. Лесник плачет в углу...",
+            "<span class='log-err'>[ERROR] Илья снова ферст-пикнул Techies. Команда пишет 'GG'.</span>",
+            "[WAIT] Илья взял Оракла. Обещает спасать, но кидает False Promise на фуллового крипа.",
             "<span class='log-warn'>[OK] Алиса взяла Witch Doctor. Ситуация под контролем.</span>",
             "[WAIT] Брошен кокос! Летит... летит... отскок в лесного крипа. Классика.",
-            "<span class='log-err'>[ERROR] Вражеский Пудж хукнул крипа. Снова.</span>",
+            "<span class='log-err'>[ERROR] Илья на Рубике украл Rot у Дума и не знает как выключить.</span>",
             "[SYS] Оооояяяяя! Загрузка касочек... Эффективность хила 146%.",
             "<span class='log-err'>[ERROR] Илья заминировал Рошпит. Сервер лагает от количества бочек.</span>",
             "<span class='log-warn'>[INFO] Антон пытается затащить эту катку. Шансы: 3%.</span>",
             "[SYS] Поиск команды... Найдены 4 подпиваса.",
             "[WAIT] Алиса ставит Death Ward (WUB WUB WUB). Раздаются крики врагов.",
             "<span class='log-warn'>[INFO] Илья делает суицид (Blast Off!) в толпу. Никто не умер, но было эффектно.</span>",
-            "[SYS] Покупка вардов... Ошибка: саппорты покупают Аганим.",
+            "[SYS] Илья кидает Purifying Flames в союзного керри и случайно добивает его.",
             "[WAIT] Илья ставит табличку 'Осторожно, мины'. Враги думают, что это блеф... Зря.",
             "[OK] Подключение к голосовому чату. Обнаружены неадекваты. Мут всех.",
             "[WAIT] Алиса хилит команду... Команда с криками убегает от хила.",
             "<span class='log-warn'>[SYS] Сканирование таверны... Там подозрительно много наших.</span>",
             "<span class='log-err'>[ERROR] Минёр в команде = игра на 2 часа. Заказывайте пиццу.</span>",
-            "[SYS] Габен забирает ваши MMR... Успешно.",
+            "[SYS] Илья на Рубике украл Телепорт Фуриона и улетел на вражеский фонтан.",
             "[SYS] Вражеский керри наступил на красную мину. Минус нервы.",
             "[WAIT] Алиса спамит 'Look at it go!'. Мораль команды повышена.",
             "[SYS] Синхронизация общих воспоминаний...",
@@ -272,11 +299,11 @@
             }
         }, 1000);
 
-        /* === KILL FEED === */
+        /* === РАСШИРЕННЫЙ KILL FEED (ПРО РУБИКА, ОРАКЛА И ТЕЧИСА) === */
         const killFeedTexts = [
             "<span style='color: var(--red);'>FIRST BLOOD!</span> Алиса застилила фраг у керри.",
             "<span style='color: var(--red);'>FIRST BLOOD!</span> Илья сделал суицид в лесных крипов.",
-            "<span style='color: var(--gold);'>DOUBLE KILL!</span> Илья подорвал курьера с чужими шмотками.",
+            "<span style='color: var(--gold);'>DOUBLE KILL!</span> Илья на Оракле добил своего керри.",
             "<span style='color: var(--gold);'>DOUBLE KILL!</span> Вард Алисы сделал больше фрагов, чем кор.",
             "<span style='color: var(--red);'>TRIPLE KILL!</span> Кокос Алисы бесконечно скачет по троим.",
             "<span style='color: #ffaa00;'>WICKED SICK!</span> Антон сгорел в войс-чат!",
@@ -289,7 +316,27 @@
             "<span style='color: var(--red);'>DOMINATING!</span> Алиса закинула кокос в Рошпит. Рошан в стане.",
             "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Илья ставит зеленую мину прямо в файте.",
             "<span style='color: var(--gold);'>MEGA KILL!</span> Антон купил гем, но умер через секунду.",
-            "<span style='color: var(--red);'>OWNAGE!</span> Враги ливнули из-за мин в лесу."
+            "<span style='color: var(--red);'>OWNAGE!</span> Враги ливнули из-за мин в лесу.",
+            "<span style='color: #ffaa00;'>GODLIKE!</span> Илья на Рубике поднял врага в телекинез и скинул на клиф.",
+            "<span style='color: var(--red);'>DOMINATING!</span> Илья забыл купить телепорт.",
+            "<span style='color: var(--gold);'>MEGA KILL!</span> Алиса спасла мидера от смерти, но он вернулся и умер.",
+            "<span style='color: #00ffff;'>HOLY SHIT!</span> Илья (Oracle) спас врага своим ультом.",
+            "<span style='color: var(--purple);'>RAMPAGE!</span> Кто-то спер Аегис. Угадайте кто.",
+            "<span style='color: var(--red);'>FIRST BLOOD!</span> Минер взорвал сам себя на миду. Тактика!",
+            "<span style='color: var(--gold);'>DOUBLE KILL!</span> Курьер убит. В нем была Рапира Антона.",
+            "<span style='color: #00ffff;'>MONSTER KILL!</span> Алиса кидает каски прямо под фонтан врага.",
+            "<span style='color: var(--purple);'>RAMPAGE!</span> Илья поставил 50 мин в одном кусте.",
+            "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Антон фармит лес на 60-й минуте.",
+            "<span style='color: var(--gold);'>MEGA KILL!</span> Вражеский Снайпер не выдержал и ливнул.",
+            "<span style='color: var(--purple);'>RAMPAGE!</span> Алиса сделала Rampage одними касками.",
+            "<span style='color: var(--red);'>FIRST BLOOD!</span> Илья: 'Я только кнопочку нажму...'",
+            "<span style='color: #ffaa00;'>WICKED SICK!</span> Антон: 'Да я щас затащу, смотрите!'",
+            "<span style='color: var(--gold);'>DOUBLE KILL!</span> Кто не спрятался — тот наступил на мину.",
+            "<span style='color: #00ffff;'>HOLY SHIT!</span> Вард Алисы живет дольше, чем вся наша команда.",
+            "<span style='color: var(--red);'>DOMINATING!</span> Илья украл Black Hole, но дал его в одного саппорта.",
+            "<span style='color: #ffaa00;'>UNSTOPPABLE!</span> Антон пишет 'ez' после 80 минут пота.",
+            "<span style='color: var(--gold);'>MEGA KILL!</span> Алиса просто спамит смех Witch Doctor-а.",
+            "<span style='color: #00ffff;'>MONSTER KILL!</span> У Ильи 0 фрагов, но 100000 урона по героям."
         ];
 
         function spawnKillFeed() {
@@ -297,12 +344,13 @@
             feed.className = 'kill-feed';
             feed.innerHTML = killFeedTexts[Math.floor(Math.random() * killFeedTexts.length)];
             
+            // Распределяем СТРОГО по краям экрана
             const zone = Math.floor(Math.random() * 4);
             let t, l;
-            if (zone === 0) { t = Math.random() * 5 + 5; l = Math.random() * 40 + 10; } 
-            else if (zone === 1) { t = Math.random() * 5 + 85; l = Math.random() * 40 + 10; } 
-            else if (zone === 2) { t = Math.random() * 40 + 20; l = Math.random() * 5 + 2; } 
-            else { t = Math.random() * 40 + 20; l = Math.random() * 5 + 65; } 
+            if (zone === 0) { t = Math.random() * 5 + 5; l = Math.random() * 40 + 10; } // Верх
+            else if (zone === 1) { t = Math.random() * 5 + 85; l = Math.random() * 40 + 10; } // Низ
+            else if (zone === 2) { t = Math.random() * 40 + 20; l = Math.random() * 5 + 2; } // Лево
+            else { t = Math.random() * 40 + 20; l = Math.random() * 5 + 65; } // Право
             
             feed.style.top = t + 'vh';
             feed.style.left = l + 'vw';
@@ -311,8 +359,7 @@
             feed.addEventListener('animationend', () => feed.remove());
         }
 
-        /* === МУЗЫКА И ФОТО === */
-        // Sun.mp3 ТЕПЕРЬ ПЕРВЫЙ В СПИСКЕ!
+        /* === МУЗЫКА КАЖДЫЕ 37 СЕКУНД (С PORNO.MP3 И SUN.MP3 ПЕРВЫМ) === */
         const playlist = ["Sun.mp3", "porno.mp3", "Bullet.mp3", "london.mp3", "ak47.mp3", "paparoach.mp3", "Gorillaz.mp3"];
         let currentTrack = 0;
         let isSpecialAudioPlaying = false; 
@@ -334,11 +381,12 @@
                 }
             }, 100);
         }
+        
+        // Смена трека ровно каждые 37 секунд!
+        setInterval(changeTrackWithFade, 37000);
         audio.addEventListener('ended', changeTrackWithFade);
 
-        let animDirection = 0;
-        setInterval(() => { animDirection = (animDirection + 1) % 4; }, 10000); 
-
+        /* === ФОТО (ПОЕЗД ВОСПОМИНАНИЙ) === */
         let currentPhotoIndex = 1;
         let isRandomPhotos = false;
 
@@ -354,22 +402,14 @@
             const img = document.createElement('img');
             img.src = `p${i}.jpg`;
             img.className = 'falling-photo';
-            // Фотки теперь огромные и крутые!
-            img.style.width = (Math.floor(Math.random() * 500) + 400) + 'px'; 
             
-            let animName = '';
-            if (animDirection === 0) { img.style.top = (Math.random() * 80) + 'vh'; animName = 'moveLR'; } 
-            else if (animDirection === 1) { img.style.left = (Math.random() * 90) + 'vw'; animName = 'moveTB'; } 
-            else if (animDirection === 2) { img.style.top = (Math.random() * 80) + 'vh'; animName = 'moveRL'; } 
-            else if (animDirection === 3) { img.style.left = (Math.random() * 90) + 'vw'; animName = 'moveBT'; }
-
+            // Задаем высоту поезда (чтобы не перекрывало центр)
+            img.style.top = (Math.random() * 50 + 15) + 'vh'; 
+            
             document.body.appendChild(img);
-            setTimeout(() => {
-                // Фото стали ярче (opacity: 0.85)
-                img.style.animation = `${animName} ${Math.random() * 6 + 8}s linear`;
-                img.style.opacity = '0.85'; 
-            }, 50);
-            img.addEventListener('animationend', () => img.remove());
+            
+            // Удаляем фото после того, как оно проехало (28 сек)
+            setTimeout(() => img.remove(), 28000);
         }
 
         /* === ВОПРОСЫ === */
@@ -403,7 +443,7 @@
             quizArea.appendChild(stepDiv);
         });
 
-        /* === ЯРКИЙ МНОГОЦВЕТНЫЙ АУДИО ВИЗУАЛИЗАТОР === */
+        /* === СПОКОЙНЫЙ ОДНОТОННЫЙ АУДИО ВИЗУАЛИЗАТОР === */
         let audioCtx, analyser, dataArray;
         function initVisualizer() {
             if (!audioCtx) {
@@ -432,28 +472,28 @@
             const activeStep = document.querySelector('.step.active');
             if (activeStep) {
                 if (deepBassAvg < 15 && midBassAvg < 15) {
-                    activeStep.style.boxShadow = `0 0 30px rgba(0,0,0,0.5)`;
+                    activeStep.style.boxShadow = `0 0 20px rgba(0,0,0,0.5)`;
                     activeStep.style.transform = `scale(1)`;
-                    activeStep.style.borderColor = `var(--gold)`;
+                    activeStep.style.borderColor = `#333`;
                 } else {
                     const intensity = Math.pow(deepBassAvg / 255, 1.2); 
                     const midIntensity = Math.pow(midBassAvg / 255, 1.2);
 
-                    const scale = 1 + (intensity * 0.05); 
+                    const scale = 1 + (intensity * 0.03); 
                     
-                    // ЦВЕТА ДОТЫ: ЯРКО-ЗОЛОТОЙ, ЗЕЛЕНЫЙ (RADIANT), ПУРПУРНЫЙ/КРАСНЫЙ (DIRE)
+                    // БЛАГОРОДНОЕ ЗОЛОТОЕ СВЕЧЕНИЕ (БЕЗ РАДУГИ)
                     const coreGlow = 10 + (intensity * 20); 
-                    const midGlow = 30 + (midIntensity * 50); 
-                    const outerGlow = 60 + (intensity * 100); 
+                    const midGlow = 30 + (midIntensity * 40); 
+                    const outerGlow = 60 + (intensity * 80); 
 
                     activeStep.style.boxShadow = `
-                        0 0 ${coreGlow}px rgba(255, 255, 255, ${0.6 + intensity * 0.4}), 
-                        0 0 ${midGlow}px rgba(74, 246, 38, ${0.5 + midIntensity * 0.5}), 
-                        0 0 ${outerGlow}px rgba(184, 41, 255, ${0.4 + intensity * 0.6}),
-                        inset 0 0 ${20 + intensity * 30}px rgba(255, 215, 0, ${0.3 + intensity * 0.5})
+                        0 0 ${coreGlow}px rgba(255, 235, 180, ${0.3 + intensity * 0.4}), 
+                        0 0 ${midGlow}px rgba(229, 192, 123, ${0.2 + midIntensity * 0.4}), 
+                        0 0 ${outerGlow}px rgba(229, 192, 123, ${0.1 + intensity * 0.3}),
+                        inset 0 0 ${20 + intensity * 30}px rgba(229, 192, 123, ${0.1 + intensity * 0.2})
                     `;
                     activeStep.style.transform = `scale(${scale})`;
-                    activeStep.style.borderColor = `rgba(255, 215, 0, ${0.8 + intensity})`;
+                    activeStep.style.borderColor = `rgba(229, 192, 123, ${0.4 + intensity})`;
                 }
             }
         }
@@ -470,8 +510,10 @@
             
             setTimeout(() => document.getElementById('answer1').focus(), 100);
             
-            setInterval(spawnPhoto, 1800); 
-            setInterval(spawnKillFeed, 5500);
+            // Фото запускаем раз в 3.5 секунды, чтобы не было спама
+            setInterval(spawnPhoto, 3500); 
+            // Шутки запускаем раз в 8 секунд
+            setInterval(spawnKillFeed, 8000);
         }
 
         /* === УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК МЕДИА === */
@@ -549,7 +591,7 @@
             }
         }
 
-        /* === ПЕРЕХОД НА СЛЕДУЮЩИЙ ШАГ (ПРЫЖОК ЭЛЬФА) === */
+        /* === ПЕРЕХОД НА СЛЕДУЮЩИЙ ШАГ (ЭЛЬФ ПРЫГАЕТ) === */
         function nextStep() {
             const oldStep = document.getElementById('step' + currentStep);
             oldStep.style.display = 'none';
