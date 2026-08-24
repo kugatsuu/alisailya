@@ -40,23 +40,25 @@
         .star {
             position: absolute; background: #fff; border-radius: 50%;
             animation: twinkle linear infinite;
+            will-change: opacity, transform; /* ОПТИМИЗАЦИЯ: Аппаратное ускорение */
         }
         @keyframes twinkle {
             0% { opacity: 0.1; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px #fff, 0 0 15px var(--space-blue); }
+            /* ОПТИМИЗАЦИЯ: Убрали тяжелый box-shadow, оставили только scale и opacity */
+            50% { opacity: 0.8; transform: scale(1.3); } 
             100% { opacity: 0.1; transform: scale(0.8); }
         }
 
         /* --- ЭКРАН ЗАГРУЗКИ --- */
-        #start-overlay { position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
+        #start-overlay { position: fixed; inset: 0; background: rgba(5, 5, 8, 0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
         #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
         
         .overlay-content { z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
         .overlay-content h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: #fff; text-shadow: 0 0 20px var(--space-blue); margin-bottom: 30px; line-height: 1.2; }
         
-        button { background: rgba(0,0,0,0.9); color: var(--space-blue); border: 2px solid var(--space-blue); padding: 15px 60px; font-family: 'Cinzel', serif; font-size: 1.8rem; cursor: pointer; border-radius: 12px; transition: 0.3s; margin-top: 30px; font-weight: bold; text-shadow: 0 0 10px var(--space-blue); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
-        button:hover:not(:disabled) { background: var(--space-blue); color: #000; box-shadow: 0 0 30px var(--space-blue); text-shadow: none; }
-        button:disabled { border-color: #444; color: #666; cursor: not-allowed; box-shadow: none; text-shadow: none; }
+        button { background: rgba(0,0,0,0.9); color: var(--space-blue); border: 2px solid var(--space-blue); padding: 15px 60px; font-family: 'Cinzel', serif; font-size: 1.8rem; cursor: pointer; border-radius: 12px; transition: 0.3s; margin-top: 30px; font-weight: bold; box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
+        button:hover:not(:disabled) { background: var(--space-blue); color: #000; box-shadow: 0 0 30px var(--space-blue); }
+        button:disabled { border-color: #444; color: #666; cursor: not-allowed; box-shadow: none; }
         
         /* ТЕРМИНАЛ ЗАГРУЗКИ */
         #terminal { 
@@ -65,6 +67,7 @@
             text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 1.4rem; 
             color: var(--matrix-green); overflow-y: auto; box-shadow: 0 0 40px #000, 0 0 20px rgba(0, 255, 0, 0.3);
             line-height: 1.6;
+            will-change: transform;
         }
         #terminal::-webkit-scrollbar { width: 10px; }
         #terminal::-webkit-scrollbar-track { background: #111; border-radius: 5px; }
@@ -95,6 +98,7 @@
             border-radius: 8px; cursor: help; box-shadow: 0 0 15px var(--space-blue);
             text-align: center; padding: 2px;
             background-size: cover; background-position: center;
+            will-change: left, transform;
         }
         
         .avatar-jump { animation: avaJump 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards !important; }
@@ -122,6 +126,7 @@
             width: 520px; 
             border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 20px rgba(0, 210, 255, 0.2);
             animation: moveTrain 35s linear forwards;
+            will-change: transform; /* ОПТИМИЗАЦИЯ: Ускоряет прорисовку картинок */
         }
         @keyframes moveTrain {
             0% { transform: translateX(110vw); opacity: 0; }
@@ -139,12 +144,14 @@
             border-top: 1px solid rgba(0, 210, 255, 0.3);
             border-bottom: 1px solid rgba(0, 210, 255, 0.3);
             box-shadow: 0 0 20px rgba(0, 210, 255, 0.1);
+            will-change: transform;
         }
         .marquee-text {
             display: inline-block; white-space: nowrap;
             font-family: 'Roboto', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 1px;
             color: #fff; text-shadow: 0 0 10px var(--space-blue), 0 0 20px var(--space-blue);
             animation: marqueeScroll 60s linear infinite;
+            will-change: transform;
         }
         @keyframes marqueeScroll {
             0% { transform: translateX(100vw); }
@@ -158,11 +165,12 @@
         }
         
         .step { 
-            background: rgba(15, 12, 41, 0.85); padding: 45px; 
+            /* ОПТИМИЗАЦИЯ: Убрали жутко тормозящий backdrop-filter, сделали фон чуть темнее */
+            background: rgba(12, 10, 31, 0.95); padding: 45px; 
             border-radius: 15px; border: 2px solid var(--space-purple); margin-top: 20px; 
             display: none; transform-origin: center center;
-            backdrop-filter: blur(10px);
-            transition: box-shadow 0.05s ease-out, transform 0.05s ease-out, border-color 0.05s ease-out; 
+            will-change: transform, box-shadow; /* ОПТИМИЗАЦИЯ: Сообщаем GPU об анимации */
+            transition: box-shadow 0.05s linear, transform 0.05s linear, border-color 0.05s linear; 
         }
         .step.active { display: block; animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -195,6 +203,7 @@
             position: fixed; width: 6px; height: 6px; background: #fff;
             border-radius: 50%; box-shadow: 0 0 15px #fff, 0 0 25px var(--space-blue);
             z-index: 6; pointer-events: none; transform-origin: center left;
+            will-change: transform;
         }
         .shooting-star::after {
             content: ''; position: absolute; top: 50%; transform: translateY(-50%);
@@ -209,6 +218,7 @@
             background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), transparent); border-left: 4px solid var(--space-blue);
             padding: 12px 30px; border-radius: 4px; pointer-events: none; opacity: 0;
             white-space: nowrap; animation: killFeedAnim 6s ease-out forwards;
+            will-change: transform, opacity, filter;
         }
         @keyframes killFeedAnim {
             0% { opacity: 0; transform: translateY(20px) scale(0.5); filter: brightness(3); }
@@ -231,8 +241,10 @@
 </head>
 <body>
 
+    <!-- ЗВЕЗДНЫЙ ФОН -->
     <div id="space-bg"></div>
 
+    <!-- ЭКРАН С МАТРИЦЕЙ И ТЕРМИНАЛОМ -->
     <div id="start-overlay">
         <canvas id="matrix-canvas"></canvas>
         <div class="overlay-content">
@@ -242,10 +254,12 @@
         </div>
     </div>
 
+    <!-- БЕГУЩАЯ СТРОКА -->
     <div id="marquee-container">
         <div class="marquee-text">Когда я смотрю на вас, я понимаю, что такое настоящая гармония. Вы — две половинки одного целого, два берега одной реки. Пусть ваш общий путь будет ровным и светлым, пусть встречные ветры только помогают вам двигаться вперед, а солнце всегда освещает дорогу. Желаю вам никогда не терять друг друга в суете дней, всегда находить время для тихих разговоров и громкого смеха. Пусть в вашем доме пахнет счастьем, а в сердцах никогда не гаснет та искра, которая когда-то свела вас вместе. Берегите друг друга и помните: вы — самая красивая история, которую я знаю. Я вас люблю ❤️</div>
     </div>
 
+    <!-- МЕДИА -->
     <audio id="audio" preload="auto"></audio>
     <img id="reveal-img-1" class="reveal-media" src="a1.jpg" loading="eager">
     <img id="reveal-img-2" class="reveal-media" src="a2.png" loading="eager">
@@ -253,6 +267,7 @@
     <video id="reveal-vid-4" class="reveal-media" src="collapse.mp4" preload="auto"></video>
     <video id="reveal-vid-5" class="reveal-media" src="orion.mp4" preload="auto"></video>
 
+    <!-- АВАТАРЫ ИЛЬИ И АЛИСЫ -->
     <div class="lane-container" id="progress">
         <div class="lane-line"></div>
         <div class="checkpoint active"></div><div class="checkpoint"></div><div class="checkpoint"></div>
@@ -277,9 +292,9 @@
     </div>
 
     <script>
-        /* === ГЕНЕРАЦИЯ ЗВЕЗД КОСМОСА === */
+        /* === ОПТИМИЗАЦИЯ: ГЕНЕРАЦИЯ ЗВЕЗД (Уменьшено со 150 до 75 для плавности) === */
         const spaceBg = document.getElementById('space-bg');
-        for (let i = 0; i < 150; i++) {
+        for (let i = 0; i < 75; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             star.style.width = Math.random() * 3 + 1 + 'px';
@@ -525,7 +540,6 @@
             stepDiv.id = 'step' + stepNum;
             if(stepNum === 1) stepDiv.classList.add('active');
             
-            // ЕСЛИ ЭТО ВОПРОС 6 (РОШАН)
             if (item.isRoshan) {
                 stepDiv.innerHTML = `
                     <p style="color: var(--red); font-size: 2.5rem; text-shadow: 0 0 20px var(--red); text-transform: uppercase;">РОШАН НАПАДАЕТ!</p>
@@ -557,9 +571,8 @@
         let roshanStarted = false;
 
         function hitRoshan() {
-            if (roshanHp <= 0) return; // Уже мертв
+            if (roshanHp <= 0) return; 
             
-            // Стартуем таймер при первом клике
             if (!roshanStarted) {
                 roshanStarted = true;
                 roshanInterval = setInterval(() => {
@@ -584,7 +597,6 @@
             roshanHp--;
             document.getElementById('roshan-hp').style.width = (roshanHp / roshanMaxHp * 100) + '%';
             
-            // Анимация удара
             const btn = document.getElementById('roshan-btn');
             btn.style.transform = 'scale(0.85)';
             setTimeout(() => btn.style.transform = 'scale(1)', 50);
@@ -604,7 +616,10 @@
             }
         }
 
+        /* === ОПТИМИЗИРОВАННЫЙ АУДИО ВИЗУАЛИЗАТОР === */
         let audioCtx, analyser, dataArray;
+        let lastVisualizerUpdate = 0;
+
         function initVisualizer() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -619,8 +634,13 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
 
-        function visualizeLoop() {
+        function visualizeLoop(timestamp) {
             requestAnimationFrame(visualizeLoop);
+            
+            // ОПТИМИЗАЦИЯ: Ограничиваем FPS визуализатора до ~30 кадров/сек (раз в 33 мс)
+            if (timestamp - lastVisualizerUpdate < 33) return;
+            lastVisualizerUpdate = timestamp;
+
             if (!analyser) return;
             analyser.getByteFrequencyData(dataArray);
 
@@ -641,14 +661,13 @@
 
                     const scale = 1 + (intensity * 0.04); 
                     
+                    // ОПТИМИЗАЦИЯ: Убрали один слой тени (осталось 3 вместо 4)
                     const coreGlow = 10 + (intensity * 20); 
                     const midGlow = 30 + (midIntensity * 50); 
-                    const outerGlow = 60 + (intensity * 100); 
 
                     activeStep.style.boxShadow = `
                         0 0 ${coreGlow}px rgba(255, 255, 255, ${0.4 + intensity * 0.5}), 
                         0 0 ${midGlow}px rgba(0, 210, 255, ${0.3 + midIntensity * 0.5}), 
-                        0 0 ${outerGlow}px rgba(138, 35, 135, ${0.2 + intensity * 0.4}),
                         inset 0 0 ${20 + intensity * 30}px rgba(0, 210, 255, ${0.1 + intensity * 0.3})
                     `;
                     activeStep.style.transform = `scale(${scale})`;
@@ -657,6 +676,7 @@
             }
         }
 
+        /* === СТАРТ === */
         function startExperience() {
             clearInterval(matrixInterval);
             avatars = [document.getElementById('avatar-ilya'), document.getElementById('avatar-alice')];
@@ -720,14 +740,12 @@
         async function checkAnswer(step) {
             if (isSpecialAudioPlaying) return; 
 
-            // Если это вопрос про Рошана, игнорируем обычный Enter
             if (quizData[step-1].isRoshan) return;
 
             const inputField = document.getElementById('answer' + step);
             const submitBtn = inputField.nextElementSibling;
             const val = inputField.value.toLowerCase().trim();
             
-            // Если ответ ANY (Вопрос 7) - пропускаем при любой длине ввода
             let isCorrect = false;
             if (quizData[step-1].a.includes("ANY")) {
                 if (val.length > 0) isCorrect = true; 
@@ -777,7 +795,6 @@
                 const newStep = document.getElementById('step' + currentStep);
                 newStep.classList.add('active'); 
                 
-                // Ставим фокус в input, ЕСЛИ он есть (на Рошане его нет)
                 const nextInput = document.getElementById('answer' + currentStep);
                 if (nextInput) setTimeout(() => nextInput.focus(), 100);
                 
