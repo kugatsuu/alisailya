@@ -1,1026 +1,458 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>My Dear Friends For You</title>
-
-    <link rel="preload" href="p11.jpg" as="image">
-    <link rel="preload" href="interstellar.m4a" as="audio">
-    <link rel="preload" href="EZIO.m4a" as="audio">
-
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --pastel-blue: #62d9ff;
-            --pastel-purple: #d4a84f;
-            --pastel-pink: #f0c66e;
-            --pastel-lavender: #f3d58a;
-            --space-dark: #03050b;
-            --matrix-green: #62d9ff;
-            --gold: #f3c969;
-            --red: #e06666;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            color: #f3efe6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            background: var(--space-dark);
-        }
-
-        #space-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -5;
-            background: radial-gradient(circle at 50% 30%, #071426 0%, #050913 48%, #020308 100%);
-        }
-
-        .star {
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-            animation: twinkle linear infinite;
-            will-change: opacity, transform;
-        }
-
-        @keyframes twinkle {
-            0% {
-                opacity: 0.2;
-                transform: scale(0.8);
-            }
-            50% {
-                opacity: 0.9;
-                transform: scale(1.3);
-                box-shadow: 0 0 10px var(--pastel-lavender);
-            }
-            100% {
-                opacity: 0.2;
-                transform: scale(0.8);
-            }
-        }
-
-        #start-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(2, 4, 10, 0.97);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        #matrix-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.25;
-        }
-
-        .overlay-content {
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            padding: 0 20px;
-            box-sizing: border-box;
-        }
-
-        .overlay-content h1 {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(2rem, 5vw, 3.8rem);
-            color: var(--pastel-lavender);
-            text-shadow: 0 0 25px rgba(243, 201, 105, 0.32);
-            margin-bottom: 25px;
-            line-height: 1.1;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        button {
-            background: rgba(7, 15, 29, 0.94);
-            color: var(--pastel-blue);
-            border: 2px solid var(--pastel-blue);
-            padding: 15px 50px;
-            font-family: 'Cinzel', serif;
-            font-size: 1.15rem;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: 0.3s;
-            margin-top: 25px;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(98, 217, 255, 0.22);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        button:hover:not(:disabled) {
-            background: var(--pastel-blue);
-            color: #0d0b14;
-            box-shadow: 0 0 30px var(--pastel-blue);
-            transform: translateY(-2px);
-        }
-
-        button:disabled {
-            border-color: #444;
-            color: #666;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        #terminal {
-            width: 95%;
-            max-width: 900px;
-            height: min(380px, 42vh);
-            min-height: 220px;
-            background: rgba(2, 5, 11, 0.88);
-            border: 2px solid var(--matrix-green);
-            border-radius: 10px;
-            padding: 25px;
-            text-align: left;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: clamp(0.85rem, 1.5vw, 1.1rem);
-            color: var(--matrix-green);
-            overflow-y: auto;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8), 0 0 15px rgba(98, 217, 255, 0.18);
-            line-height: 1.6;
-        }
-
-        .log-line {
-            margin-bottom: 8px;
-            opacity: 0;
-            animation: typeLine 0.1s forwards;
-        }
-
-        @keyframes typeLine {
-            to { opacity: 1; }
-        }
-
-        .log-warn {
-            color: #fce5cd;
-            font-weight: bold;
-        }
-
-        .log-err {
-            color: #f4cccc;
-            background: #3d1414;
-            padding: 2px 8px;
-            font-weight: bold;
-            border-radius: 3px;
-        }
-
-        #postcard-container {
-            position: relative;
-            width: 100vw;
-            min-height: 100vh;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-
-        #flying-envelope {
-            width: 340px;
-            height: 230px;
-            background: linear-gradient(135deg, #071626, #102c49 55%, #4a3516);
-            border-radius: 16px;
-            box-shadow: 0 18px 70px rgba(0,0,0,.55), 0 0 45px rgba(98,217,255,.12);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: absolute;
-            top: 50vh;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.1);
-            opacity: 0;
-            animation: flyInEnvelope 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            z-index: 20;
-            border: 3px solid var(--pastel-lavender);
-            transition: transform 0.3s;
-        }
-
-        #flying-envelope:hover {
-            transform: translate(-50%, -50%) scale(1.05) !important;
-            box-shadow: 0 0 70px rgba(243, 201, 105, 0.4);
-        }
-
-        @keyframes flyInEnvelope {
-            0% {
-                transform: translate(-50%, -50%) scale(0.1) rotate(-30deg);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
-
-        #flying-envelope::before {
-            content: '✉';
-            font-size: 90px;
-            color: var(--pastel-lavender);
-            text-shadow: 0 0 15px rgba(243, 201, 105, 0.4);
-        }
-
-        .envelope-text {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            color: #fff;
-            font-weight: bold;
-            margin-top: 12px;
-            background: rgba(13, 11, 20, 0.7);
-            padding: 6px 15px;
-            border-radius: 3px;
-            border: 1px solid rgba(243,201,105,.55);
-            letter-spacing: 1px;
-        }
-
-        #modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(13, 11, 20, 0.88);
-            z-index: 100;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-box {
-            background: rgba(7, 15, 29, 0.97);
-            border: 2px solid var(--pastel-blue);
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 0 50px rgba(98, 217, 255, 0.18);
-            animation: scaleIn 0.3s ease-out;
-        }
-
-        @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-box p {
-            font-size: 1.6rem;
-            margin-bottom: 25px;
-            color: var(--pastel-lavender);
-        }
-
-        .modal-box input {
-            width: 100%;
-            padding: 18px;
-            background: rgba(9, 7, 15, 0.8);
-            border: 2px solid #5a4b75;
-            color: #fff;
-            border-radius: 8px;
-            font-size: 1.5rem;
-            text-align: center;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
-        .modal-box input:focus {
-            outline: none;
-            border-color: var(--pastel-blue);
-            box-shadow: 0 0 20px rgba(98, 217, 255, 0.25);
-        }
-
-        #letter-content {
-            background: rgba(5, 10, 20, 0.94);
-            color: #f3efe6;
-            border: 2px solid rgba(212, 168, 79, 0.58);
-            border-radius: 20px;
-            padding: clamp(22px, 4vw, 50px);
-            max-width: 950px;
-            width: 100%;
-            box-sizing: border-box;
-            box-shadow: 0 0 60px rgba(36, 117, 170, 0.22);
-            display: none;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s ease, transform 1s ease;
-            line-height: 1.8;
-            font-size: clamp(1.05rem, 1.6vw, 1.3rem);
-            position: relative;
-        }
-
-        #letter-content.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        #letter-content h2 {
-            font-family: 'Cinzel', serif;
-            text-align: center;
-            color: var(--pastel-lavender);
-            font-size: clamp(1.8rem, 4vw, 3rem);
-            margin-bottom: 30px;
-            text-shadow: 0 0 20px rgba(243, 201, 105, 0.32);
-        }
-
-        .highlight-ilya {
-            color: var(--pastel-blue);
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(98, 217, 255, 0.25);
-        }
-
-        .highlight-alice {
-            color: var(--pastel-pink);
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(244, 204, 204, 0.4);
-        }
-
-        .poem-block {
-            margin-top: 35px;
-            padding: 25px;
-            border-left: 4px solid var(--gold);
-            background: rgba(2,5,12,.55);
-            font-style: italic;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.35rem;
-            line-height: 1.7;
-            color: #e9e2f5;
-            border-radius: 0 12px 12px 0;
-        }
-
-        #next-btn-container {
-            margin-top: 40px;
-            text-align: center;
-            display: none;
-        }
-
-        #galaxy-section {
-            display: none;
-            width: 100vw;
-            height: 260vh;
-            position: relative;
-            z-index: 10;
-            box-sizing: border-box;
-        }
-
-        .galaxy-sticky {
-            position: sticky;
-            top: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .galaxy-instruction {
-            position: absolute;
-            top: 40px;
-            font-family: 'Cinzel', serif;
-            font-size: clamp(1.05rem, 2.2vw, 1.6rem);
-            color: var(--pastel-lavender);
-            text-shadow: 0 0 15px rgba(243, 201, 105, 0.32);
-            text-align: center;
-            z-index: 12;
-            pointer-events: none;
-            transition: opacity 0.5s;
-        }
-
-        #galaxy-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        #final-reveal-box {
-            position: fixed;
-            inset: 0;
-            background: rgba(2, 4, 10, 0.985);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            animation: fadeInFinal 1.5s ease forwards;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        @keyframes fadeInFinal {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .final-photo-frame {
-            max-width: 760px;
-            width: min(90%, 760px);
-            max-height: 68vh;
-            border-radius: 10px;
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 50px rgba(212, 168, 79, 0.42);
-            overflow: hidden;
-            margin-bottom: 30px;
-            animation: photoZoomIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        .final-photo-frame img {
-            width: 100%;
-            max-height: 68vh;
-            object-fit: contain;
-            display: block;
-            background: #020308;
-        }
-
-        @keyframes photoZoomIn {
-            0% {
-                transform: scale(0.3) rotate(-5deg);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
-
-        .open-code-btn {
-            background: rgba(10, 29, 49, 0.96);
-            color: var(--pastel-lavender);
-            border: 2px solid var(--pastel-blue);
-            padding: 18px 50px;
-            font-family: 'Cinzel', serif;
-            font-size: clamp(1.05rem, 2.2vw, 1.6rem);
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 0 30px rgba(98, 217, 255, 0.25);
-            transition: 0.3s;
-        }
-
-        .open-code-btn:hover {
-            background: var(--pastel-blue);
-            color: #0d0b14;
-            box-shadow: 0 0 50px var(--pastel-blue);
-            transform: scale(1.05);
-        }
-
-        #code-display-box {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: fadeInFinal 0.8s ease forwards;
-        }
-
-        .code-display {
-            font-size: 5rem;
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--matrix-green);
-            background: #000;
-            border: 4px solid var(--matrix-green);
-            padding: 20px 50px;
-            border-radius: 15px;
-            box-shadow: 0 0 50px rgba(98, 217, 255, 0.22);
-            letter-spacing: 10px;
-            margin-top: 20px;
-        }
-
-        #music-panel {
-            position: fixed;
-            right: 18px;
-            bottom: 16px;
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            max-width: calc(100vw - 36px);
-            padding: 9px 12px;
-            background: rgba(2,5,12,.9);
-            border: 1px solid rgba(98,217,255,.28);
-            color: #a8b7c9;
-            font-size: .78rem;
-            backdrop-filter: blur(8px);
-        }
-
-        #music-panel button {
-            margin: 0;
-            padding: 8px 10px;
-            font-size: .7rem;
-            letter-spacing: .5px;
-        }
-
-        body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 50;
-            border: 1px solid rgba(243,201,105,.08);
-        }
-
-        @media (max-width: 600px) {
-            #music-panel {
-                left: 10px;
-                right: 10px;
-                bottom: 10px;
-                justify-content: space-between;
-                font-size: .68rem;
-            }
-
-            #terminal {
-                padding: 15px;
-                width: 88%;
-                font-size: .82rem;
-            }
-
-            .overlay-content h1 {
-                letter-spacing: 1px;
-            }
-
-            #flying-envelope {
-                width: min(300px, 84vw);
-                height: 200px;
-            }
-
-            .modal-box {
-                padding: 24px;
-            }
-
-            .code-display {
-                font-size: 3rem;
-                padding: 16px 28px;
-                letter-spacing: 5px;
-            }
-
-            .galaxy-instruction {
-                top: 24px;
-                padding: 0 18px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEAR MY FRIENDS FOR YOU</title>
+<style>
+*{box-sizing:border-box}
+:root{--green:#00ff66;--gold:#f3c969;--blue:#62d9ff;--purple:#9b8cff}
+body{margin:0;background:#02040a;color:#f3efe6;font-family:Arial,sans-serif;overflow-x:hidden}
+button{padding:15px 32px;background:#071626;color:#e7e8ff;border:1px solid var(--blue);font-weight:bold;letter-spacing:2px;text-transform:uppercase;cursor:pointer;box-shadow:0 0 20px #62d9ff22;transition:.25s}
+button:hover{background:var(--blue);color:#02040a;box-shadow:0 0 30px var(--blue)}
+#matrix-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.5;pointer-events:none}
+#start-overlay{position:fixed;inset:0;z-index:20;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+.overlay-content{position:relative;z-index:2;width:100%;max-width:1100px}
+#intro-title{font:900 clamp(2rem,7vw,5.5rem)/1.2 "Courier New",monospace;letter-spacing:clamp(2px,1vw,9px);color:#c9ffdb;text-shadow:0 0 12px var(--green),0 0 35px #00ff6688;margin:0 0 30px;overflow-wrap:anywhere}
+#intro-message{font:clamp(1.1rem,2.5vw,1.8rem)/1.8 "Courier New",monospace;color:#baffcf;text-shadow:0 0 12px var(--green);white-space:pre-line;min-height:8em}
+#intro-message::after{content:"▋";animation:blink .8s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+#start-btn{display:none;margin-top:24px}
+#postcard-container{position:relative;z-index:2;min-height:100vh;display:none;align-items:center;justify-content:center;flex-direction:column;padding:60px 20px}
+#flying-envelope{width:min(340px,85vw);height:230px;border:2px solid var(--gold);border-radius:14px;background:linear-gradient(135deg,#071626,#102c49 55%,#4a3516);box-shadow:0 0 55px #62d9ff22;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;animation:flyin 1.5s ease both}
+#flying-envelope:before{content:"✉";font-size:90px;color:var(--gold);text-shadow:0 0 20px #f3c96966}
+.envelope-text{margin-top:12px;color:white;font-size:1.1rem;font-weight:bold;letter-spacing:1px}
+@keyframes flyin{from{transform:scale(.2) rotate(-12deg);opacity:0}to{transform:scale(1);opacity:1}}
+#modal-overlay{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:#000d;padding:20px}
+.modal-box{width:min(500px,100%);padding:30px;background:#07101e;border:1px solid var(--blue);text-align:center;box-shadow:0 0 40px #62d9ff22}
+.modal-box p{font-size:1.35rem;color:var(--gold);line-height:1.5}
+.modal-box input{width:100%;padding:15px;margin:10px 0 20px;background:#02040a;color:white;border:1px solid #777;text-align:center;font-size:1.2rem}
+#letter-content{display:none;width:100%;max-width:950px;padding:clamp(22px,4vw,50px);background:rgba(5,10,20,.97);border:1px solid #d4a84f99;border-radius:18px;box-shadow:0 0 60px #2475aa22;line-height:1.85;font-size:clamp(1.05rem,1.6vw,1.3rem);opacity:0;transform:translateY(25px);transition:1s}
+#letter-content.show{opacity:1;transform:translateY(0)}
+#letter-content h2{text-align:center;color:var(--gold);font:clamp(1.8rem,4vw,3rem)/1.3 Georgia,serif}
+.highlight-ilya{color:var(--blue);font-weight:bold}.highlight-alice{color:#f0c66e;font-weight:bold}
+.quote{text-align:center;font-style:italic;color:var(--blue);font-weight:bold;margin:30px 0}
+.poem-block{margin-top:35px;padding:25px;border-left:3px solid var(--gold);background:#02050c;font:italic 1.2rem/1.8 Georgia,serif;color:#e9e2f5;overflow-wrap:anywhere}
+#next-btn-container{text-align:center;display:none;margin-top:35px}
+#galaxy-section{display:none;position:relative;width:100%;height:300vh;background:#02040a}
+.galaxy-sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:radial-gradient(ellipse at center,#10132b,#02040a 70%)}
+#galaxy-canvas{position:absolute;inset:0;width:100%;height:100%}
+.galaxy-instruction{position:absolute;z-index:2;top:30px;width:100%;padding:0 20px;text-align:center;color:#d6d2ff;text-shadow:0 0 15px var(--purple);font:clamp(1.1rem,2.5vw,1.6rem) Georgia,serif;pointer-events:none}
+#galaxy-next{display:none;position:fixed;z-index:30;bottom:8%;left:50%;transform:translateX(-50%);white-space:nowrap;background:#080b20;border-color:var(--purple);color:#e0d9ff;box-shadow:0 0 25px #9b8cff55}
+#galaxy-next:hover{background:var(--purple);color:#05050c}
+#final-reveal-box{display:none;position:fixed;z-index:50;inset:0;background:rgba(2,4,10,.98);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
+.final-photo-frame{width:min(760px,90vw);max-height:68vh;overflow:hidden;border:1px solid var(--gold);box-shadow:0 0 45px #9b8cff44;margin-bottom:25px}
+.final-photo-frame img{display:block;width:100%;max-height:68vh;object-fit:contain;background:#020308}
+.final-caption{color:#c8c7ff;font:italic 1.2rem Georgia,serif;margin:0 0 22px}
+#question-box{display:none;flex-direction:column;align-items:center;width:min(550px,100%)}
+#question-box h2{font:clamp(1.5rem,4vw,2.3rem) Georgia,serif;color:#d6d2ff;text-shadow:0 0 20px #9b8cff55}
+#question-answer{width:100%;padding:16px;background:#050713;border:1px solid var(--purple);color:white;text-align:center;font-size:1.2rem;margin:12px 0 20px}
+#answer-feedback{min-height:28px;color:#ff9b9b}
+#code-display-box{display:none;flex-direction:column;align-items:center}
+#code-display-box h1{color:var(--gold);text-shadow:0 0 20px #f3c96966}
+.code-display{margin-top:20px;padding:20px 35px;border:2px solid var(--green);background:#000;color:var(--green);font:4rem "Courier New",monospace;letter-spacing:8px;box-shadow:0 0 40px #00ff6633}
+@media(max-width:600px){#letter-content{padding:22px}.poem-block{padding:18px;font-size:1.08rem}.code-display{font-size:2.8rem;padding:15px 24px}}
+</style>
 </head>
-
 <body>
-    <div id="space-bg"></div>
 
-    <div id="start-overlay">
-        <canvas id="matrix-canvas"></canvas>
-        <div class="overlay-content">
-            <h1>My Dear Friends For You</h1>
-            <div id="terminal"></div>
-            <button id="start-btn" onclick="startExperience()">Начать путешествие</button>
-        </div>
+<canvas id="matrix-canvas"></canvas>
+
+<div id="start-overlay">
+  <div class="overlay-content">
+    <h1 id="intro-title"></h1>
+    <div id="intro-message"></div>
+    <button id="start-btn" onclick="startExperience()">Дальше</button>
+  </div>
+</div>
+
+<audio id="audio" src="interstellar.mp3" preload="auto" autoplay loop></audio>
+
+<div id="postcard-container">
+  <div id="flying-envelope" onclick="openEnvelopeModal()">
+    <div class="envelope-text">Открыть послание</div>
+  </div>
+
+  <div id="letter-content">
+    <h2>Дорогие мои друзья, с днём рождения!</h2>
+
+    <p>Мне хочется сказать вам то, для чего порой не хватает слов. Я очень рад, что вы есть в моей жизни. Спасибо за наше общение, за смех, за моменты, которые делают дни светлее. Как бы ни складывался наш путь и как бы далеко нас ни уносила жизнь, мне важно знать, что мы остаёмся друг у друга.</p>
+
+    <p>Вы — одна из самых красивых пар, которых я знаю. И дело не только во внешности, но и в том, какие вы люди. В дни, когда вокруг будто становится темнее и холоднее, разговор с вами способен сделать всё немного теплее и лучше. Я очень ценю вас и нашу дружбу.</p>
+
+    <p><span class="highlight-ilya">Илья</span>, хочу обратиться лично к тебе. Твой смех и твоя улыбка стоят того, чтобы сворачивать горы. Я дорожу нашей дружбой и надеюсь, что однажды мы встретимся не по ту сторону экрана, сможем посидеть вместе, поговорить обо всём на свете и стать друг другу почти братьями.</p>
+
+    <p><span class="highlight-alice">Алиса</span>, если бы не твоя гильдия и твой канал, мы, возможно, никогда бы и не познакомились. И я рад, что всё сложилось именно так. Дружба с тобой — ценный подарок судьбы. Ты замечательный человек и важная часть моей жизни, и я искренне благодарен тебе за то, что наши пути однажды пересеклись.</p>
+
+    <p>Мне хочется, чтобы вы берегли то, что есть между вами: поддерживали друг друга, вместе проходили через трудности и не забывали радоваться простым вещам. Близость ведь не в том, чтобы быть одинаковыми, а в том, чтобы принимать друг друга, помогать расти и оставаться рядом.</p>
+
+    <p class="quote">И вам обоим я скажу: «Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой».</p>
+
+    <div class="poem-block">
+      Скажи, ты счастлив? Не ну правда?<br>
+      Скажи, об этом ты мечтал?<br>
+      Ну помнишь в детстве. Ждал ты завтра,<br>
+      Скажи! Сбылось? Ты счастлив стал?<br><br>
+      О да, прекрасно понимаю,<br>
+      Что жизнь "не поле перейти",<br>
+      Бывало трудно. Знаю, знаю!<br>
+      Скажи, а хочешь вновь, к мечте идти?<br><br>
+      Скажи: "Зачем остановился?"<br>
+      Подумал "Что за ерунда?"<br>
+      А может в силах усомнился?<br>
+      Дак то поправим! Не беда!<br><br>
+      Давай вперед! И без сомнений!<br>
+      Ты плечи гордо распрями!<br>
+      Хорош бояться чьих-то мнений,<br>
+      К своей мечте ты, друг иди!<br><br>
+      И да, уж сильно не тревожься,<br>
+      Всё будет знаю хорошо!<br>
+      Лишь об одном побеспокойся!<br>
+      Чтоб рядом шёл, с кем Жить Легко!
     </div>
 
-    <audio id="audio" preload="auto"></audio>
-
-    <div id="music-panel">
-        <span id="audio-status">Музыка включится после нажатия</span>
-        <button id="music-toggle" onclick="toggleMusic()" type="button">Музыка: пауза</button>
+    <div id="next-btn-container">
+      <button onclick="showGalaxySection()">Дальше</button>
     </div>
+  </div>
+</div>
 
-    <div id="postcard-container">
-        <div id="flying-envelope" onclick="openEnvelopeModal()">
-            <div class="envelope-text">Открыть послание</div>
-        </div>
+<div id="modal-overlay">
+  <div class="modal-box">
+    <p>В каком году мы познакомились?</p>
+    <input id="envelope-answer" placeholder="Введите год"
+           onkeydown="if(event.key==='Enter')checkEnvelopeAnswer()">
+    <button onclick="checkEnvelopeAnswer()">Открыть письмо</button>
+  </div>
+</div>
 
-        <div id="letter-content">
-            <h2>Дорогие мои друзья, с днём рождения!</h2>
-
-            <p>Мне хочется сказать вам то, для чего порой не хватает слов. Я очень рад, что вы есть в моей жизни. Спасибо за наше общение, за смех, за моменты, которые делают дни светлее. Как бы ни складывался наш путь и как бы далеко нас ни уносила жизнь, мне важно знать, что мы остаёмся друг у друга.</p>
-
-            <p>Вы — одна из самых красивых пар, которых я знаю. И дело не только во внешности, но и в том, какие вы люди. В дни, когда вокруг будто становится темнее и холоднее, разговор с вами способен сделать всё немного теплее и лучше. Я очень ценю вас и нашу дружбу.</p>
-
-            <p><span class="highlight-ilya">Илья</span>, хочу обратиться лично к тебе. Твой смех и твоя улыбка стоят того, чтобы сворачивать горы. Я дорожу нашей дружбой и надеюсь, что однажды мы встретимся не по ту сторону экрана, сможем посидеть вместе, поговорить обо всём на свете и стать друг другу почти братьями.</p>
-
-            <p><span class="highlight-alice">Алиса</span>, если бы не твоя гильдия и твой канал, мы, возможно, никогда бы и не познакомились. И я рад, что всё сложилось именно так. Дружба с тобой — ценный подарок судьбы. Ты замечательный человек и важная часть моей жизни, и я искренне благодарен тебе за то, что наши пути однажды пересеклись.</p>
-
-            <p>Мне хочется, чтобы вы берегли то, что есть между вами: поддерживали друг друга, вместе проходили через трудности и не забывали радоваться простым вещам. Близость ведь не в том, чтобы быть одинаковыми, а в том, чтобы принимать друг друга, помогать расти и оставаться рядом.</p>
-
-            <p style="text-align: center; font-style: italic; color: var(--pastel-blue); margin-top: 25px; font-weight: bold;">
-                И вам обоим я скажу: «Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой».
-            </p>
-
-            <!-- СТИХОТВОРЕНИЕ: СОХРАНЕНО В ПЕРВОЗДАННОМ ВИДЕ -->
-            <div class="poem-block">
-                Скажи, ты счастлив? Не ну правда?<br>
-                Скажи, об этом ты мечтал?<br>
-                Ну помнишь в детстве. Ждал ты завтра,<br>
-                Скажи! Сбылось? Ты счастлив стал?<br><br>
-                О да, прекрасно понимаю,<br>
-                Что жизнь "не поле перейти",<br>
-                Бывало трудно. Знаю, знаю!<br>
-                Скажи, а хочешь вновь, к мечте идти?<br><br>
-                Скажи: "Зачем остановился?"<br>
-                Подумал "Что за ерунда?"<br>
-                А может в силах усомнился?<br>
-                Дак то поправим! Не беда!<br><br>
-                Давай вперед! И без сомнений!<br>
-                Ты плечи гордо распрями!<br>
-                Хорош бояться чьих-то мнений,<br>
-                К своей мечте ты, друг иди!<br><br>
-                И да, уж сильно не тревожься,<br>
-                Всё будет знаю хорошо!<br>
-                Лишь об одном побеспокойся!<br>
-                Чтоб рядом шёл, с кем Жить Легко!
-            </div>
-
-            <div id="next-btn-container">
-                <button onclick="showGalaxySection()">Дальше</button>
-            </div>
-        </div>
+<div id="galaxy-section">
+  <div class="galaxy-sticky">
+    <div class="galaxy-instruction" id="galaxy-instruction">
+      Прокрутите вниз — пусть наша галактика соберётся воедино
     </div>
+    <canvas id="galaxy-canvas"></canvas>
+  </div>
+</div>
 
-    <div id="modal-overlay">
-        <div class="modal-box">
-            <p>В каком году мы познакомились?</p>
-            <input
-                type="text"
-                id="envelope-answer"
-                placeholder="Введите год..."
-                onkeydown="if(event.key === 'Enter') checkEnvelopeAnswer()"
-            >
-            <button onclick="checkEnvelopeAnswer()" style="margin-top:0; width:100%;">Открыть письмо</button>
-        </div>
+<button id="galaxy-next" onclick="openFinalQuestion()">Дальше</button>
+
+<div id="final-reveal-box">
+  <div id="photo-reveal-content" style="display:none">
+    <div class="final-photo-frame">
+      <img id="final-photo" src="p11.jpg" alt="Фотография друзей">
     </div>
+    <p class="final-caption">Некоторые моменты хочется сохранить навсегда.</p>
+    <button onclick="showQuestion()">Дальше</button>
+  </div>
 
-    <div id="galaxy-section">
-        <div class="galaxy-sticky">
-            <div class="galaxy-instruction" id="galaxy-instruction">Прокрутите вниз — к нашей общей вселенной</div>
-            <canvas id="galaxy-canvas"></canvas>
-        </div>
-    </div>
+  <div id="question-box">
+    <h2>Как называется самое глубокое озеро в мире?</h2>
+    <input id="question-answer" placeholder="Введите ответ"
+           onkeydown="if(event.key==='Enter')checkLakeAnswer()">
+    <button onclick="checkLakeAnswer()">Ответить</button>
+    <p id="answer-feedback"></p>
+  </div>
 
-    <div id="final-reveal-box">
-        <div id="photo-reveal-content">
-            <div class="final-photo-frame">
-                <img src="p11.jpg" alt="Совместная фотография">
-            </div>
-            <button class="open-code-btn" onclick="revealCode()">Открыть секретный код</button>
-        </div>
+  <div id="code-display-box">
+    <h1>Ответ верный!</h1>
+    <p>Секретный код от замка:</p>
+    <div class="code-display">732</div>
+  </div>
+</div>
 
-        <div id="code-display-box">
-            <h1 style="color: var(--gold); text-shadow: 0 0 30px var(--gold); margin-bottom: 10px;">Защита снята!</h1>
-            <p style="font-size: 1.3rem; margin-bottom: 15px; color: #ccc;">Секретный код от замка:</p>
-            <div class="code-display">732</div>
-        </div>
-    </div>
+<script>
+/* Фоновая матрица */
+const mc=document.getElementById('matrix-canvas');
+const mx=mc.getContext('2d');
+const chars='アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZアイウエオカキクケコ';
+const font=18;
+let drops=[];
+function resizeMatrix(){
+  const dpr=Math.min(devicePixelRatio||1,2);
+  mc.width=Math.floor(innerWidth*dpr);
+  mc.height=Math.floor(innerHeight*dpr);
+  mc.style.width=innerWidth+'px';
+  mc.style.height=innerHeight+'px';
+  mx.setTransform(dpr,0,0,dpr,0,0);
+  drops=Array.from({length:Math.ceil(innerWidth/font)},()=>Math.random()*-40);
+}
+resizeMatrix();
+addEventListener('resize',resizeMatrix);
+function drawMatrix(){
+  mx.fillStyle='rgba(0,0,0,.09)';
+  mx.fillRect(0,0,innerWidth,innerHeight);
+  mx.font=font+'px monospace';
+  for(let i=0;i<drops.length;i++){
+    mx.fillStyle=Math.random()>.96?'#eaffef':'#00ff66';
+    mx.shadowBlur=7;
+    mx.shadowColor='#00ff66';
+    mx.fillText(chars[Math.floor(Math.random()*chars.length)],i*font,drops[i]*font);
+    if(drops[i]*font>innerHeight&&Math.random()>.975)drops[i]=0;
+    drops[i]+=.65+Math.random()*.8;
+  }
+  mx.shadowBlur=0;
+}
+const matrixTimer=setInterval(drawMatrix,45);
 
-    <script>
-        // Звёзды на фоне
-        const spaceBg = document.getElementById('space-bg');
+/* Текст заставки печатается по буквам */
+const title='DEAR MY FRIENDS FOR YOU';
+const intro='Эта открытка для вас, мои дорогие друзья.\n\nИ когда вы её откроете, будьте готовы ко всему.\n\nЯ вас люблю.';
+const titleEl=document.getElementById('intro-title');
+const msgEl=document.getElementById('intro-message');
+const startBtn=document.getElementById('start-btn');
 
-        for (let i = 0; i < 150; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
+function typeText(el,text,speed,done){
+  let i=0;
+  const timer=setInterval(()=>{
+    el.textContent+=text.charAt(i++);
+    if(i>=text.length){clearInterval(timer);if(done)done();}
+  },speed);
+}
+typeText(titleEl,title,85,()=>{
+  setTimeout(()=>typeText(msgEl,intro,38,()=>{
+    startBtn.style.display='inline-block';
+  }),350);
+});
 
-            const size = Math.random() * 2.5 + 0.8;
-            star.style.width = size + 'px';
-            star.style.height = size + 'px';
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.animationDuration = Math.random() * 4 + 2 + 's';
-            star.style.animationDelay = Math.random() * 5 + 's';
+/* Музыка: автозапуск и повтор */
+const audio=document.getElementById('audio');
+audio.volume=.45;
+audio.loop=true;
+function tryMusic(){
+  if(audio.paused)audio.play().catch(()=>{});
+}
+addEventListener('load',tryMusic);
+document.addEventListener('pointerdown',tryMusic,{once:true});
+document.addEventListener('keydown',tryMusic,{once:true});
 
-            spaceBg.appendChild(star);
+function startExperience(){
+  tryMusic();
+  clearInterval(matrixTimer);
+  document.getElementById('start-overlay').style.display='none';
+  document.getElementById('postcard-container').style.display='flex';
+}
+
+/* Открытие письма */
+function openEnvelopeModal(){
+  document.getElementById('modal-overlay').style.display='flex';
+  document.getElementById('envelope-answer').focus();
+}
+function checkEnvelopeAnswer(){
+  const input=document.getElementById('envelope-answer');
+  if(input.value.trim()==='2024'){
+    document.getElementById('modal-overlay').style.display='none';
+    document.getElementById('flying-envelope').style.display='none';
+    const letter=document.getElementById('letter-content');
+    letter.style.display='block';
+    setTimeout(()=>letter.classList.add('show'),50);
+    setTimeout(()=>document.getElementById('next-btn-container').style.display='block',1500);
+  }else{
+    input.value='';
+    input.placeholder='Неверно! Вспомните год';
+  }
+}
+
+/* Частицы фотографии */
+let galaxyReady=false;
+let galaxyDone=false;
+let points=[];
+let canvas,ctx,W,H,DPR;
+let photoImage=new Image();
+photoImage.src='p11.jpg';
+photoImage.crossOrigin='anonymous';
+
+function showGalaxySection(){
+  document.getElementById('postcard-container').style.display='none';
+  document.getElementById('galaxy-section').style.display='block';
+  document.getElementById('galaxy-next').style.display='none';
+  scrollTo(0,0);
+  initGalaxy();
+}
+
+function initGalaxy(){
+  if(galaxyReady)return;
+  galaxyReady=true;
+  canvas=document.getElementById('galaxy-canvas');
+  ctx=canvas.getContext('2d');
+  resizeGalaxy();
+  addEventListener('resize',resizeGalaxy);
+
+  const off=document.createElement('canvas');
+  const octx=off.getContext('2d',{willReadFrequently:true});
+
+  function buildParticles(){
+    points=[];
+    const maxW=Math.min(W*.78,900);
+    const maxH=H*.62;
+    const ratio=photoImage.naturalWidth/photoImage.naturalHeight||1;
+    let iw=maxW,ih=iw/ratio;
+    if(ih>maxH){ih=maxH;iw=ih*ratio;}
+
+    off.width=Math.max(1,Math.floor(iw));
+    off.height=Math.max(1,Math.floor(ih));
+    octx.clearRect(0,0,off.width,off.height);
+
+    try{
+      octx.drawImage(photoImage,0,0,off.width,off.height);
+      const data=octx.getImageData(0,0,off.width,off.height).data;
+      const step=Math.max(3,Math.floor(Math.max(off.width,off.height)/170));
+      const ox=(W-off.width)/2,oy=(H-off.height)/2;
+
+      for(let y=0;y<off.height;y+=step){
+        for(let x=0;x<off.width;x+=step){
+          const idx=(y*off.width+x)*4;
+          const a=data[idx+3];
+          const brightness=(data[idx]+data[idx+1]+data[idx+2])/3;
+          if(a<40)continue;
+
+          // Цвета фотографии смешиваются с оттенками галактики.
+          const r=data[idx],g=data[idx+1],b=data[idx+2];
+          const mix=(r+g+b)/3;
+          const galaxyColor=Math.random();
+          let cr,cg,cb;
+
+          if(galaxyColor<.34){
+            cr=Math.min(255,r*.38+70);
+            cg=Math.min(255,g*.48+100);
+            cb=Math.min(255,b*.55+180);
+          }else if(galaxyColor<.68){
+            cr=Math.min(255,r*.35+100);
+            cg=Math.min(255,g*.38+65);
+            cb=Math.min(255,b*.48+190);
+          }else{
+            cr=Math.min(255,r*.45+140);
+            cg=Math.min(255,g*.42+115);
+            cb=Math.min(255,b*.3+75);
+          }
+
+          // Начальная позиция — звезда на спиральной галактике.
+          const arm=Math.floor(Math.random()*5);
+          const radius=Math.random()*Math.min(W,H)*.48;
+          const angle=arm*Math.PI*2/5+radius*.035+(Math.random()-.5)*.8;
+          const startX=W/2+Math.cos(angle)*radius*1.15;
+          const startY=H/2+Math.sin(angle)*radius*.58;
+
+          points.push({
+            x:ox+x,y:oy+y,
+            sx:startX,sy:startY,
+            size:Math.random()*1.5+.65,
+            color:`rgb(${Math.floor(cr)},${Math.floor(cg)},${Math.floor(cb)})`,
+            alpha:.65+Math.random()*.35,
+            phase:Math.random()*Math.PI*2
+          });
         }
-
-        // Анимация терминала
-        const canvasMatrix = document.getElementById('matrix-canvas');
-        const ctxMatrix = canvasMatrix.getContext('2d');
-
-        canvasMatrix.width = window.innerWidth;
-        canvasMatrix.height = window.innerHeight;
-
-        const matrixChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        const fontSize = 18;
-        const columns = canvasMatrix.width / fontSize;
-        const drops = [];
-
-        for (let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
-
-        function drawMatrix() {
-            ctxMatrix.fillStyle = 'rgba(13, 11, 20, 0.15)';
-            ctxMatrix.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
-
-            ctxMatrix.fillStyle = '#62d9ff';
-            ctxMatrix.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                ctxMatrix.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvasMatrix.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-
-                drops[i]++;
-            }
-        }
-
-        const matrixInterval = setInterval(drawMatrix, 40);
-
-        const terminalLogs = [
-            "[SYS] Инициализация личного космического архива...",
-            "[SYS] Проверка связи между двумя орбитами...",
-            "[OK] Найдены общие воспоминания и важные моменты.",
-            "[SYS] Подготовка послания для Ильи и Алисы...",
-            "[OK] Маршрут построен. Впереди — немного космоса и много тепла.",
-            "[READY] Всё готово. Можно начинать."
-        ];
-
-        const terminal = document.getElementById('terminal');
-        let logIndex = 0;
-
-        const logTimer = setInterval(() => {
-            if (logIndex < terminalLogs.length) {
-                const line = document.createElement('div');
-                line.className = 'log-line';
-                line.textContent = terminalLogs[logIndex];
-
-                terminal.appendChild(line);
-                terminal.scrollTop = terminal.scrollHeight;
-                logIndex++;
-            } else {
-                clearInterval(logTimer);
-            }
-        }, 420);
-
-        // Музыкальный плейлист
-        const playlist = ["interstellar.m4a", "EZIO.m4a"];
-        let currentTrack = 0;
-        const audio = document.getElementById('audio');
-
-        audio.addEventListener('ended', () => {
-            currentTrack = (currentTrack + 1) % playlist.length;
-            audio.src = playlist[currentTrack];
-
-            audio.play().catch(() => {
-                showAudioStatus("Не удалось запустить следующий трек. Проверьте, что EZIO.m4a лежит рядом с HTML-файлом.");
-            });
-        });
-
-        audio.addEventListener('error', () => {
-            showAudioStatus("Музыка не найдена. Положите interstellar.m4a и EZIO.m4a в ту же папку, что и HTML-файл.");
-        });
-
-        function showAudioStatus(message) {
-            const status = document.getElementById('audio-status');
-            if (status) {
-                status.textContent = message;
-            }
-        }
-
-        function toggleMusic() {
-            if (audio.paused) {
-                if (!audio.src) {
-                    audio.src = playlist[currentTrack];
-                }
-
-                audio.play().then(() => {
-                    document.getElementById('music-toggle').textContent = 'Музыка: пауза';
-                    showAudioStatus('Музыка играет');
-                }).catch(() => {
-                    showAudioStatus('Не удалось запустить аудио. Проверьте файлы музыки рядом с HTML.');
-                });
-            } else {
-                audio.pause();
-                document.getElementById('music-toggle').textContent = 'Музыка: включить';
-                showAudioStatus('Музыка на паузе');
-            }
-        }
-
-        function startExperience() {
-            clearInterval(matrixInterval);
-
-            document.getElementById('start-overlay').style.display = 'none';
-            document.getElementById('postcard-container').style.display = 'flex';
-
-            audio.volume = 0.38;
-            audio.src = playlist[0];
-            audio.load();
-
-            audio.play().then(() => {
-                showAudioStatus("Музыка играет");
-                document.getElementById('music-toggle').textContent = 'Музыка: пауза';
-            }).catch(() => {
-                showAudioStatus("Браузер не запустил музыку. Проверьте наличие interstellar.m4a рядом с HTML-файлом и нажмите кнопку музыки.");
-            });
-        }
-
-        // Открытие вопроса на конверте
-        function openEnvelopeModal() {
-            document.getElementById('modal-overlay').style.display = 'flex';
-            document.getElementById('envelope-answer').focus();
-        }
-
-        // Проверка ответа
-        function checkEnvelopeAnswer() {
-            const val = document.getElementById('envelope-answer').value.trim();
-
-            if (val === "2024") {
-                document.getElementById('modal-overlay').style.display = 'none';
-                document.getElementById('flying-envelope').style.display = 'none';
-
-                const letter = document.getElementById('letter-content');
-                letter.style.display = 'block';
-
-                setTimeout(() => letter.classList.add('show'), 50);
-
-                setTimeout(() => {
-                    document.getElementById('next-btn-container').style.display = 'block';
-                }, 2000);
-            } else {
-                const input = document.getElementById('envelope-answer');
-                input.style.borderColor = "var(--red)";
-                input.value = "";
-                input.placeholder = "Неверно! Вспомните год";
-
-                setTimeout(() => {
-                    input.style.borderColor = "#5a4b75";
-                }, 1000);
-            }
-        }
-
-        // Переход к галактике
-        function showGalaxySection() {
-            document.getElementById('postcard-container').style.display = 'none';
-            document.getElementById('galaxy-section').style.display = 'block';
-
-            window.scrollTo(0, 0);
-            initFullscreenGalaxy();
-        }
-
-        // Спиральная галактика
-        let galaxyInitialized = false;
-        let isExploded = false;
-
-        function initFullscreenGalaxy() {
-            if (galaxyInitialized) return;
-            galaxyInitialized = true;
-
-            const canvas = document.getElementById('galaxy-canvas');
-            const ctx = canvas.getContext('2d');
-
-            let width = 0;
-            let height = 0;
-            let dpr = 1;
-
-            const particles = [];
-            const arms = 5;
-            const count = 2400;
-
-            function resizeCanvas() {
-                dpr = Math.min(window.devicePixelRatio || 1, 2);
-                width = window.innerWidth;
-                height = window.innerHeight;
-
-                canvas.width = Math.floor(width * dpr);
-                canvas.height = Math.floor(height * dpr);
-                canvas.style.width = width + 'px';
-                canvas.style.height = height + 'px';
-
-                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            }
-
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            for (let i = 0; i < count; i++) {
-                const arm = Math.floor(Math.random() * arms);
-                const radius = Math.pow(Math.random(), 0.62) * 0.48 + 0.015;
-                const angle = arm * Math.PI * 2 / arms + radius * 13 + (Math.random() - 0.5) * 0.7;
-
-                particles.push({
-                    radius,
-                    angle,
-                    size: Math.random() * 1.65 + 0.25,
-                    alpha: Math.random() * 0.75 + 0.2,
-                    hue: Math.random() < 0.72
-                        ? (Math.random() * 28 + 35)
-                        : (Math.random() * 35 + 190),
-                    drift: (Math.random() - 0.5) * 0.0007
-                });
-            }
-
-            function drawGalaxy() {
-                ctx.clearRect(0, 0, width, height);
-
-                const cx = width * 0.5;
-                const cy = height * 0.52;
-                const scale = Math.min(width, height) * 1.02;
-
-                const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, scale * 0.52);
-                glow.addColorStop(0, 'rgba(255, 205, 118, 0.22)');
-                glow.addColorStop(0.12, 'rgba(56, 133, 194, 0.12)');
-                glow.addColorStop(0.42, 'rgba(20, 45, 88, 0.07)');
-                glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-                ctx.fillStyle = '#02040a';
-                ctx.fillRect(0, 0, width, height);
-
-                ctx.fillStyle = glow;
-                ctx.fillRect(0, 0, width, height);
-
-                const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, scale * 0.12);
-                core.addColorStop(0, 'rgba(255, 246, 216, .95)');
-                core.addColorStop(0.12, 'rgba(255, 194, 100, .42)');
-                core.addColorStop(0.5, 'rgba(91, 166, 230, .09)');
-                core.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-                ctx.fillStyle = core;
-                ctx.fillRect(0, 0, width, height);
-
-                for (const p of particles) {
-                    p.angle += p.drift;
-
-                    const r = p.radius * scale;
-                    const angle = p.angle;
-                    const x = cx + Math.cos(angle) * r * 1.28;
-                    const y = cy + Math.sin(angle) * r * 0.56;
-
-                    ctx.beginPath();
-                    ctx.fillStyle = `hsla(${p.hue}, 88%, ${p.hue < 100 ? 72 : 74}%, ${p.alpha})`;
-                    ctx.shadowBlur = p.size > 1.2 ? 7 : 0;
-                    ctx.shadowColor = p.hue < 100 ? '#ffc56b' : '#64c8ff';
-                    ctx.arc(x, y, p.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                ctx.shadowBlur = 0;
-
-                // Далёкие звёзды
-                for (let i = 0; i < 95; i++) {
-                    const x = (i * 137.51) % width;
-                    const y = (i * 83.17) % height;
-
-                    ctx.fillStyle = `rgba(220,235,255,${0.18 + (i % 5) * 0.1})`;
-                    ctx.fillRect(x, y, i % 7 === 0 ? 1.8 : 1, i % 7 === 0 ? 1.8 : 1);
-                }
-
-                requestAnimationFrame(drawGalaxy);
-            }
-
-            drawGalaxy();
-        }
-
-        let scrollProgress = 0;
-
-        window.addEventListener('scroll', () => {
-            const galaxySection = document.getElementById('galaxy-section');
-
-            if (galaxySection.style.display === 'block' && !isExploded) {
-                const maxScroll = Math.max(1, galaxySection.offsetHeight - window.innerHeight);
-                scrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-
-                const instruction = document.getElementById('galaxy-instruction');
-
-                if (scrollProgress > 0.1) {
-                    instruction.style.opacity = Math.max(0, 1 - (scrollProgress - 0.1) * 5);
-                } else {
-                    instruction.style.opacity = 1;
-                }
-
-                if (scrollProgress >= 0.96) {
-                    isExploded = true;
-                    triggerExplosionAndJokes();
-                }
-            }
-        });
-
-        // Финальное открытие фотографии
-        function triggerExplosionAndJokes() {
-            document.getElementById('galaxy-section').style.display = 'none';
-            document.getElementById('final-reveal-box').style.display = 'flex';
-        }
-
-        function revealCode() {
-            document.getElementById('photo-reveal-content').style.display = 'none';
-            document.getElementById('code-display-box').style.display = 'flex';
-        }
-    </script>
+      }
+    }catch(e){
+      // Если изображение не загрузилось, ниже будет показано сообщение.
+      points=[];
+    }
+  }
+
+  function resizeGalaxy(){
+    DPR=Math.min(devicePixelRatio||1,2);
+    W=innerWidth;H=innerHeight;
+    canvas.width=Math.floor(W*DPR);
+    canvas.height=Math.floor(H*DPR);
+    canvas.style.width=W+'px';
+    canvas.style.height=H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    if(photoImage.complete&&photoImage.naturalWidth)buildParticles();
+  }
+
+  photoImage.onload=()=>buildParticles();
+  photoImage.onerror=()=>{
+    document.getElementById('galaxy-instruction').textContent=
+      'Не удалось загрузить p11.jpg. Проверьте, что фотография лежит рядом с index.html.';
+  };
+  if(photoImage.complete&&photoImage.naturalWidth)buildParticles();
+
+  function drawGalaxy(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#02040a';
+    ctx.fillRect(0,0,W,H);
+
+    const cx=W/2,cy=H/2;
+    const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*.55);
+    glow.addColorStop(0,'rgba(100,105,255,.18)');
+    glow.addColorStop(.3,'rgba(60,100,220,.11)');
+    glow.addColorStop(.65,'rgba(90,50,170,.05)');
+    glow.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=glow;
+    ctx.fillRect(0,0,W,H);
+
+    // Звёзды на фоне.
+    for(let i=0;i<100;i++){
+      const x=(i*137.51)%W;
+      const y=(i*83.17)%H;
+      ctx.fillStyle=`rgba(200,215,255,${.15+(i%5)*.1})`;
+      ctx.fillRect(x,y,i%7===0?1.5:1,i%7===0?1.5:1);
+    }
+
+    const section=document.getElementById('galaxy-section');
+    const maxScroll=Math.max(1,section.offsetHeight-H);
+    const progress=Math.max(0,Math.min(1,scrollY/maxScroll));
+    const ease=progress*progress*(3-2*progress);
+
+    // До прокрутки фото выглядит как вращающаяся россыпь звёзд.
+    // При прокрутке каждая частица летит на своё место в фотографии.
+    ctx.save();
+    for(const p of points){
+      const orbit=Math.sin(performance.now()*.00035+p.phase)*3*(1-ease);
+      const x=p.sx+(p.x-p.sx)*ease+orbit;
+      const y=p.sy+(p.y-p.sy)*ease+orbit*.5;
+
+      ctx.globalAlpha=p.alpha*(.45+.55*ease);
+      ctx.fillStyle=p.color;
+      ctx.shadowBlur=ease>.35?2:5;
+      ctx.shadowColor=p.color;
+      ctx.beginPath();
+      ctx.arc(x,y,p.size*(.8+.25*ease),0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.restore();
+    ctx.shadowBlur=0;
+
+    const instruction=document.getElementById('galaxy-instruction');
+    instruction.style.opacity=progress>.08?Math.max(0,1-progress*3):1;
+
+    if(progress>=.97&&!galaxyDone){
+      galaxyDone=true;
+      document.getElementById('galaxy-next').style.display='block';
+    }
+    requestAnimationFrame(drawGalaxy);
+  }
+  drawGalaxy();
+}
+
+/* Финальный экран */
+function openFinalQuestion(){
+  document.getElementById('galaxy-next').style.display='none';
+  document.getElementById('galaxy-section').style.display='none';
+  document.getElementById('final-reveal-box').style.display='flex';
+  document.getElementById('photo-reveal-content').style.display='block';
+  document.getElementById('question-box').style.display='none';
+  document.getElementById('code-display-box').style.display='none';
+}
+function showQuestion(){
+  document.getElementById('photo-reveal-content').style.display='none';
+  document.getElementById('question-box').style.display='flex';
+  document.getElementById('question-answer').focus();
+}
+function checkLakeAnswer(){
+  const input=document.getElementById('question-answer');
+  const answer=input.value.trim().toLowerCase().replaceAll('ё','е');
+
+  if(answer==='байкал'){
+    document.getElementById('question-box').style.display='none';
+    document.getElementById('code-display-box').style.display='flex';
+  }else{
+    document.getElementById('answer-feedback').textContent='Не совсем. Попробуйте ещё раз.';
+    input.value='';
+    input.focus();
+  }
+}
+</script>
 </body>
 </html>
