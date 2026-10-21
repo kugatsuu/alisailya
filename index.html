@@ -3,7 +3,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#03040d">
 <title>Для Ильи и Алисы</title>
 
 <style>
@@ -11,26 +12,18 @@
   --gold: #e8c77d;
   --white: #f5f3ff;
   --muted: #b8b8d1;
-  --panel: rgba(10, 12, 32, .82);
+  --panel: rgba(10,12,32,.88);
 }
-
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
   margin: 0;
-  width: 100%;
   min-height: 100%;
   background: #03040d;
   color: var(--white);
   font-family: Georgia, "Times New Roman", serif;
 }
-
-body {
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+body { min-height: 100vh; overflow-x: hidden; }
 
 #stars {
   position: fixed;
@@ -40,22 +33,20 @@ body {
   z-index: 0;
   pointer-events: none;
 }
-
 .nebula {
   position: fixed;
-  inset: -20%;
+  inset: -10%;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 20% 25%, rgba(57, 49, 130, .22), transparent 42%),
-    radial-gradient(ellipse at 80% 65%, rgba(93, 37, 105, .18), transparent 38%),
-    radial-gradient(ellipse at 55% 15%, rgba(29, 74, 125, .13), transparent 40%);
-  animation: nebulaDrift 28s ease-in-out infinite alternate;
+    radial-gradient(ellipse at 20% 25%, rgba(57,49,130,.2), transparent 42%),
+    radial-gradient(ellipse at 80% 65%, rgba(93,37,105,.16), transparent 38%),
+    radial-gradient(ellipse at 55% 15%, rgba(29,74,125,.12), transparent 40%);
+  animation: drift 28s ease-in-out infinite alternate;
 }
-
-@keyframes nebulaDrift {
-  from { transform: translate3d(-1%, 0, 0) scale(1); }
-  to { transform: translate3d(1%, -1%, 0) scale(1.06); }
+@keyframes drift {
+  from { transform: translate3d(-1%,0,0) scale(1); }
+  to { transform: translate3d(1%,-1%,0) scale(1.04); }
 }
 
 .screen {
@@ -70,119 +61,74 @@ body {
   flex-direction: column;
   text-align: center;
 }
-
 .screen.active {
   display: flex;
-  animation: appear .8s ease both;
+  animation: appear .6s ease both;
 }
-
 @keyframes appear {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
 .panel {
-  width: min(760px, 100%);
-  padding: clamp(22px, 5vw, 48px);
-  border: 1px solid rgba(232, 199, 125, .28);
+  width: min(760px,100%);
+  padding: clamp(22px,5vw,48px);
+  border: 1px solid rgba(232,199,125,.28);
   border-radius: 18px;
   background: var(--panel);
-  box-shadow: 0 0 50px rgba(53, 50, 120, .13);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 0 40px rgba(53,50,120,.12);
+  backdrop-filter: blur(8px);
 }
-
-h1, h2 {
-  font-weight: normal;
-  line-height: 1.3;
-}
-
+h1, h2 { font-weight: normal; line-height: 1.3; }
 h1 {
-  font-size: clamp(27px, 5vw, 47px);
+  font-size: clamp(27px,5vw,47px);
   letter-spacing: 2px;
+  overflow-wrap: anywhere;
 }
-
-h2 {
-  font-size: clamp(23px, 4vw, 34px);
-}
-
-p {
-  line-height: 1.8;
-}
-
-.gold {
-  color: var(--gold);
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.small {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.6;
-}
+h2 { font-size: clamp(23px,4vw,34px); }
+p { line-height: 1.8; }
+.gold { color: var(--gold); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
 button {
   padding: 13px 28px;
   margin: 9px 5px;
-  border: 1px solid rgba(232, 199, 125, .65);
+  border: 1px solid rgba(232,199,125,.65);
   border-radius: 8px;
-  background: rgba(232, 199, 125, .09);
+  background: rgba(232,199,125,.09);
   color: var(--white);
   font: inherit;
   font-size: 16px;
   cursor: pointer;
-  transition: background .25s, border-color .25s, transform .25s;
+  transition: background .2s, border-color .2s, opacity .2s;
 }
-
-button:hover {
-  background: rgba(232, 199, 125, .2);
+button:hover:not(:disabled) {
+  background: rgba(232,199,125,.2);
   border-color: var(--gold);
-  transform: translateY(-1px);
 }
-
-button:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-  transform: none;
-}
+button:disabled { opacity: .45; cursor: not-allowed; }
 
 input {
-  width: min(340px, 100%);
+  width: min(340px,100%);
   padding: 13px 15px;
   margin: 12px 0;
-  border: 1px solid rgba(232, 199, 125, .5);
+  border: 1px solid rgba(232,199,125,.5);
   border-radius: 8px;
   outline: none;
-  background: rgba(4, 6, 20, .9);
+  background: rgba(4,6,20,.9);
   color: white;
   font: inherit;
   font-size: 17px;
   text-align: center;
 }
-
-input:focus {
-  border-color: var(--gold);
-}
-
-.status {
-  min-height: 26px;
-  margin-top: 8px;
-  color: var(--gold);
-}
-
-.type-title {
-  min-height: 1.5em;
-  overflow-wrap: anywhere;
-}
-
+input:focus { border-color: var(--gold); }
+.status { min-height: 26px; margin-top: 8px; color: var(--gold); }
 #introText {
   white-space: pre-line;
   min-height: 120px;
-  font-size: clamp(16px, 2.5vw, 19px);
+  font-size: clamp(16px,2.5vw,19px);
 }
-
 .envelope {
   width: 150px;
   height: 100px;
@@ -190,51 +136,44 @@ input:focus {
   margin: 25px auto;
   background: #c6a45e;
   border-radius: 5px;
-  box-shadow: 0 0 45px rgba(232, 199, 125, .16);
+  box-shadow: 0 0 35px rgba(232,199,125,.15);
 }
-
 .envelope::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
+  top: 0; left: 0;
+  width: 0; height: 0;
   border-left: 75px solid transparent;
   border-right: 75px solid transparent;
   border-top: 58px solid #e5c781;
 }
-
 .envelope::after {
   content: "✦";
   position: absolute;
-  left: 62px;
-  top: 37px;
+  left: 62px; top: 37px;
   color: #5c431c;
   font-size: 28px;
 }
 
 .letter {
-  width: min(850px, 100%);
+  width: min(850px,100%);
   text-align: left;
-  padding: clamp(20px, 5vw, 45px);
-  border: 1px solid rgba(232, 199, 125, .28);
+  padding: clamp(20px,5vw,45px);
+  border: 1px solid rgba(232,199,125,.28);
   border-radius: 14px;
-  background: rgba(8, 9, 23, .9);
+  background: rgba(8,9,23,.94);
   line-height: 1.85;
   white-space: pre-line;
 }
-
 .quote {
   margin: 30px 0;
   padding: 18px 22px;
   border-left: 2px solid var(--gold);
   color: var(--gold);
-  font-size: clamp(18px, 3vw, 23px);
+  font-size: clamp(18px,3vw,23px);
   font-style: italic;
   line-height: 1.65;
 }
-
 .poem {
   white-space: pre-line;
   text-align: center;
@@ -248,58 +187,44 @@ input:focus {
   overflow: hidden;
   background: #02030a;
 }
-
 #galaxyCanvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
-
 .galaxy-overlay {
   position: relative;
   z-index: 2;
-  width: min(700px, 92%);
+  width: min(700px,92%);
   padding: 20px;
   margin-top: auto;
   margin-bottom: 22px;
   border-radius: 14px;
-  background: linear-gradient(180deg, transparent, rgba(3, 4, 13, .86) 25%);
+  background: linear-gradient(180deg,transparent,rgba(3,4,13,.88) 25%);
   text-shadow: 0 2px 12px #000;
+  pointer-events: none;
 }
-
-.galaxy-overlay h2 {
-  font-size: clamp(21px, 4vw, 34px);
-}
-
-#photo-screen {
-  padding: 24px 14px;
-}
+.galaxy-overlay button { pointer-events: auto; }
+.galaxy-overlay h2 { font-size: clamp(21px,4vw,34px); }
 
 #mainPhoto {
   display: block;
-  max-width: min(850px, 94vw);
+  max-width: min(850px,94vw);
   max-height: 67vh;
   object-fit: contain;
+  margin: 0 auto;
   border-radius: 8px;
-  box-shadow: 0 0 45px rgba(109, 100, 185, .2);
+  box-shadow: 0 0 35px rgba(109,100,185,.18);
 }
-
-#slideshow-screen {
-  padding: 18px;
-  overflow: hidden;
-}
-
 .slideshow-frame {
-  width: min(1100px, 96vw);
-  height: min(72vh, 760px);
+  width: min(1100px,96vw);
+  height: min(72vh,760px);
   min-height: 260px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
-
 #slideImage {
   max-width: 100%;
   max-height: 100%;
@@ -307,101 +232,66 @@ input:focus {
   height: auto;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 0 55px rgba(65, 61, 128, .25);
+  box-shadow: 0 0 40px rgba(65,61,128,.2);
   opacity: 1;
-  transition: opacity .7s ease;
+  transition: opacity .45s ease;
 }
-
-#slideImage.fading {
-  opacity: 0;
-}
-
-.slide-caption {
-  margin: 12px 0 4px;
-  color: var(--muted);
-  font-size: 14px;
-}
-
+#slideImage.fading { opacity: 0; }
+.slide-caption { margin: 12px 0 4px; color: var(--muted); font-size: 14px; }
 .progress-track {
-  width: min(420px, 80vw);
+  width: min(420px,80vw);
   height: 3px;
   margin: 12px auto;
   background: rgba(255,255,255,.12);
   border-radius: 3px;
   overflow: hidden;
 }
-
 #slideProgress {
   height: 100%;
   width: 0%;
   background: var(--gold);
+  transition: width .2s;
 }
-
-#video-screen {
-  padding: 20px;
-}
-
 #memoryVideo {
-  width: min(1000px, 95vw);
+  display: block;
+  width: min(1000px,95vw);
   max-height: 72vh;
+  margin: 0 auto;
   background: #000;
-  border: 1px solid rgba(232, 199, 125, .25);
+  border: 1px solid rgba(232,199,125,.25);
   border-radius: 8px;
 }
-
 .option-list {
-  width: min(600px, 100%);
+  width: min(600px,100%);
   margin: 20px auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
 .option-list button {
   width: 100%;
   margin: 0;
   text-align: left;
   line-height: 1.5;
 }
-
 #finalCode {
   color: var(--gold);
-  font-size: clamp(42px, 10vw, 68px);
+  font-size: clamp(42px,10vw,68px);
   letter-spacing: 12px;
   margin: 22px 0;
 }
+.hidden { display: none !important; }
 
-.hidden {
-  display: none !important;
+@media (max-width:600px) {
+  .screen { padding: 18px 12px; }
+  .panel { padding: 24px 18px; }
+  .letter { padding: 22px 18px; }
+  #mainPhoto { max-height: 60vh; }
+  .slideshow-frame { height: 62vh; }
 }
-
-@media (max-width: 600px) {
-  .screen {
-    padding: 18px 12px;
-  }
-
-  .panel {
-    padding: 24px 18px;
-  }
-
-  .letter {
-    padding: 22px 18px;
-  }
-
-  #mainPhoto {
-    max-height: 60vh;
-  }
-
-  .slideshow-frame {
-    height: 62vh;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
+@media (prefers-reduced-motion:reduce) {
+  .nebula { animation: none; }
+  *, *::before, *::after { transition-duration: .01ms !important; }
 }
 </style>
 </head>
@@ -409,28 +299,22 @@ input:focus {
 <body>
 <canvas id="stars"></canvas>
 <div class="nebula"></div>
-
-<audio id="backgroundMusic" src="interstellar.mp3" loop preload="auto"></audio>
+<audio id="backgroundMusic" src="interstellar.mp3" loop preload="none"></audio>
 
 <!-- 1. Вступление -->
 <section id="intro-screen" class="screen active">
   <div class="panel">
     <p class="small">ЛИЧНО ДЛЯ ВАС</p>
-    <h1 id="introTitle" class="gold type-title"></h1>
+    <h1 id="introTitle" class="gold"></h1>
     <p id="introText"></p>
-    <p class="small">
-      Эту открытку нужно открывать на компьютере для правильного отображения всех эффектов.
-    </p>
-    <button id="openButton" class="hidden" onclick="showScreen('envelope-screen')">
-      Открыть
-    </button>
+    <button id="openButton" type="button" disabled>Открыть (15)</button>
     <p id="musicHint" class="small">
       Если музыка не началась автоматически, нажмите на экран.
     </p>
   </div>
 </section>
 
-<!-- 2. Конверт и вопрос о годе знакомства -->
+<!-- 2. Конверт -->
 <section id="envelope-screen" class="screen">
   <div class="panel">
     <p class="small">НЕБОЛЬШОЙ ВОПРОС ПЕРЕД ТЕМ, КАК ОТКРЫТЬ ПИСЬМО</p>
@@ -469,9 +353,7 @@ input:focus {
 
     <p>Я очень рад, что вы есть у меня. Спасибо вам за вас. Я вас люблю.</p>
 
-    <div class="quote">
-      Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой
-    </div>
+    <div class="quote">Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой</div>
 
     <div class="poem">Скажи, ты счастлив? Не ну правда?
 Скажи, об этом ты мечтал?
@@ -498,21 +380,19 @@ input:focus {
 Лишь об одном побеспокойся!
 Чтоб рядом шёл, с кем Жить Легко!</div>
 
-    <div style="text-align:center; margin-top:28px">
-      <button onclick="startGalaxy()">Продолжить</button>
+    <div style="text-align:center;margin-top:28px">
+      <button type="button" onclick="startGalaxy()">Продолжить</button>
     </div>
   </article>
 </section>
 
-<!-- 4. Фото собирается из частиц -->
+<!-- 4. Сборка главного фото -->
 <section id="galaxy-screen" class="screen">
   <canvas id="galaxyCanvas"></canvas>
   <div class="galaxy-overlay">
     <h2 class="gold">Некоторые моменты остаются с нами навсегда</h2>
     <p class="muted">Каждая частичка хранит часть воспоминания.</p>
-    <button id="galaxyContinue" class="hidden" onclick="startSlideshow()">
-      Продолжить
-    </button>
+    <button id="galaxyContinue" class="hidden" type="button" onclick="showMainPhoto()">Продолжить</button>
   </div>
 </section>
 
@@ -520,25 +400,23 @@ input:focus {
 <section id="photo-screen" class="screen">
   <div class="panel">
     <h2 class="gold">Это тоже часть нашей истории</h2>
-    <img id="mainPhoto" src="p11.jpg" alt="Главное фото">
+    <img id="mainPhoto" src="p11.jpg" alt="Главное фото" decoding="async">
     <p class="muted">И это далеко не все воспоминания.</p>
-    <button onclick="startSlideshow()">Посмотреть дальше</button>
+    <button type="button" onclick="startSlideshow()">Посмотреть дальше</button>
   </div>
 </section>
 
-<!-- 6. Слайд-шоу фотографий -->
+<!-- 6. Слайд-шоу -->
 <section id="slideshow-screen" class="screen">
   <h2 class="gold">Моменты, которые хочется сохранить</h2>
   <div class="slideshow-frame">
-    <img id="slideImage" src="12.jpg" alt="Фотография из воспоминаний">
+    <img id="slideImage" alt="Фотография из воспоминаний" decoding="async" fetchpriority="low">
   </div>
-  <div id="slideCaption" class="slide-caption">Воспоминание 1</div>
-  <div class="progress-track">
-    <div id="slideProgress"></div>
-  </div>
+  <div id="slideCaption" class="slide-caption">Загрузка воспоминания…</div>
+  <div class="progress-track"><div id="slideProgress"></div></div>
   <div>
-    <button id="pauseSlidesButton" onclick="toggleSlideshow()">Пауза</button>
-    <button onclick="skipSlide()">Далее</button>
+    <button id="pauseSlidesButton" type="button" onclick="toggleSlideshow()">Пауза</button>
+    <button type="button" onclick="skipSlide()">Далее</button>
   </div>
   <p class="small">После последней фотографии начнётся видео.</p>
 </section>
@@ -547,18 +425,16 @@ input:focus {
 <section id="video-screen" class="screen">
   <div class="panel">
     <h2 class="gold">И ещё одно воспоминание</h2>
-    <video id="memoryVideo" controls playsinline preload="metadata">
+    <video id="memoryVideo" controls playsinline preload="none">
       <source src="2.mp4" type="video/mp4">
       Ваш браузер не поддерживает воспроизведение видео.
     </video>
     <p id="videoStatus" class="muted">После окончания видео открытка продолжится.</p>
-    <button id="continueAfterVideo" class="hidden" onclick="startBaikalQuestion()">
-      Продолжить
-    </button>
+    <button id="continueAfterVideo" class="hidden" type="button" onclick="startBaikalQuestion()">Продолжить</button>
   </div>
 </section>
 
-<!-- 8. Вопрос о Байкале -->
+<!-- 8. Вопрос про Байкал -->
 <section id="baikal-screen" class="screen">
   <div class="panel">
     <p class="small">ЕЩЁ ОДИН ВОПРОС</p>
@@ -578,9 +454,9 @@ input:focus {
     <p class="small">ПОСЛЕДНИЙ ВОПРОС</p>
     <h2>Что помогает нам оставаться близкими, даже когда мы далеко друг от друга?</h2>
     <div class="option-list">
-      <button onclick="answerFriendship(0)">То, что у каждого своя жизнь</button>
-      <button onclick="answerFriendship(1)">Дружба, общение и воспоминания, которые нас объединяют</button>
-      <button onclick="answerFriendship(2)">Просто случайное совпадение</button>
+      <button type="button" onclick="answerFriendship(0)">То, что у каждого своя жизнь</button>
+      <button type="button" onclick="answerFriendship(1)">Дружба, общение и воспоминания, которые нас объединяют</button>
+      <button type="button" onclick="answerFriendship(2)">Просто случайное совпадение</button>
     </div>
     <div id="friendshipStatus" class="status"></div>
   </div>
@@ -592,239 +468,243 @@ input:focus {
     <h2 class="gold">Код открыт</h2>
     <p>Ваш код:</p>
     <div id="finalCode">1276</div>
-    <button onclick="copyCode()">Скопировать код</button>
+    <button type="button" onclick="copyCode()">Скопировать код</button>
     <div id="copyStatus" class="status"></div>
   </div>
 </section>
 
 <script>
-/* ---------------- Звёздное небо ---------------- */
+"use strict";
 
-const starCanvas = document.getElementById("stars");
-const starCtx = starCanvas.getContext("2d");
-let stars = [];
-let starWidth = 0;
-let starHeight = 0;
-let starDpr = 1;
-
-function resizeStars() {
-  starDpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  starWidth = window.innerWidth;
-  starHeight = window.innerHeight;
-
-  starCanvas.width = Math.floor(starWidth * starDpr);
-  starCanvas.height = Math.floor(starHeight * starDpr);
-  starCanvas.style.width = starWidth + "px";
-  starCanvas.style.height = starHeight + "px";
-  starCtx.setTransform(starDpr, 0, 0, starDpr, 0, 0);
-
-  const count = Math.min(220, Math.floor(starWidth * starHeight / 5500));
-  stars = Array.from({ length: count }, () => ({
-    x: Math.random() * starWidth,
-    y: Math.random() * starHeight,
-    r: Math.random() * 1.35 + .25,
-    alpha: Math.random() * .6 + .2,
-    speed: Math.random() * .012 + .003,
-    phase: Math.random() * Math.PI * 2
-  }));
-}
-
-function drawStars(time) {
-  starCtx.clearRect(0, 0, starWidth, starHeight);
-
-  for (const s of stars) {
-    const alpha = s.alpha * (0.65 + 0.35 * Math.sin(time * s.speed + s.phase));
-    starCtx.fillStyle = `rgba(226, 229, 255, ${alpha})`;
-    starCtx.beginPath();
-    starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    starCtx.fill();
-  }
-
-  requestAnimationFrame(drawStars);
-}
-
-window.addEventListener("resize", resizeStars);
-resizeStars();
-requestAnimationFrame(drawStars);
-
-/* ---------------- Переключение экранов ---------------- */
-
+/* Переключение экранов */
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(screen => {
     screen.classList.remove("active");
   });
-
-  const next = document.getElementById(id);
-  if (next) next.classList.add("active");
+  const target = document.getElementById(id);
+  if (target) target.classList.add("active");
+  window.scrollTo(0, 0);
 }
 
-/* ---------------- Музыка ---------------- */
+/* Звёздный фон: ограниченное число звёзд и масштаб canvas */
+const starCanvas = document.getElementById("stars");
+const starCtx = starCanvas.getContext("2d");
+let stars = [];
+let starW = 0;
+let starH = 0;
+let starDpr = 1;
 
-const backgroundMusic = document.getElementById("backgroundMusic");
-backgroundMusic.volume = 0.55;
+function resizeStars() {
+  starDpr = Math.min(window.devicePixelRatio || 1, 1.25);
+  starW = window.innerWidth;
+  starH = window.innerHeight;
+  starCanvas.width = Math.floor(starW * starDpr);
+  starCanvas.height = Math.floor(starH * starDpr);
+  starCanvas.style.width = starW + "px";
+  starCanvas.style.height = starH + "px";
+  starCtx.setTransform(starDpr, 0, 0, starDpr, 0, 0);
+
+  const count = Math.min(150, Math.floor(starW * starH / 8000));
+  stars = Array.from({ length: count }, () => ({
+    x: Math.random() * starW,
+    y: Math.random() * starH,
+    size: Math.random() * 1.2 + .3,
+    alpha: Math.random() * .55 + .2,
+    speed: Math.random() * .0015 + .0004,
+    phase: Math.random() * Math.PI * 2
+  }));
+}
+function drawStars(time) {
+  starCtx.clearRect(0, 0, starW, starH);
+  for (const star of stars) {
+    const alpha = star.alpha * (0.7 + 0.3 * Math.sin(time * star.speed + star.phase));
+    starCtx.fillStyle = `rgba(226,229,255,${alpha})`;
+    starCtx.fillRect(star.x, star.y, star.size, star.size);
+  }
+  requestAnimationFrame(drawStars);
+}
+window.addEventListener("resize", resizeStars);
+resizeStars();
+requestAnimationFrame(drawStars);
+
+/* Музыка */
+const music = document.getElementById("backgroundMusic");
+music.volume = 0.55;
 
 async function tryPlayMusic() {
   try {
-    await backgroundMusic.play();
+    await music.play();
     document.getElementById("musicHint").classList.add("hidden");
-  } catch (error) {
+  } catch {
     document.getElementById("musicHint").classList.remove("hidden");
   }
 }
-
 document.addEventListener("pointerdown", () => {
-  if (backgroundMusic.paused) tryPlayMusic();
+  if (music.paused) tryPlayMusic();
 }, { once: true });
-
 document.addEventListener("keydown", () => {
-  if (backgroundMusic.paused) tryPlayMusic();
+  if (music.paused) tryPlayMusic();
 }, { once: true });
-
 tryPlayMusic();
 
-/* ---------------- Печатный текст вступления ---------------- */
-
-const introTitleText = "DEAR MY FRIENDS FOR YOU";
-const introBodyText =
-  "Эта открытка для вас, мои дорогие друзья.\n\n" +
-  "И когда вы её откроете, будьте готовы ко всему.\n\n" +
-  "Я вас люблю.";
-
+/* Вступление и отсчёт 15 секунд */
 function typeText(element, text, speed, done) {
   let i = 0;
   element.textContent = "";
-
-  function next() {
+  function step() {
     if (i < text.length) {
-      element.textContent += text[i];
-      i++;
-      setTimeout(next, speed);
+      element.textContent += text[i++];
+      setTimeout(step, speed);
     } else if (done) {
       done();
     }
   }
-
-  next();
+  step();
 }
 
+const introTitle = "DEAR MY FRIENDS FOR YOU";
+const introBody =
+  "Эта открытка для вас, мои дорогие друзья.\n\n" +
+  "И когда вы её откроете, будьте готовы ко всему.\n\n" +
+  "Я вас люблю.";
+
+const openButton = document.getElementById("openButton");
+let countdown = 15;
+openButton.disabled = true;
+openButton.textContent = `Открыть (${countdown})`;
+
+openButton.addEventListener("click", () => {
+  if (!openButton.disabled) showScreen("envelope-screen");
+});
+
+const countdownTimer = setInterval(() => {
+  countdown--;
+  if (countdown <= 0) {
+    clearInterval(countdownTimer);
+    openButton.disabled = false;
+    openButton.textContent = "Открыть";
+  } else {
+    openButton.textContent = `Открыть (${countdown})`;
+  }
+}, 1000);
+
 window.addEventListener("load", () => {
-  typeText(document.getElementById("introTitle"), introTitleText, 125, () => {
-    typeText(document.getElementById("introText"), introBodyText, 75, () => {
-      document.getElementById("openButton").classList.remove("hidden");
-    });
+  typeText(document.getElementById("introTitle"), introTitle, 100, () => {
+    typeText(document.getElementById("introText"), introBody, 55);
   });
 });
 
-/* ---------------- Вопрос о годе знакомства ---------------- */
-
+/* Вопрос о годе знакомства */
 document.getElementById("yearForm").addEventListener("submit", event => {
   event.preventDefault();
-
   const answer = document.getElementById("yearAnswer").value.trim();
   const status = document.getElementById("yearStatus");
 
   if (answer === "2024") {
     status.textContent = "Верно.";
-    setTimeout(() => showScreen("letter-screen"), 700);
+    setTimeout(() => showScreen("letter-screen"), 650);
   } else {
     status.textContent = "Попробуйте ещё раз.";
   }
 });
 
-/* ---------------- Сборка фото из частиц ---------------- */
-
+/* Сборка фотографии из частиц */
 const galaxyCanvas = document.getElementById("galaxyCanvas");
 const galaxyCtx = galaxyCanvas.getContext("2d", { alpha: false });
-const photoImage = new Image();
-photoImage.src = "p11.jpg";
+const mainImage = new Image();
+mainImage.decoding = "async";
+mainImage.src = "p11.jpg";
 
-let galaxyParticles = [];
-let galaxyStartTime = 0;
-let galaxyAnimationId = null;
-let galaxyBuilt = false;
-let galaxyDpr = 1;
+let particles = [];
+let galaxyStart = 0;
+let galaxyRAF = null;
 let galaxyW = 0;
 let galaxyH = 0;
-const galaxyDuration = 7000;
+let galaxyDpr = 1;
+let galaxyFailed = false;
+const MAX_PARTICLES = 3000;
+const GALAXY_DURATION = 6500;
 
 function startGalaxy() {
   showScreen("galaxy-screen");
   document.getElementById("galaxyContinue").classList.add("hidden");
-  galaxyBuilt = false;
-  galaxyStartTime = performance.now();
-
+  galaxyFailed = false;
+  galaxyStart = performance.now();
   resizeGalaxy();
+  if (galaxyRAF) cancelAnimationFrame(galaxyRAF);
+  galaxyRAF = requestAnimationFrame(animateGalaxy);
+}
 
-  if (galaxyAnimationId) cancelAnimationFrame(galaxyAnimationId);
-  galaxyAnimationId = requestAnimationFrame(animateGalaxy);
+function showMainPhoto() {
+  if (galaxyRAF) cancelAnimationFrame(galaxyRAF);
+  galaxyRAF = null;
+  showScreen("photo-screen");
 }
 
 function resizeGalaxy() {
-  const screen = document.getElementById("galaxy-screen");
-  galaxyW = screen.clientWidth || window.innerWidth;
-  galaxyH = screen.clientHeight || window.innerHeight;
-  galaxyDpr = Math.min(window.devicePixelRatio || 1, 1.25);
+  galaxyW = window.innerWidth;
+  galaxyH = window.innerHeight;
+  galaxyDpr = Math.min(window.devicePixelRatio || 1, 1);
 
-  galaxyCanvas.width = Math.floor(galaxyW * galaxyDpr);
-  galaxyCanvas.height = Math.floor(galaxyH * galaxyDpr);
+  galaxyCanvas.width = Math.max(1, Math.floor(galaxyW * galaxyDpr));
+  galaxyCanvas.height = Math.max(1, Math.floor(galaxyH * galaxyDpr));
+  galaxyCanvas.style.width = galaxyW + "px";
+  galaxyCanvas.style.height = galaxyH + "px";
   galaxyCtx.setTransform(galaxyDpr, 0, 0, galaxyDpr, 0, 0);
 
-  if (photoImage.complete && photoImage.naturalWidth > 0) {
-    buildGalaxyParticles();
-  }
+  if (mainImage.complete && mainImage.naturalWidth) buildParticles();
 }
 
-function buildGalaxyParticles() {
-  const sampleCanvas = document.createElement("canvas");
-  const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+function buildParticles() {
+  if (!mainImage.naturalWidth) return;
 
+  const sample = document.createElement("canvas");
+  const ctx = sample.getContext("2d", { willReadFrequently: true });
   const maxW = Math.min(galaxyW * .78, 850);
-  const maxH = galaxyH * .68;
-  const scale = Math.min(maxW / photoImage.naturalWidth, maxH / photoImage.naturalHeight);
+  const maxH = galaxyH * .64;
+  const scale = Math.min(maxW / mainImage.naturalWidth, maxH / mainImage.naturalHeight);
+  const w = Math.max(1, Math.floor(mainImage.naturalWidth * scale));
+  const h = Math.max(1, Math.floor(mainImage.naturalHeight * scale));
 
-  const imgW = Math.max(1, Math.floor(photoImage.naturalWidth * scale));
-  const imgH = Math.max(1, Math.floor(photoImage.naturalHeight * scale));
+  sample.width = w;
+  sample.height = h;
+  ctx.drawImage(mainImage, 0, 0, w, h);
 
-  sampleCanvas.width = imgW;
-  sampleCanvas.height = imgH;
-  sampleCtx.drawImage(photoImage, 0, 0, imgW, imgH);
-
-  let pixels;
+  let data;
   try {
-    pixels = sampleCtx.getImageData(0, 0, imgW, imgH).data;
-  } catch (error) {
+    data = ctx.getImageData(0, 0, w, h).data;
+  } catch {
+    galaxyFailed = true;
     document.querySelector("#galaxy-screen .galaxy-overlay p").textContent =
-      "Не удалось подготовить фотографию. Проверьте файл p11.jpg.";
+      "Не удалось обработать p11.jpg. Проверьте файл.";
     return;
   }
 
-  galaxyParticles = [];
+  const gap = Math.max(5, Math.floor(Math.min(w, h) / 65));
+  const offsetX = (galaxyW - w) / 2;
+  const offsetY = (galaxyH - h) / 2 - 25;
+  const collected = [];
 
-  const gap = Math.max(4, Math.floor(Math.min(imgW, imgH) / 95));
-  const offsetX = (galaxyW - imgW) / 2;
-  const offsetY = (galaxyH - imgH) / 2 - 20;
+  for (let y = 0; y < h; y += gap) {
+    for (let x = 0; x < w; x += gap) {
+      const i = (y * w + x) * 4;
+      if (data[i + 3] < 100) continue;
 
-  for (let y = 0; y < imgH; y += gap) {
-    for (let x = 0; x < imgW; x += gap) {
-      const index = (y * imgW + x) * 4;
-      const alpha = pixels[index + 3];
-
-      if (alpha < 90) continue;
-
-      const r = pixels[index];
-      const g = pixels[index + 1];
-      const b = pixels[index + 2];
-
-      galaxyParticles.push({
+      collected.push({
         x: Math.random() * galaxyW,
         y: Math.random() * galaxyH,
         tx: offsetX + x,
         ty: offsetY + y,
-        r, g, b,
-        size: Math.random() * 1.2 + 1,
-        delay: Math.random() * .32
+        color: `rgb(${data[i]},${data[i + 1]},${data[i + 2]})`,
+        size: Math.random() * .8 + 1
       });
     }
+  }
+
+  particles = [];
+  const step = Math.max(1, Math.ceil(collected.length / MAX_PARTICLES));
+  for (let i = 0; i < collected.length; i += step) {
+    particles.push(collected[i]);
   }
 }
 
@@ -832,49 +712,50 @@ function animateGalaxy(now) {
   galaxyCtx.fillStyle = "#02030a";
   galaxyCtx.fillRect(0, 0, galaxyW, galaxyH);
 
-  if (!photoImage.complete || photoImage.naturalWidth === 0) {
-    galaxyCtx.fillStyle = "#e8c77d";
-    galaxyCtx.font = "18px Georgia";
-    galaxyCtx.textAlign = "center";
-    galaxyCtx.fillText("Загрузка фотографии…", galaxyW / 2, galaxyH / 2);
-    galaxyAnimationId = requestAnimationFrame(animateGalaxy);
+  if (galaxyFailed) {
+    document.getElementById("galaxyContinue").classList.remove("hidden");
+    galaxyRAF = null;
     return;
   }
 
-  if (!galaxyParticles.length) buildGalaxyParticles();
+  if (!mainImage.complete || !mainImage.naturalWidth) {
+    galaxyCtx.fillStyle = "#e8c77d";
+    galaxyCtx.font = "17px Georgia";
+    galaxyCtx.textAlign = "center";
+    galaxyCtx.fillText("Подготовка воспоминания…", galaxyW / 2, galaxyH / 2);
+    galaxyRAF = requestAnimationFrame(animateGalaxy);
+    return;
+  }
 
-  const progress = Math.min(1, (now - galaxyStartTime) / galaxyDuration);
+  if (!particles.length) buildParticles();
 
-  for (const p of galaxyParticles) {
-    const local = Math.max(0, Math.min(1, (progress - p.delay) / (1 - p.delay)));
-    const eased = 1 - Math.pow(1 - local, 3);
+  const progress = Math.min(1, (now - galaxyStart) / GALAXY_DURATION);
+  const eased = 1 - Math.pow(1 - progress, 3);
 
+  for (const p of particles) {
     const x = p.x + (p.tx - p.x) * eased;
     const y = p.y + (p.ty - p.y) * eased;
-    const alpha = Math.min(1, .18 + eased * .82);
-
-    galaxyCtx.fillStyle = `rgba(${p.r},${p.g},${p.b},${alpha})`;
+    galaxyCtx.fillStyle = p.color;
     galaxyCtx.fillRect(x, y, p.size, p.size);
   }
 
   if (progress < 1) {
-    galaxyAnimationId = requestAnimationFrame(animateGalaxy);
+    galaxyRAF = requestAnimationFrame(animateGalaxy);
   } else {
-    galaxyBuilt = true;
-    galaxyAnimationId = null;
+    galaxyRAF = null;
     document.getElementById("galaxyContinue").classList.remove("hidden");
   }
 }
 
-photoImage.onload = () => {
-  if (document.getElementById("galaxy-screen").classList.contains("active")) {
-    resizeGalaxy();
-  }
-};
-
-photoImage.onerror = () => {
+mainImage.onerror = () => {
+  galaxyFailed = true;
   document.querySelector("#galaxy-screen .galaxy-overlay p").textContent =
-    "Не удалось загрузить p11.jpg. Проверьте имя файла и его расположение.";
+    "Не удалось загрузить p11.jpg. Проверьте имя файла.";
+};
+mainImage.onload = () => {
+  if (document.getElementById("galaxy-screen").classList.contains("active")) {
+    buildParticles();
+  }
 };
 
 window.addEventListener("resize", () => {
@@ -883,12 +764,7 @@ window.addEventListener("resize", () => {
   }
 });
 
-document.getElementById("mainPhoto").addEventListener("error", () => {
-  document.getElementById("mainPhoto").alt = "Не удалось загрузить p11.jpg";
-});
-
-/* ---------------- Слайд-шоу ---------------- */
-
+/* Слайд-шоу: файлы загружаются по одному */
 const slideshowFiles = [
   "12.jpg",
   "0172.jpg",
@@ -912,24 +788,26 @@ let slideStartedAt = 0;
 let slideRemaining = 5000;
 let slideshowPaused = false;
 let slideTransitioning = false;
-const slideDuration = 5000;
+let slideSession = 0;
+const SLIDE_DURATION = 5000;
+const slideImage = document.getElementById("slideImage");
 
 function startSlideshow() {
   clearTimeout(slideTimer);
+  slideSession++;
   slideIndex = 0;
-  slideRemaining = slideDuration;
+  slideRemaining = SLIDE_DURATION;
   slideshowPaused = false;
   slideTransitioning = false;
 
   document.getElementById("pauseSlidesButton").textContent = "Пауза";
+  document.getElementById("slideProgress").style.width = "0%";
   showScreen("slideshow-screen");
-  displaySlide(true);
+  displaySlide(true, slideSession);
 }
 
-function displaySlide(first = false) {
-  const image = document.getElementById("slideImage");
-  const caption = document.getElementById("slideCaption");
-  const progress = document.getElementById("slideProgress");
+function displaySlide(first, session) {
+  if (session !== slideSession) return;
 
   if (slideIndex >= slideshowFiles.length) {
     startMemoryVideo();
@@ -937,52 +815,54 @@ function displaySlide(first = false) {
   }
 
   slideTransitioning = true;
-  image.classList.add("fading");
+  slideImage.classList.add("fading");
 
   setTimeout(() => {
-    image.onload = () => {
-      image.classList.remove("fading");
+    if (session !== slideSession) return;
+
+    const filename = slideshowFiles[slideIndex];
+    let handled = false;
+
+    function finish(success) {
+      if (handled || session !== slideSession) return;
+      handled = true;
+
+      slideImage.classList.remove("fading");
       slideTransitioning = false;
-      caption.textContent = `Воспоминание ${slideIndex + 1} из ${slideshowFiles.length}`;
-      progress.style.width = `${((slideIndex + 1) / slideshowFiles.length) * 100}%`;
+
+      document.getElementById("slideCaption").textContent = success
+        ? `Воспоминание ${slideIndex + 1} из ${slideshowFiles.length}`
+        : `Не удалось загрузить: ${filename}`;
+
+      document.getElementById("slideProgress").style.width =
+        `${((slideIndex + 1) / slideshowFiles.length) * 100}%`;
 
       if (!slideshowPaused) {
-        slideRemaining = slideDuration;
+        slideRemaining = success ? SLIDE_DURATION : 1500;
         slideStartedAt = performance.now();
         clearTimeout(slideTimer);
-        slideTimer = setTimeout(skipSlide, slideDuration);
+        slideTimer = setTimeout(skipSlide, slideRemaining);
       }
-    };
-
-    image.onerror = () => {
-      caption.textContent = `Не удалось загрузить: ${slideshowFiles[slideIndex]}`;
-      image.classList.remove("fading");
-      slideTransitioning = false;
-      if (!slideshowPaused) {
-        slideTimer = setTimeout(skipSlide, 1800);
-      }
-    };
-
-    image.src = slideshowFiles[slideIndex];
-
-    if (image.complete && image.naturalWidth > 0) {
-      image.onload();
     }
-  }, first ? 0 : 450);
+
+    slideImage.onload = () => finish(true);
+    slideImage.onerror = () => finish(false);
+    slideImage.src = filename;
+
+    if (slideImage.complete) finish(slideImage.naturalWidth > 0);
+  }, first ? 0 : 350);
 }
 
 function skipSlide() {
   if (slideshowPaused || slideTransitioning) return;
-
   clearTimeout(slideTimer);
   slideIndex++;
 
   if (slideIndex >= slideshowFiles.length) {
     startMemoryVideo();
-    return;
+  } else {
+    displaySlide(false, slideSession);
   }
-
-  displaySlide();
 }
 
 function toggleSlideshow() {
@@ -990,23 +870,26 @@ function toggleSlideshow() {
 
   if (!slideshowPaused) {
     slideshowPaused = true;
-    slideRemaining = Math.max(0, slideDuration - (performance.now() - slideStartedAt));
+    slideRemaining = Math.max(0, slideRemaining - (performance.now() - slideStartedAt));
     clearTimeout(slideTimer);
     button.textContent = "Продолжить";
   } else {
     slideshowPaused = false;
     button.textContent = "Пауза";
-    slideStartedAt = performance.now() - (slideDuration - slideRemaining);
-    slideTimer = setTimeout(skipSlide, slideRemaining);
+
+    if (!slideTransitioning) {
+      slideStartedAt = performance.now();
+      slideTimer = setTimeout(skipSlide, slideRemaining);
+    }
   }
 }
 
-/* ---------------- Видео после слайд-шоу ---------------- */
-
+/* Видео загружается только после последнего слайда */
 const memoryVideo = document.getElementById("memoryVideo");
 
 function startMemoryVideo() {
   clearTimeout(slideTimer);
+  slideSession++;
   showScreen("video-screen");
 
   memoryVideo.pause();
@@ -1015,12 +898,13 @@ function startMemoryVideo() {
   document.getElementById("videoStatus").textContent =
     "После окончания видео открытка продолжится.";
 
-  const playPromise = memoryVideo.play();
+  memoryVideo.load();
+  const promise = memoryVideo.play();
 
-  if (playPromise && typeof playPromise.catch === "function") {
-    playPromise.catch(() => {
+  if (promise && promise.catch) {
+    promise.catch(() => {
       document.getElementById("videoStatus").textContent =
-        "Нажмите кнопку воспроизведения на видео. После окончания открытка продолжится.";
+        "Нажмите кнопку воспроизведения на видео.";
     });
   }
 }
@@ -1032,12 +916,11 @@ memoryVideo.addEventListener("ended", () => {
 
 memoryVideo.addEventListener("error", () => {
   document.getElementById("videoStatus").textContent =
-    "Не удалось загрузить 2.mp4. Проверьте имя файла и его расположение.";
+    "Не удалось загрузить 2.mp4. Проверьте имя файла.";
   document.getElementById("continueAfterVideo").classList.remove("hidden");
 });
 
-/* ---------------- Вопросы после видео ---------------- */
-
+/* Вопросы после видео */
 function startBaikalQuestion() {
   memoryVideo.pause();
   showScreen("baikal-screen");
@@ -1047,45 +930,40 @@ document.getElementById("baikalForm").addEventListener("submit", event => {
   event.preventDefault();
 
   const answer = document.getElementById("baikalAnswer").value
-    .trim()
-    .toLowerCase()
-    .replace(/ё/g, "е");
+    .trim().toLowerCase().replace(/ё/g, "е");
 
   const status = document.getElementById("baikalStatus");
 
   if (answer.includes("байкал")) {
     status.textContent = "Верно.";
-    setTimeout(() => showScreen("friendship-screen"), 700);
+    setTimeout(() => showScreen("friendship-screen"), 650);
   } else {
     status.textContent = "Подумайте ещё немного.";
   }
 });
-
-/* ---------------- Вопрос о дружбе ---------------- */
 
 function answerFriendship(option) {
   const status = document.getElementById("friendshipStatus");
 
   if (option === 1) {
     status.textContent = "Именно так.";
-    setTimeout(() => showScreen("code-screen"), 900);
+    setTimeout(() => showScreen("code-screen"), 800);
   } else {
     status.textContent = "Попробуйте ещё раз.";
   }
 }
 
-/* ---------------- Код ---------------- */
-
+/* Копирование кода */
 function copyCode() {
   const code = "1276";
   const status = document.getElementById("copyStatus");
 
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(code)
-      .then(() => status.textContent = "Код скопирован.")
-      .catch(() => status.textContent = "Код: " + code);
+      .then(() => { status.textContent = "Код скопирован."; })
+      .catch(() => { status.textContent = "Ваш код: " + code; });
   } else {
-    status.textContent = "Код: " + code;
+    status.textContent = "Ваш код: " + code;
   }
 }
 </script>
