@@ -12,7 +12,7 @@
   --gold: #e8c77d;
   --white: #f5f3ff;
   --muted: #b8b8d1;
-  --panel: rgba(10,12,32,.88);
+  --panel: rgba(10,12,32,.92);
 }
 * { box-sizing: border-box; }
 
@@ -55,7 +55,7 @@ body { min-height: 100vh; overflow-x: hidden; }
   z-index: 1;
   width: 100%;
   min-height: 100vh;
-  padding: 28px 18px;
+  padding: 24px 16px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -71,8 +71,9 @@ body { min-height: 100vh; overflow-x: hidden; }
 }
 
 .panel {
-  width: min(760px,100%);
-  padding: clamp(22px,5vw,48px);
+  width: min(900px, 100%);
+  min-width: 0;
+  padding: clamp(20px,4vw,40px);
   border: 1px solid rgba(232,199,125,.28);
   border-radius: 18px;
   background: var(--panel);
@@ -124,6 +125,7 @@ input {
 }
 input:focus { border-color: var(--gold); }
 .status { min-height: 26px; margin-top: 8px; color: var(--gold); }
+
 #introText {
   white-space: pre-line;
   min-height: 120px;
@@ -157,6 +159,7 @@ input:focus { border-color: var(--gold); }
 
 .letter {
   width: min(850px,100%);
+  min-width: 0;
   text-align: left;
   padding: clamp(20px,5vw,45px);
   border: 1px solid rgba(232,199,125,.28);
@@ -199,33 +202,40 @@ input:focus { border-color: var(--gold); }
   width: min(700px,92%);
   padding: 20px;
   margin-top: auto;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
   border-radius: 14px;
-  background: linear-gradient(180deg,transparent,rgba(3,4,13,.88) 25%);
+  background: linear-gradient(180deg,transparent,rgba(3,4,13,.92) 25%);
   text-shadow: 0 2px 12px #000;
   pointer-events: none;
 }
 .galaxy-overlay button { pointer-events: auto; }
 .galaxy-overlay h2 { font-size: clamp(21px,4vw,34px); }
 
+/* Фотография всегда остаётся внутри своего блока */
 #mainPhoto {
   display: block;
-  max-width: min(850px,94vw);
-  max-height: 67vh;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 58vh;
   object-fit: contain;
   margin: 0 auto;
   border-radius: 8px;
   box-shadow: 0 0 35px rgba(109,100,185,.18);
 }
+
+/* Слайд-шоу */
 .slideshow-frame {
-  width: min(1100px,96vw);
-  height: min(72vh,760px);
-  min-height: 260px;
+  width: min(1000px,100%);
+  height: min(65vh,680px);
+  min-height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 #slideImage {
+  display: block;
   max-width: 100%;
   max-height: 100%;
   width: auto;
@@ -237,7 +247,11 @@ input:focus { border-color: var(--gold); }
   transition: opacity .45s ease;
 }
 #slideImage.fading { opacity: 0; }
-.slide-caption { margin: 12px 0 4px; color: var(--muted); font-size: 14px; }
+.slide-caption {
+  margin: 12px 0 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
 .progress-track {
   width: min(420px,80vw);
   height: 3px;
@@ -252,14 +266,34 @@ input:focus { border-color: var(--gold); }
   background: var(--gold);
   transition: width .2s;
 }
-#memoryVideo {
-  display: block;
-  width: min(1000px,95vw);
-  max-height: 72vh;
-  margin: 0 auto;
+
+/* Видео не может выйти за границы панели */
+.video-panel {
+  width: min(1000px,100%);
+  max-width: 100%;
+  min-width: 0;
+}
+.video-frame {
+  width: 100%;
+  max-width: 100%;
+  height: min(62vh,650px);
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   background: #000;
   border: 1px solid rgba(232,199,125,.25);
   border-radius: 8px;
+}
+#memoryVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: #000;
 }
 .option-list {
   width: min(600px,100%);
@@ -283,11 +317,13 @@ input:focus { border-color: var(--gold); }
 .hidden { display: none !important; }
 
 @media (max-width:600px) {
-  .screen { padding: 18px 12px; }
-  .panel { padding: 24px 18px; }
+  .screen { padding: 14px 10px; }
+  .panel { padding: 20px 14px; }
   .letter { padding: 22px 18px; }
-  #mainPhoto { max-height: 60vh; }
-  .slideshow-frame { height: 62vh; }
+  #mainPhoto { max-height: 55vh; }
+  .slideshow-frame { height: 58vh; min-height: 200px; }
+  .video-frame { height: 55vh; min-height: 180px; }
+  button { padding: 12px 20px; }
 }
 @media (prefers-reduced-motion:reduce) {
   .nebula { animation: none; }
@@ -301,20 +337,16 @@ input:focus { border-color: var(--gold); }
 <div class="nebula"></div>
 <audio id="backgroundMusic" src="interstellar.mp3" loop preload="none"></audio>
 
-<!-- 1. Вступление -->
 <section id="intro-screen" class="screen active">
   <div class="panel">
     <p class="small">ЛИЧНО ДЛЯ ВАС</p>
     <h1 id="introTitle" class="gold"></h1>
     <p id="introText"></p>
     <button id="openButton" type="button" disabled>Открыть (15)</button>
-    <p id="musicHint" class="small">
-      Если музыка не началась автоматически, нажмите на экран.
-    </p>
+    <p id="musicHint" class="small">Если музыка не началась автоматически, нажмите на экран.</p>
   </div>
 </section>
 
-<!-- 2. Конверт -->
 <section id="envelope-screen" class="screen">
   <div class="panel">
     <p class="small">НЕБОЛЬШОЙ ВОПРОС ПЕРЕД ТЕМ, КАК ОТКРЫТЬ ПИСЬМО</p>
@@ -323,34 +355,23 @@ input:focus { border-color: var(--gold); }
     <p class="muted">Вспомните год, с которого всё началось.</p>
     <form id="yearForm">
       <input id="yearAnswer" type="text" inputmode="numeric" placeholder="Год знакомства" autocomplete="off">
-      <br>
-      <button type="submit">Ответить</button>
+      <br><button type="submit">Ответить</button>
     </form>
     <div id="yearStatus" class="status"></div>
   </div>
 </section>
 
-<!-- 3. Письмо -->
 <section id="letter-screen" class="screen">
   <article class="letter">
     <h2 class="gold">Илья и Алиса</h2>
-
     <p>Приветствую вас, мои дорогие друзья!</p>
-
     <p>Я хотел бы написать о том, как дороги вы мне и как хорошо нам вместе. Хочу поблагодарить вас за то, что вы есть в моей жизни. И как бы ни складывался наш путь, как бы далеко мы ни зашли, мы всё равно остаёмся друг у друга.</p>
-
     <p>Я желаю вам счастья! Вы — самая красивая пара из всех, кого я знаю. Мне не хватит и тысячи слов, чтобы описать, как сильно я вас обожаю и люблю.</p>
-
     <p>Иногда бывают дни, когда вокруг наступают мрак и холод. Но стоит мне пообщаться с вами, и на душе становится намного теплее и легче. И это дорогого стоит.</p>
-
     <p><span class="gold">Илья, хочу обратиться лично к тебе.</span></p>
-
     <p>Твой смех и твоя улыбка стоят того, чтобы ради них сворачивать горы. Я очень дорожу нашей дружбой и надеюсь, что однажды мы обязательно встретимся вживую и станем настоящими братьями. Для меня это действительно важно.</p>
-
     <p><span class="gold">Алиса, Алиса…</span></p>
-
     <p>Всё хорошее, что у нас всех есть, во многом благодаря тебе. Если бы не твоя гильдия и твой канал, мы, возможно, так никогда бы и не познакомились. Дружба с тобой — ценный подарок судьбы. Ты замечательный человек, и я просто хочу, чтобы ты знала: ты занимаешь особое место в моей жизни и являешься её важной частью.</p>
-
     <p>Я очень рад, что вы есть у меня. Спасибо вам за вас. Я вас люблю.</p>
 
     <div class="quote">Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой</div>
@@ -386,7 +407,6 @@ input:focus { border-color: var(--gold); }
   </article>
 </section>
 
-<!-- 4. Сборка главного фото -->
 <section id="galaxy-screen" class="screen">
   <canvas id="galaxyCanvas"></canvas>
   <div class="galaxy-overlay">
@@ -396,7 +416,6 @@ input:focus { border-color: var(--gold); }
   </div>
 </section>
 
-<!-- 5. Главное фото -->
 <section id="photo-screen" class="screen">
   <div class="panel">
     <h2 class="gold">Это тоже часть нашей истории</h2>
@@ -406,7 +425,6 @@ input:focus { border-color: var(--gold); }
   </div>
 </section>
 
-<!-- 6. Слайд-шоу -->
 <section id="slideshow-screen" class="screen">
   <h2 class="gold">Моменты, которые хочется сохранить</h2>
   <div class="slideshow-frame">
@@ -421,34 +439,32 @@ input:focus { border-color: var(--gold); }
   <p class="small">После последней фотографии начнётся видео.</p>
 </section>
 
-<!-- 7. Видео -->
 <section id="video-screen" class="screen">
-  <div class="panel">
+  <div class="panel video-panel">
     <h2 class="gold">И ещё одно воспоминание</h2>
-    <video id="memoryVideo" controls playsinline preload="none">
-      <source src="2.mp4" type="video/mp4">
-      Ваш браузер не поддерживает воспроизведение видео.
-    </video>
+    <div class="video-frame">
+      <video id="memoryVideo" controls playsinline preload="none">
+        <source src="2.mp4" type="video/mp4">
+        Ваш браузер не поддерживает воспроизведение видео.
+      </video>
+    </div>
     <p id="videoStatus" class="muted">После окончания видео открытка продолжится.</p>
     <button id="continueAfterVideo" class="hidden" type="button" onclick="startBaikalQuestion()">Продолжить</button>
   </div>
 </section>
 
-<!-- 8. Вопрос про Байкал -->
 <section id="baikal-screen" class="screen">
   <div class="panel">
     <p class="small">ЕЩЁ ОДИН ВОПРОС</p>
     <h2>Как называется самое глубокое озеро в мире?</h2>
     <form id="baikalForm">
       <input id="baikalAnswer" type="text" placeholder="Ваш ответ" autocomplete="off">
-      <br>
-      <button type="submit">Ответить</button>
+      <br><button type="submit">Ответить</button>
     </form>
     <div id="baikalStatus" class="status"></div>
   </div>
 </section>
 
-<!-- 9. Вопрос о дружбе -->
 <section id="friendship-screen" class="screen">
   <div class="panel">
     <p class="small">ПОСЛЕДНИЙ ВОПРОС</p>
@@ -462,7 +478,6 @@ input:focus { border-color: var(--gold); }
   </div>
 </section>
 
-<!-- 10. Код -->
 <section id="code-screen" class="screen">
   <div class="panel">
     <h2 class="gold">Код открыт</h2>
@@ -478,21 +493,16 @@ input:focus { border-color: var(--gold); }
 
 /* Переключение экранов */
 function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(screen => {
-    screen.classList.remove("active");
-  });
+  document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
   const target = document.getElementById(id);
   if (target) target.classList.add("active");
   window.scrollTo(0, 0);
 }
 
-/* Звёздный фон: ограниченное число звёзд и масштаб canvas */
+/* Звёздный фон */
 const starCanvas = document.getElementById("stars");
 const starCtx = starCanvas.getContext("2d");
-let stars = [];
-let starW = 0;
-let starH = 0;
-let starDpr = 1;
+let stars = [], starW = 0, starH = 0, starDpr = 1;
 
 function resizeStars() {
   starDpr = Math.min(window.devicePixelRatio || 1, 1.25);
@@ -505,7 +515,7 @@ function resizeStars() {
   starCtx.setTransform(starDpr, 0, 0, starDpr, 0, 0);
 
   const count = Math.min(150, Math.floor(starW * starH / 8000));
-  stars = Array.from({ length: count }, () => ({
+  stars = Array.from({length: count}, () => ({
     x: Math.random() * starW,
     y: Math.random() * starH,
     size: Math.random() * 1.2 + .3,
@@ -516,10 +526,10 @@ function resizeStars() {
 }
 function drawStars(time) {
   starCtx.clearRect(0, 0, starW, starH);
-  for (const star of stars) {
-    const alpha = star.alpha * (0.7 + 0.3 * Math.sin(time * star.speed + star.phase));
-    starCtx.fillStyle = `rgba(226,229,255,${alpha})`;
-    starCtx.fillRect(star.x, star.y, star.size, star.size);
+  for (const s of stars) {
+    const a = s.alpha * (.7 + .3 * Math.sin(time * s.speed + s.phase));
+    starCtx.fillStyle = `rgba(226,229,255,${a})`;
+    starCtx.fillRect(s.x, s.y, s.size, s.size);
   }
   requestAnimationFrame(drawStars);
 }
@@ -527,9 +537,11 @@ window.addEventListener("resize", resizeStars);
 resizeStars();
 requestAnimationFrame(drawStars);
 
-/* Музыка */
+/* Музыка: обычно 0.55, во время видео — 0.18 */
 const music = document.getElementById("backgroundMusic");
-music.volume = 0.55;
+const NORMAL_MUSIC_VOLUME = 0.55;
+const VIDEO_MUSIC_VOLUME = 0.18;
+music.volume = NORMAL_MUSIC_VOLUME;
 
 async function tryPlayMusic() {
   try {
@@ -539,15 +551,18 @@ async function tryPlayMusic() {
     document.getElementById("musicHint").classList.remove("hidden");
   }
 }
+function setMusicVolume(volume) {
+  music.volume = volume;
+}
 document.addEventListener("pointerdown", () => {
   if (music.paused) tryPlayMusic();
-}, { once: true });
+}, {once: true});
 document.addEventListener("keydown", () => {
   if (music.paused) tryPlayMusic();
-}, { once: true });
+}, {once: true});
 tryPlayMusic();
 
-/* Вступление и отсчёт 15 секунд */
+/* Вступление и отсчёт */
 function typeText(element, text, speed, done) {
   let i = 0;
   element.textContent = "";
@@ -555,14 +570,11 @@ function typeText(element, text, speed, done) {
     if (i < text.length) {
       element.textContent += text[i++];
       setTimeout(step, speed);
-    } else if (done) {
-      done();
-    }
+    } else if (done) done();
   }
   step();
 }
 
-const introTitle = "DEAR MY FRIENDS FOR YOU";
 const introBody =
   "Эта открытка для вас, мои дорогие друзья.\n\n" +
   "И когда вы её откроете, будьте готовы ко всему.\n\n" +
@@ -589,17 +601,16 @@ const countdownTimer = setInterval(() => {
 }, 1000);
 
 window.addEventListener("load", () => {
-  typeText(document.getElementById("introTitle"), introTitle, 100, () => {
+  typeText(document.getElementById("introTitle"), "DEAR MY FRIENDS FOR YOU", 100, () => {
     typeText(document.getElementById("introText"), introBody, 55);
   });
 });
 
-/* Вопрос о годе знакомства */
+/* Вопрос о годе */
 document.getElementById("yearForm").addEventListener("submit", event => {
   event.preventDefault();
   const answer = document.getElementById("yearAnswer").value.trim();
   const status = document.getElementById("yearStatus");
-
   if (answer === "2024") {
     status.textContent = "Верно.";
     setTimeout(() => showScreen("letter-screen"), 650);
@@ -608,9 +619,9 @@ document.getElementById("yearForm").addEventListener("submit", event => {
   }
 });
 
-/* Сборка фотографии из частиц */
+/* Галактика: более плотные частицы и чёткое проявление оригинала */
 const galaxyCanvas = document.getElementById("galaxyCanvas");
-const galaxyCtx = galaxyCanvas.getContext("2d", { alpha: false });
+const galaxyCtx = galaxyCanvas.getContext("2d", {alpha: false});
 const mainImage = new Image();
 mainImage.decoding = "async";
 mainImage.src = "p11.jpg";
@@ -618,17 +629,21 @@ mainImage.src = "p11.jpg";
 let particles = [];
 let galaxyStart = 0;
 let galaxyRAF = null;
-let galaxyW = 0;
-let galaxyH = 0;
-let galaxyDpr = 1;
+let galaxyW = 0, galaxyH = 0, galaxyDpr = 1;
 let galaxyFailed = false;
-const MAX_PARTICLES = 3000;
-const GALAXY_DURATION = 6500;
+let particlesBuilt = false;
+
+const MAX_PARTICLES = 10000;
+const GALAXY_DURATION = 6000;
 
 function startGalaxy() {
   showScreen("galaxy-screen");
   document.getElementById("galaxyContinue").classList.add("hidden");
+  document.querySelector("#galaxy-screen .galaxy-overlay p").textContent =
+    "Каждая частичка хранит часть воспоминания.";
   galaxyFailed = false;
+  particlesBuilt = false;
+  particles = [];
   galaxyStart = performance.now();
   resizeGalaxy();
   if (galaxyRAF) cancelAnimationFrame(galaxyRAF);
@@ -652,16 +667,17 @@ function resizeGalaxy() {
   galaxyCanvas.style.height = galaxyH + "px";
   galaxyCtx.setTransform(galaxyDpr, 0, 0, galaxyDpr, 0, 0);
 
-  if (mainImage.complete && mainImage.naturalWidth) buildParticles();
+  particlesBuilt = false;
 }
 
 function buildParticles() {
-  if (!mainImage.naturalWidth) return;
+  if (!mainImage.naturalWidth || !galaxyW || !galaxyH) return;
 
   const sample = document.createElement("canvas");
-  const ctx = sample.getContext("2d", { willReadFrequently: true });
-  const maxW = Math.min(galaxyW * .78, 850);
-  const maxH = galaxyH * .64;
+  const ctx = sample.getContext("2d", {willReadFrequently: true});
+
+  const maxW = Math.min(galaxyW * .84, 900);
+  const maxH = galaxyH * .66;
   const scale = Math.min(maxW / mainImage.naturalWidth, maxH / mainImage.naturalHeight);
   const w = Math.max(1, Math.floor(mainImage.naturalWidth * scale));
   const h = Math.max(1, Math.floor(mainImage.naturalHeight * scale));
@@ -676,11 +692,12 @@ function buildParticles() {
   } catch {
     galaxyFailed = true;
     document.querySelector("#galaxy-screen .galaxy-overlay p").textContent =
-      "Не удалось обработать p11.jpg. Проверьте файл.";
+      "Не удалось обработать фотографию. Проверьте файл p11.jpg.";
     return;
   }
 
-  const gap = Math.max(5, Math.floor(Math.min(w, h) / 65));
+  /* Меньший промежуток между точками делает изображение узнаваемым */
+  const gap = Math.max(2, Math.floor(Math.min(w, h) / 150));
   const offsetX = (galaxyW - w) / 2;
   const offsetY = (galaxyH - h) / 2 - 25;
   const collected = [];
@@ -691,21 +708,27 @@ function buildParticles() {
       if (data[i + 3] < 100) continue;
 
       collected.push({
-        x: Math.random() * galaxyW,
-        y: Math.random() * galaxyH,
         tx: offsetX + x,
         ty: offsetY + y,
-        color: `rgb(${data[i]},${data[i + 1]},${data[i + 2]})`,
-        size: Math.random() * .8 + 1
+        color: `rgb(${data[i]},${data[i+1]},${data[i+2]})`,
+        size: gap * .95,
+        angle: Math.random() * Math.PI * 2,
+        distance: Math.random() * Math.min(galaxyW, galaxyH) * .65 + 30
       });
     }
   }
 
   particles = [];
   const step = Math.max(1, Math.ceil(collected.length / MAX_PARTICLES));
+
   for (let i = 0; i < collected.length; i += step) {
-    particles.push(collected[i]);
+    const p = collected[i];
+    p.sx = p.tx + Math.cos(p.angle) * p.distance;
+    p.sy = p.ty + Math.sin(p.angle) * p.distance;
+    particles.push(p);
   }
+
+  particlesBuilt = true;
 }
 
 function animateGalaxy(now) {
@@ -727,21 +750,63 @@ function animateGalaxy(now) {
     return;
   }
 
-  if (!particles.length) buildParticles();
+  if (!particlesBuilt) buildParticles();
+
+  if (galaxyFailed) {
+    galaxyRAF = requestAnimationFrame(animateGalaxy);
+    return;
+  }
 
   const progress = Math.min(1, (now - galaxyStart) / GALAXY_DURATION);
   const eased = 1 - Math.pow(1 - progress, 3);
 
   for (const p of particles) {
-    const x = p.x + (p.tx - p.x) * eased;
-    const y = p.y + (p.ty - p.y) * eased;
+    const x = p.sx + (p.tx - p.sx) * eased;
+    const y = p.sy + (p.ty - p.sy) * eased;
     galaxyCtx.fillStyle = p.color;
     galaxyCtx.fillRect(x, y, p.size, p.size);
+  }
+
+  /*
+    В последней части анимации плавно проявляется исходное фото.
+    Это позволяет сохранить эффект сборки, но делает результат чётким.
+  */
+  const reveal = Math.max(0, Math.min(1, (progress - .72) / .28));
+  if (reveal > 0) {
+    const maxW = Math.min(galaxyW * .84, 900);
+    const maxH = galaxyH * .66;
+    const scale = Math.min(maxW / mainImage.naturalWidth, maxH / mainImage.naturalHeight);
+    const w = mainImage.naturalWidth * scale;
+    const h = mainImage.naturalHeight * scale;
+    const x = (galaxyW - w) / 2;
+    const y = (galaxyH - h) / 2 - 25;
+
+    galaxyCtx.save();
+    galaxyCtx.globalAlpha = reveal;
+    galaxyCtx.drawImage(mainImage, x, y, w, h);
+    galaxyCtx.restore();
   }
 
   if (progress < 1) {
     galaxyRAF = requestAnimationFrame(animateGalaxy);
   } else {
+    /* Последний кадр гарантированно показывает чёткую фотографию */
+    galaxyCtx.fillStyle = "#02030a";
+    galaxyCtx.fillRect(0, 0, galaxyW, galaxyH);
+
+    const maxW = Math.min(galaxyW * .84, 900);
+    const maxH = galaxyH * .66;
+    const scale = Math.min(maxW / mainImage.naturalWidth, maxH / mainImage.naturalHeight);
+    const w = mainImage.naturalWidth * scale;
+    const h = mainImage.naturalHeight * scale;
+
+    galaxyCtx.drawImage(
+      mainImage,
+      (galaxyW - w) / 2,
+      (galaxyH - h) / 2 - 25,
+      w, h
+    );
+
     galaxyRAF = null;
     document.getElementById("galaxyContinue").classList.remove("hidden");
   }
@@ -754,7 +819,7 @@ mainImage.onerror = () => {
 };
 mainImage.onload = () => {
   if (document.getElementById("galaxy-screen").classList.contains("active")) {
-    buildParticles();
+    particlesBuilt = false;
   }
 };
 
@@ -764,7 +829,7 @@ window.addEventListener("resize", () => {
   }
 });
 
-/* Слайд-шоу: файлы загружаются по одному */
+/* Слайд-шоу */
 const slideshowFiles = [
   "12.jpg",
   "0172.jpg",
@@ -799,7 +864,6 @@ function startSlideshow() {
   slideRemaining = SLIDE_DURATION;
   slideshowPaused = false;
   slideTransitioning = false;
-
   document.getElementById("pauseSlidesButton").textContent = "Пауза";
   document.getElementById("slideProgress").style.width = "0%";
   showScreen("slideshow-screen");
@@ -808,7 +872,6 @@ function startSlideshow() {
 
 function displaySlide(first, session) {
   if (session !== slideSession) return;
-
   if (slideIndex >= slideshowFiles.length) {
     startMemoryVideo();
     return;
@@ -848,7 +911,6 @@ function displaySlide(first, session) {
     slideImage.onload = () => finish(true);
     slideImage.onerror = () => finish(false);
     slideImage.src = filename;
-
     if (slideImage.complete) finish(slideImage.naturalWidth > 0);
   }, first ? 0 : 350);
 }
@@ -857,7 +919,6 @@ function skipSlide() {
   if (slideshowPaused || slideTransitioning) return;
   clearTimeout(slideTimer);
   slideIndex++;
-
   if (slideIndex >= slideshowFiles.length) {
     startMemoryVideo();
   } else {
@@ -870,13 +931,14 @@ function toggleSlideshow() {
 
   if (!slideshowPaused) {
     slideshowPaused = true;
-    slideRemaining = Math.max(0, slideRemaining - (performance.now() - slideStartedAt));
+    if (!slideTransitioning) {
+      slideRemaining = Math.max(0, slideRemaining - (performance.now() - slideStartedAt));
+    }
     clearTimeout(slideTimer);
     button.textContent = "Продолжить";
   } else {
     slideshowPaused = false;
     button.textContent = "Пауза";
-
     if (!slideTransitioning) {
       slideStartedAt = performance.now();
       slideTimer = setTimeout(skipSlide, slideRemaining);
@@ -884,13 +946,15 @@ function toggleSlideshow() {
   }
 }
 
-/* Видео загружается только после последнего слайда */
+/* Видео: музыка приглушается до 0.18, но не выключается */
 const memoryVideo = document.getElementById("memoryVideo");
 
 function startMemoryVideo() {
   clearTimeout(slideTimer);
   slideSession++;
   showScreen("video-screen");
+
+  setMusicVolume(VIDEO_MUSIC_VOLUME);
 
   memoryVideo.pause();
   memoryVideo.currentTime = 0;
@@ -909,29 +973,35 @@ function startMemoryVideo() {
   }
 }
 
+function restoreMusicVolume() {
+  setMusicVolume(NORMAL_MUSIC_VOLUME);
+}
+
 memoryVideo.addEventListener("ended", () => {
+  restoreMusicVolume();
   document.getElementById("videoStatus").textContent = "Видео завершено.";
   document.getElementById("continueAfterVideo").classList.remove("hidden");
 });
 
 memoryVideo.addEventListener("error", () => {
+  restoreMusicVolume();
   document.getElementById("videoStatus").textContent =
     "Не удалось загрузить 2.mp4. Проверьте имя файла.";
   document.getElementById("continueAfterVideo").classList.remove("hidden");
 });
 
-/* Вопросы после видео */
 function startBaikalQuestion() {
   memoryVideo.pause();
+  restoreMusicVolume();
   showScreen("baikal-screen");
 }
 
+/* Вопросы после видео */
 document.getElementById("baikalForm").addEventListener("submit", event => {
   event.preventDefault();
 
   const answer = document.getElementById("baikalAnswer").value
     .trim().toLowerCase().replace(/ё/g, "е");
-
   const status = document.getElementById("baikalStatus");
 
   if (answer.includes("байкал")) {
@@ -944,7 +1014,6 @@ document.getElementById("baikalForm").addEventListener("submit", event => {
 
 function answerFriendship(option) {
   const status = document.getElementById("friendshipStatus");
-
   if (option === 1) {
     status.textContent = "Именно так.";
     setTimeout(() => showScreen("code-screen"), 800);
