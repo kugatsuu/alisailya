@@ -13,7 +13,6 @@
   --gold: #ffe3a3;
   --text: #f4f2ff;
 }
-
 * { box-sizing: border-box; }
 
 html, body {
@@ -23,7 +22,6 @@ html, body {
   color: var(--text);
   font-family: Georgia, "Times New Roman", serif;
 }
-
 body { overflow-x: hidden; }
 
 #starfield, .nebula {
@@ -33,7 +31,6 @@ body { overflow-x: hidden; }
   height: 100%;
   pointer-events: none;
 }
-
 #starfield {
   z-index: 0;
   background:
@@ -42,7 +39,6 @@ body { overflow-x: hidden; }
     radial-gradient(ellipse at 50% 100%, rgba(12,73,113,.18), transparent 45%),
     #030511;
 }
-
 .nebula {
   z-index: 0;
   inset: -20%;
@@ -52,7 +48,6 @@ body { overflow-x: hidden; }
   filter: blur(35px);
   animation: nebulaDrift 24s ease-in-out infinite alternate;
 }
-
 @keyframes nebulaDrift {
   from { transform: translate(-2%,1%) scale(1); }
   to { transform: translate(2%,-2%) scale(1.08); }
@@ -62,6 +57,7 @@ body { overflow-x: hidden; }
   display: none;
   position: relative;
   z-index: 1;
+  min-height: 100vh;
   min-height: 100svh;
   width: 100%;
   padding: 32px 18px;
@@ -71,64 +67,47 @@ body { overflow-x: hidden; }
   text-align: center;
   animation: screenAppear 1s ease both;
 }
-
 .screen.active { display: flex; }
-
 @keyframes screenAppear {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-.content {
-  width: min(850px, 100%);
-  margin: auto;
-}
+.content { width: min(850px, 100%); margin: auto; }
 
 .computer-notice {
   color: #c4dfff;
   font-size: .95rem;
   line-height: 1.6;
-  letter-spacing: .04em;
   margin: 0 0 24px;
   text-shadow: 0 0 14px rgba(139,216,255,.4);
 }
-
 .eyebrow {
   color: var(--blue);
-  letter-spacing: .25em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   font-size: .76rem;
   margin-bottom: 22px;
   text-shadow: 0 0 16px rgba(139,216,255,.6);
 }
-
-h1, h2 {
-  font-weight: normal;
-  margin: 0 0 22px;
-}
-
+h1, h2 { font-weight: normal; margin: 0 0 22px; }
 h1 {
   font-size: clamp(2rem,7vw,4.8rem);
   line-height: 1.12;
-  letter-spacing: .07em;
+  letter-spacing: .06em;
   color: #fff;
-  text-shadow:
-    0 0 8px rgba(139,216,255,.8),
-    0 0 26px rgba(115,109,255,.65),
-    0 0 60px rgba(107,84,255,.32);
+  text-shadow: 0 0 8px rgba(139,216,255,.8),
+               0 0 26px rgba(115,109,255,.65),
+               0 0 60px rgba(107,84,255,.32);
 }
-
 h2 {
   font-size: clamp(1.8rem,5vw,3rem);
   color: #e9e2ff;
   text-shadow: 0 0 24px rgba(174,151,255,.4);
 }
-
 p {
   font-size: clamp(1rem,2.4vw,1.22rem);
   line-height: 1.85;
 }
-
 .intro-copy {
   white-space: pre-line;
   min-height: 150px;
@@ -139,7 +118,6 @@ p {
   line-height: 2;
   text-shadow: 0 0 14px rgba(139,216,255,.22);
 }
-
 .cursor {
   display: inline-block;
   width: 2px;
@@ -150,7 +128,6 @@ p {
   box-shadow: 0 0 12px var(--blue);
   animation: blink 1.1s steps(2,start) infinite;
 }
-
 @keyframes blink { to { visibility: hidden; } }
 
 .glass {
@@ -158,13 +135,12 @@ p {
   border: 1px solid rgba(163,187,255,.32);
   border-radius: 24px;
   padding: clamp(22px,5vw,42px);
-  box-shadow: 0 0 45px rgba(83,91,207,.14), inset 0 0 35px rgba(126,145,255,.035);
+  box-shadow: 0 0 45px rgba(83,91,207,.14),
+              inset 0 0 35px rgba(126,145,255,.035);
   backdrop-filter: blur(12px);
 }
 
 button {
-  position: relative;
-  overflow: hidden;
   border: 1px solid rgba(213,232,255,.7);
   border-radius: 999px;
   padding: 16px 30px;
@@ -176,23 +152,23 @@ button {
   font-size: 1.05rem;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 0 12px rgba(139,216,255,.35), 0 0 28px rgba(166,143,255,.24);
+  box-shadow: 0 0 12px rgba(139,216,255,.35),
+              0 0 28px rgba(166,143,255,.24);
   transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
   touch-action: manipulation;
 }
-
 button:hover {
   transform: translateY(-3px) scale(1.035);
   filter: brightness(1.12);
-  box-shadow: 0 0 18px rgba(139,216,255,.65), 0 0 40px rgba(166,143,255,.4);
+  box-shadow: 0 0 18px rgba(139,216,255,.65),
+              0 0 40px rgba(166,143,255,.4);
 }
-
 button:active { transform: scale(.97); }
-
 button:focus-visible, input:focus-visible {
   outline: 3px solid white;
   outline-offset: 4px;
 }
+button:disabled { opacity: .45; cursor: not-allowed; }
 
 input {
   display: block;
@@ -206,14 +182,8 @@ input {
   font: 1.1rem Georgia,serif;
   text-align: center;
 }
-
 input::placeholder { color: #9299bd; }
-
-.status {
-  min-height: 30px;
-  color: var(--gold);
-  line-height: 1.6;
-}
+.status { min-height: 30px; color: var(--gold); line-height: 1.6; }
 
 .envelope {
   width: 190px;
@@ -227,12 +197,10 @@ input::placeholder { color: #9299bd; }
   box-shadow: 0 0 36px rgba(130,122,255,.3);
   transition: transform .3s ease, box-shadow .3s ease;
 }
-
 .envelope:hover {
   transform: translateY(-5px) scale(1.04);
   box-shadow: 0 0 48px rgba(139,216,255,.5);
 }
-
 .envelope::before {
   content: "";
   position: absolute;
@@ -241,7 +209,6 @@ input::placeholder { color: #9299bd; }
     linear-gradient(35deg,transparent 49%,#b4b0f5 50%,transparent 51%),
     linear-gradient(-35deg,transparent 49%,#8c91e6 50%,transparent 51%);
 }
-
 .envelope::after {
   content: "✦";
   position: absolute;
@@ -253,8 +220,8 @@ input::placeholder { color: #9299bd; }
   text-shadow: 0 0 20px #ffe4a8;
 }
 
-.letter-text { text-align: left; }
-
+.letter-text { text-align: left; line-height: 1.9; }
+.letter-text p { margin: 18px 0; }
 .quote {
   margin: 28px 0;
   padding: 18px 22px;
@@ -264,7 +231,6 @@ input::placeholder { color: #9299bd; }
   line-height: 1.9;
   background: rgba(255,224,157,.045);
 }
-
 .poem {
   white-space: pre-line;
   line-height: 2;
@@ -273,17 +239,10 @@ input::placeholder { color: #9299bd; }
   color: #e4e8ff;
   font-size: clamp(1rem,2.4vw,1.16rem);
 }
-
 .small-note { color: #aeb9e5; font-size: .95rem; }
-
 .hidden { display: none !important; }
 
-#galaxy-screen {
-  padding: 0;
-  overflow: hidden;
-  min-height: 100svh;
-}
-
+#galaxy-screen { padding: 0; overflow: hidden; }
 #galaxy-title {
   position: absolute;
   top: 5%;
@@ -295,14 +254,12 @@ input::placeholder { color: #9299bd; }
   text-shadow: 0 0 25px rgba(139,216,255,.65);
   pointer-events: none;
 }
-
 #galaxy-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
-
 #galaxy-next {
   position: absolute;
   bottom: max(26px,env(safe-area-inset-bottom));
@@ -314,11 +271,7 @@ input::placeholder { color: #9299bd; }
   transition: opacity 1s ease;
   white-space: nowrap;
 }
-
-#galaxy-next.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
+#galaxy-next.visible { opacity: 1; pointer-events: auto; }
 
 #photo-final img {
   display: block;
@@ -328,16 +281,35 @@ input::placeholder { color: #9299bd; }
   margin: 25px auto;
   border-radius: 16px;
   border: 1px solid rgba(187,162,255,.55);
-  box-shadow: 0 0 25px rgba(139,216,255,.2), 0 0 65px rgba(131,91,255,.2);
+  box-shadow: 0 0 25px rgba(139,216,255,.2),
+              0 0 65px rgba(131,91,255,.2);
 }
 
+.choice-list {
+  display: grid;
+  gap: 12px;
+  width: min(560px,100%);
+  margin: 25px auto;
+}
+.choice-button {
+  width: 100%;
+  margin: 0;
+  border-radius: 14px;
+  padding: 16px 20px;
+  line-height: 1.5;
+}
+.choice-button.selected {
+  outline: 2px solid white;
+  box-shadow: 0 0 25px rgba(139,216,255,.55);
+}
 .secret-code {
   font-size: clamp(3rem,12vw,5.5rem);
   letter-spacing: .3em;
   padding-left: .3em;
   margin: 24px 0;
   color: var(--gold);
-  text-shadow: 0 0 12px rgba(255,227,163,.7), 0 0 38px rgba(255,227,163,.35);
+  text-shadow: 0 0 12px rgba(255,227,163,.7),
+               0 0 38px rgba(255,227,163,.35);
 }
 
 @media (max-width: 600px) {
@@ -351,10 +323,9 @@ input::placeholder { color: #9299bd; }
 <body>
 <canvas id="starfield"></canvas>
 <div class="nebula"></div>
-
 <audio id="music" src="interstellar.mp3" loop preload="auto"></audio>
 
-<!-- ЭКРАН 1 -->
+<!-- ЭКРАН 1: ВСТУПЛЕНИЕ -->
 <section id="intro-screen" class="screen active">
   <div class="content">
     <p class="computer-notice">Эту открытку нужно открывать на компьютере для правильного отображения всех эффектов.</p>
@@ -366,7 +337,7 @@ input::placeholder { color: #9299bd; }
   </div>
 </section>
 
-<!-- ЭКРАН 2 -->
+<!-- ЭКРАН 2: КОНВЕРТ -->
 <section id="envelope-screen" class="screen">
   <div class="content glass">
     <div class="eyebrow">Первое воспоминание</div>
@@ -386,9 +357,23 @@ input::placeholder { color: #9299bd; }
     <h2>Илья и Алиса</h2>
 
     <div class="letter-text">
-      <p>Мне хочется сказать вам то, для чего порой не хватает слов.</p>
-      <p>Я рад, что однажды наши дороги пересеклись. Спасибо за общение, за моменты, которые мы разделили, и за то, что вы есть в моей жизни.</p>
-      <p>Я желаю вам сохранять то хорошее, что есть между вами, поддерживать друг друга и не терять себя. Пусть впереди будет больше счастливых моментов, смелых решений и поводов улыбаться.</p>
+      <p>Приветствую вас, мои дорогие друзья!</p>
+
+      <p>Я хотел бы написать о том, как дороги вы мне и как хорошо нам вместе. Хочу поблагодарить вас за то, что вы есть в моей жизни. И как бы ни складывался наш путь, как бы далеко мы ни зашли, мы всё равно остаёмся друг у друга.</p>
+
+      <p>Я желаю вам счастья! Вы — самая красивая пара из всех, кого я знаю. Мне не хватит и тысячи слов, чтобы описать, как сильно я вас обожаю и люблю.</p>
+
+      <p>Иногда бывают дни, когда вокруг наступают мрак и холод. Но стоит мне пообщаться с вами, и на душе становится намного теплее и легче. И это дорогого стоит.</p>
+
+      <p><strong>Илья, хочу обратиться лично к тебе.</strong></p>
+
+      <p>Твой смех и твоя улыбка стоят того, чтобы ради них сворачивать горы. Я очень дорожу нашей дружбой и надеюсь, что однажды мы обязательно встретимся вживую и станем настоящими братьями. Для меня это действительно важно.</p>
+
+      <p><strong>Алиса, Алиса…</strong></p>
+
+      <p>Всё хорошее, что у нас всех есть, во многом благодаря тебе. Если бы не твоя гильдия и твой канал, мы, возможно, так никогда бы и не познакомились. Дружба с тобой — ценный подарок судьбы. Ты замечательный человек, и я просто хочу, чтобы ты знала: ты занимаешь особое место в моей жизни и являешься её важной частью.</p>
+
+      <p>Я очень рад, что вы есть у меня. Спасибо вам за вас. Я вас люблю.</p>
     </div>
 
     <div class="quote">
@@ -420,7 +405,6 @@ input::placeholder { color: #9299bd; }
 Лишь об одном побеспокойся!
 Чтоб рядом шёл, с кем Жить Легко!</div>
 
-    <p>Я вас люблю.</p>
     <button id="letter-next">Дальше — к звёздам</button>
   </div>
 </section>
@@ -432,30 +416,47 @@ input::placeholder { color: #9299bd; }
   <button id="galaxy-next">Продолжить</button>
 </section>
 
-<!-- ЭКРАН 5: ФОТО -->
+<!-- ЭКРАН 5: ФОТО. БЕЗ НАДПИСИ «НАШ МАЛЕНЬКИЙ КОСМОС» -->
 <section id="photo-screen" class="screen">
   <div class="content glass" id="photo-final">
-    <div class="eyebrow">Наш маленький космос</div>
-    <h2>Это тоже часть истории</h2>
+    <h2>Это тоже часть нашей истории</h2>
     <img src="p11.jpg" alt="Фотография для Ильи и Алисы">
     <p>Пусть хороших воспоминаний впереди будет ещё больше.</p>
     <button id="photo-next">Дальше</button>
   </div>
 </section>
 
-<!-- ЭКРАН 6: ЗАМОК -->
+<!-- ЭКРАН 6: ВОПРОС ПРО БАЙКАЛ -->
 <section id="secret-screen" class="screen">
   <div class="content glass">
-    <div class="eyebrow">Последний вопрос</div>
+    <div class="eyebrow">Последний вопрос?</div>
     <h2>Проверим вашу эрудицию</h2>
     <p>Как называется самое глубокое озеро в мире?</p>
     <input id="lake-input" type="text" placeholder="Введите ответ" autocomplete="off">
     <button id="lake-submit">Ответить</button>
     <div id="lake-status" class="status" aria-live="polite"></div>
+
+    <div id="friendship-question" class="hidden">
+      <div class="quote">
+        Остался ещё один шаг. Не всё самое важное можно измерить расстоянием.
+      </div>
+      <h2>Что помогает нам оставаться близкими, даже когда мы далеко друг от друга?</h2>
+      <p>Выберите ответ, который вам ближе.</p>
+
+      <div class="choice-list">
+        <button class="choice-button" data-answer="wrong1">То, что у каждого своя жизнь</button>
+        <button class="choice-button" data-answer="correct">Дружба, общение и воспоминания, которые нас объединяют</button>
+        <button class="choice-button" data-answer="wrong2">Просто случайное совпадение</button>
+      </div>
+
+      <div id="friendship-status" class="status" aria-live="polite"></div>
+    </div>
+
     <div id="code-reveal" class="hidden">
-      <p>Ваш код от замка:</p>
+      <div class="eyebrow">Вы добрались до финала</div>
+      <h2>Ваш код от замка</h2>
       <div class="secret-code">1276</div>
-      <p>Сохраните его.</p>
+      <p>Сохраните его. И помните: самое ценное в этой истории — не код, а люди, которые в ней есть.</p>
     </div>
   </div>
 </section>
@@ -517,7 +518,6 @@ function drawStars() {
     starCtx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
     starCtx.fill();
   }
-
   requestAnimationFrame(drawStars);
 }
 
@@ -525,7 +525,7 @@ window.addEventListener("resize", createStars);
 createStars();
 drawStars();
 
-/* МУЗЫКА: 55% ГРОМКОСТИ */
+/* МУЗЫКА: 55% */
 const music = document.getElementById("music");
 music.volume = 0.55;
 
@@ -534,7 +534,7 @@ async function startMusic() {
   try {
     await music.play();
   } catch (error) {
-    // Браузер может требовать действие пользователя.
+    // Автовоспроизведение может блокироваться настройками браузера.
   }
 }
 
@@ -553,22 +553,19 @@ const titleElement = document.getElementById("intro-title");
 const introTextElement = document.getElementById("intro-text");
 const introCursor = document.getElementById("intro-cursor");
 const introNext = document.getElementById("intro-next");
-
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-async function typeText(element, text, delay, isTitle = false) {
+async function typeText(element, text, delay) {
   element.textContent = "";
   for (const character of text) {
     element.textContent += character;
-    await wait(character === " " || character === "\n"
-      ? delay * .45
-      : isTitle ? delay : delay);
+    await wait(character === " " || character === "\n" ? delay * .45 : delay);
   }
 }
 
 async function runIntro() {
   await wait(800);
-  await typeText(titleElement, introTitle, 125, true);
+  await typeText(titleElement, introTitle, 125);
   await wait(700);
   await typeText(introTextElement, introMessage, 75);
   introCursor.classList.add("hidden");
@@ -576,7 +573,6 @@ async function runIntro() {
 }
 
 runIntro();
-
 introNext.addEventListener("click", () => showScreen("envelope-screen"));
 
 /* ГОД ЗНАКОМСТВА */
@@ -605,7 +601,7 @@ envelope.addEventListener("keydown", e => {
   if (e.key === "Enter" || e.key === " ") yearInput.focus();
 });
 
-/* ГАЛАКТИКА ИЗ ЧАСТИЦ ФОТОГРАФИИ */
+/* ГАЛАКТИКА СОБИРАЕТСЯ ИЗ ЧАСТИЦ ФОТО */
 const galaxyScreen = document.getElementById("galaxy-screen");
 const galaxyCanvas = document.getElementById("galaxy-canvas");
 const galaxyCtx = galaxyCanvas.getContext("2d", {alpha: true});
@@ -656,11 +652,10 @@ function buildGalaxyParticles() {
     pixels = sampleCtx.getImageData(0, 0, imageW, imageH).data;
   } catch (error) {
     document.getElementById("galaxy-title").textContent =
-      "Не удалось обработать фотографию p11.jpg.";
+      "Не удалось обработать p11.jpg. Проверьте файл.";
     return;
   }
 
-  // Более крупный шаг — меньше частиц и меньше нагрузка.
   const gap = Math.max(4, Math.round(Math.min(imageW, imageH) / 90));
   const offsetX = (galaxyW - imageW) / 2;
   const offsetY = (galaxyH - imageH) / 2;
@@ -737,7 +732,6 @@ function drawGalaxy(now) {
     const gg = Math.round(177 * (1 - blend) + p.g * blend);
     const bb = Math.round(255 * (1 - blend) + p.b * blend);
 
-    // Без индивидуального shadowBlur — существенно легче для браузера.
     galaxyCtx.fillStyle = `rgba(${rr},${gg},${bb},${shimmer})`;
     galaxyCtx.beginPath();
     galaxyCtx.arc(x, y, p.size, 0, Math.PI * 2);
@@ -745,7 +739,6 @@ function drawGalaxy(now) {
   }
 
   if (progress >= 1) galaxyNext.classList.add("visible");
-
   galaxyFrame = requestAnimationFrame(drawGalaxy);
 }
 
@@ -762,12 +755,10 @@ function startGalaxy() {
 photoImage.onload = () => {
   if (galaxyScreen.classList.contains("active")) resizeGalaxy();
 };
-
 photoImage.onerror = () => {
   document.getElementById("galaxy-title").textContent =
     "Не удалось загрузить p11.jpg. Проверьте имя файла.";
 };
-
 photoImage.src = "p11.jpg";
 
 window.addEventListener("resize", () => {
@@ -786,9 +777,11 @@ document.getElementById("photo-next").addEventListener("click", () => {
   showScreen("secret-screen");
 });
 
-/* ОТВЕТ НА ВОПРОС */
+/* ВОПРОС 1: БАЙКАЛ */
 const lakeInput = document.getElementById("lake-input");
 const lakeStatus = document.getElementById("lake-status");
+const friendshipQuestion = document.getElementById("friendship-question");
+const friendshipStatus = document.getElementById("friendship-status");
 const codeReveal = document.getElementById("code-reveal");
 
 function checkLake() {
@@ -797,12 +790,13 @@ function checkLake() {
     .replaceAll("ё", "е");
 
   if (answer === "байкал") {
-    lakeStatus.textContent = "Правильно.";
+    lakeStatus.textContent = "Правильно. Но перед тем как открыть замок, остался ещё один шаг.";
     lakeStatus.style.color = "#b9ffd7";
-    codeReveal.classList.remove("hidden");
+    friendshipQuestion.classList.remove("hidden");
   } else {
     lakeStatus.textContent = "Это не тот ответ. Попробуйте ещё раз.";
     lakeStatus.style.color = "#ffd0d0";
+    friendshipQuestion.classList.add("hidden");
     codeReveal.classList.add("hidden");
   }
 }
@@ -810,6 +804,32 @@ function checkLake() {
 document.getElementById("lake-submit").addEventListener("click", checkLake);
 lakeInput.addEventListener("keydown", e => {
   if (e.key === "Enter") checkLake();
+});
+
+/* ВОПРОС 2: ДРУЖБА */
+document.querySelectorAll(".choice-button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".choice-button").forEach(b => {
+      b.classList.remove("selected");
+    });
+    button.classList.add("selected");
+
+    if (button.dataset.answer === "correct") {
+      friendshipStatus.textContent =
+        "Именно так. Даже когда нас разделяют расстояния, общение и дружба продолжают нас объединять.";
+      friendshipStatus.style.color = "#b9ffd7";
+
+      setTimeout(() => {
+        codeReveal.classList.remove("hidden");
+        codeReveal.scrollIntoView({behavior: "smooth", block: "nearest"});
+      }, 1200);
+    } else {
+      friendshipStatus.textContent =
+        "Подумайте ещё раз. Вспомните, благодаря чему вы вообще познакомились и продолжаете общаться.";
+      friendshipStatus.style.color = "#ffe3a3";
+      codeReveal.classList.add("hidden");
+    }
+  });
 });
 </script>
 </body>
