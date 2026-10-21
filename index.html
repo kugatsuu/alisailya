@@ -511,4 +511,90 @@
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
                     size: Math.random() * 2.5 + 0.5,
-                    color: i % 3 === 0 ? '#b4c6e7' : (i % 3 === 1 ? '#
+                    color: i % 3 === 0 ? '#b4c6e7' : (i % 3 === 1 ? '#d5a6bd' : '#ffffff'),
+                    alpha: Math.random()
+                });
+            }
+
+            function animateGalaxy() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Рисуем фоновые звезды
+                starsList.forEach(s => {
+                    ctx.fillStyle = s.color;
+                    ctx.globalAlpha = s.alpha;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.globalAlpha = 1.0;
+
+                requestAnimationFrame(animateGalaxy);
+            }
+            animateGalaxy();
+        }
+
+        let scrollProgress = 0;
+
+        window.addEventListener('scroll', () => {
+            const galaxySection = document.getElementById('galaxy-section');
+            if (galaxySection.style.display === 'block' && !isExploded) {
+                const maxScroll = galaxySection.offsetHeight - window.innerHeight;
+                scrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+
+                const instruction = document.getElementById('galaxy-instruction');
+                if (scrollProgress > 0.1) {
+                    instruction.style.opacity = Math.max(0, 1 - (scrollProgress - 0.1) * 5);
+                } else {
+                    instruction.style.opacity = 1;
+                }
+
+                // В конце прокрутки происходит взрыв и появление шуток
+                if (scrollProgress >= 0.98) {
+                    isExploded = true;
+                    triggerExplosionAndJokes();
+                }
+            }
+        });
+
+        const dotaJokesArray = [
+            "Илья нажал кнопку суицида в самый ответственный момент!",
+            "Кокос Алисы отскочил ровно в крипа!",
+            "Антон сгорел в командном голосовом чате!",
+            "Вражеский мидер не выдержал пати и ливнул!",
+            "Вард Алисы пережил всю нашу команду!",
+            "Кто украл Аегис? Опять Илья на Рубике!"
+        ];
+
+        function triggerExplosionAndJokes() {
+            document.getElementById('galaxy-section').style.display = 'none';
+
+            // Создаем серию взрывов пастельных падающих звезд со случайными шутками
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    const jokeEl = document.createElement('div');
+                    jokeEl.className = 'floating-dota-joke';
+                    jokeEl.innerText = dotaJokesArray[Math.floor(Math.random() * dotaJokesArray.length)];
+                    
+                    // Случайная позиция по центру экрана
+                    jokeEl.style.top = (20 + Math.random() * 50) + 'vh';
+                    jokeEl.style.left = (15 + Math.random() * 50) + 'vw';
+                    
+                    document.body.appendChild(jokeEl);
+                    setTimeout(() => jokeEl.remove(), 5000); // исчезает через 5 секунд
+                }, i * 600);
+            }
+
+            // После завершения взрывов показываем фотографию
+            setTimeout(() => {
+                document.getElementById('final-reveal-box').style.display = 'flex';
+            }, 3000);
+        }
+
+        function revealCode() {
+            document.getElementById('photo-reveal-content').style.display = 'none';
+            document.getElementById('code-display-box').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
