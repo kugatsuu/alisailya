@@ -2,35 +2,38 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>my dear friends for you</title>
+    <title>My Dear Friends For You</title>
     
     <link rel="preload" href="p11.jpg" as="image">
-    <link rel="preload" href="Sun.mp3" as="audio">
+    <link rel="preload" href="interstellar.m4a" as="audio">
+    <link rel="preload" href="EZIO.m4a" as="audio">
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --space-blue: #00d2ff; 
-            --space-purple: #8a2387; 
-            --space-dark: #020408;
-            --matrix-green: #0f0; 
-            --gold: #e5c07b;
-            --red: #ff2a2a;
+            --pastel-blue: #b4c6e7; 
+            --pastel-purple: #d5a6bd; 
+            --pastel-pink: #f4cccc;
+            --pastel-lavender: #e2d9f3;
+            --space-dark: #0d0b14;
+            --matrix-green: #a9dfbf; 
+            --gold: #f3e5ab;
+            --red: #e06666;
         }
         
         body { 
             margin: 0; 
             font-family: 'Roboto', sans-serif; 
-            color: #fff; 
+            color: #f3efe6; 
             overflow-x: hidden; 
             min-height: 100vh; 
             background: var(--space-dark);
         }
 
-        /* РЕАЛИСТИЧНЫЙ КОСМИЧЕСКИЙ ФОН */
+        /* СУРРЕАЛИСТИЧНЫЙ ПАСТЕЛЬНЫЙ КОСМИЧЕСКИЙ ФОН */
         #space-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -5;
-            background: radial-gradient(circle at 50% 50%, #0b1026 0%, #020408 100%);
+            background: radial-gradient(circle at 50% 30%, #22193b 0%, #120e21 50%, #0d0b14 100%);
         }
         .star {
             position: absolute; background: #fff; border-radius: 50%;
@@ -39,106 +42,115 @@
         }
         @keyframes twinkle {
             0% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px #fff, 0 0 15px var(--space-blue); }
+            50% { opacity: 0.9; transform: scale(1.3); box-shadow: 0 0 10px var(--pastel-lavender); }
             100% { opacity: 0.2; transform: scale(0.8); }
         }
 
-        /* ЭКРАН ЗАГРУЗКИ (60 СЕКУНД С ДОТЕРСКИМ ТЕРМИНАЛОМ) */
-        #start-overlay { position: fixed; inset: 0; background: rgba(2, 4, 8, 0.98); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
-        #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+        /* ЭКРАН ЗАГРУЗКИ (60 СЕКУНД) */
+        #start-overlay { position: fixed; inset: 0; background: rgba(13, 11, 20, 0.96); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
+        #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.25; }
         
         .overlay-content { z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0 20px; box-sizing: border-box; }
         .overlay-content h1 { 
-            font-family: 'Cinzel', serif; font-size: 4rem; color: #fff; 
-            text-shadow: 0 0 30px var(--space-blue), 0 0 60px var(--space-purple); 
+            font-family: 'Cinzel', serif; font-size: 3.8rem; color: var(--pastel-lavender); 
+            text-shadow: 0 0 25px rgba(226, 217, 243, 0.4); 
             margin-bottom: 25px; line-height: 1.1; letter-spacing: 3px;
             text-transform: uppercase;
         }
         
-        button { background: rgba(0,0,0,0.9); color: var(--space-blue); border: 2px solid var(--space-blue); padding: 15px 60px; font-family: 'Cinzel', serif; font-size: 1.8rem; cursor: pointer; border-radius: 12px; transition: 0.3s; margin-top: 25px; font-weight: bold; box-shadow: 0 0 20px rgba(0, 210, 255, 0.3); }
-        button:hover:not(:disabled) { background: var(--space-blue); color: #000; box-shadow: 0 0 40px var(--space-blue); }
+        button { background: rgba(26, 21, 38, 0.9); color: var(--pastel-blue); border: 2px solid var(--pastel-blue); padding: 15px 50px; font-family: 'Cinzel', serif; font-size: 1.6rem; cursor: pointer; border-radius: 12px; transition: 0.3s; margin-top: 25px; font-weight: bold; box-shadow: 0 0 20px rgba(180, 198, 231, 0.2); }
+        button:hover:not(:disabled) { background: var(--pastel-blue); color: #0d0b14; box-shadow: 0 0 30px var(--pastel-blue); }
         button:disabled { border-color: #444; color: #666; cursor: not-allowed; box-shadow: none; }
         
         #terminal { 
-            width: 95%; max-width: 900px; height: 380px; background: #000; 
+            width: 95%; max-width: 900px; height: 380px; background: #09070f; 
             border: 2px solid var(--matrix-green); border-radius: 10px; padding: 25px; 
-            text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 1.3rem; 
-            color: var(--matrix-green); overflow-y: auto; box-shadow: 0 0 40px #000, 0 0 20px rgba(0, 255, 0, 0.3);
+            text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 1.25rem; 
+            color: var(--matrix-green); overflow-y: auto; box-shadow: 0 0 40px rgba(0,0,0,0.8), 0 0 15px rgba(169, 223, 191, 0.2);
             line-height: 1.6;
         }
-        .log-line { margin-bottom: 8px; opacity: 0; animation: typeLine 0.1s forwards; text-shadow: 0 0 3px #0f0; }
+        .log-line { margin-bottom: 8px; opacity: 0; animation: typeLine 0.1s forwards; }
         @keyframes typeLine { to { opacity: 1; } }
-        .log-warn { color: #0ff; font-weight: bold; text-shadow: 0 0 5px #0ff; }
-        .log-err { color: #fff; background: #900; padding: 2px 8px; font-weight: bold; border-radius: 3px; }
+        .log-warn { color: #fce5cd; font-weight: bold; }
+        .log-err { color: #f4cccc; background: #3d1414; padding: 2px 8px; font-weight: bold; border-radius: 3px; }
 
-        /* ОСНОВНОЙ КОНТЕЙНЕР */
+        /* ОСНОВНОЙ КОНТЕЙНЕР ОТКРЫТКИ */
         #postcard-container {
             position: relative; width: 100vw; min-height: 100vh; display: none;
             flex-direction: column; align-items: center; justify-content: center;
-            padding: 50px 20px; box-sizing: border-box; z-index: 10;
+            padding: 60px 20px; box-sizing: border-box; z-index: 10;
         }
 
         /* УВЕЛИЧЕННОЕ ЛЕТЯЩЕЕ ПИСЬМО */
         #flying-envelope {
-            width: 340px; height: 230px; background: linear-gradient(135deg, #101935, #00d2ff);
-            border-radius: 16px; box-shadow: 0 0 60px rgba(0, 210, 255, 0.6);
+            width: 340px; height: 230px; background: linear-gradient(135deg, #2d2342, #4a386d);
+            border-radius: 16px; box-shadow: 0 0 50px rgba(213, 166, 189, 0.3);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; position: absolute; top: 50vh; left: 50%; transform: translate(-50%, -50%) scale(0.1);
             opacity: 0; animation: flyInEnvelope 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            z-index: 20; border: 3px solid var(--space-blue); transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 20; border: 3px solid var(--pastel-lavender); transition: transform 0.3s;
         }
-        #flying-envelope:hover { transform: translate(-50%, -50%) scale(1.05) !important; box-shadow: 0 0 80px rgba(0, 210, 255, 0.9); }
+        #flying-envelope:hover { transform: translate(-50%, -50%) scale(1.05) !important; box-shadow: 0 0 70px rgba(226, 217, 243, 0.5); }
         @keyframes flyInEnvelope {
             0% { transform: translate(-50%, -50%) scale(0.1) rotate(-30deg); opacity: 0; }
             100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
         }
         #flying-envelope::before {
-            content: '✉'; font-size: 90px; color: #fff; text-shadow: 0 0 20px var(--space-blue);
+            content: '✉'; font-size: 90px; color: var(--pastel-lavender); text-shadow: 0 0 15px rgba(226, 217, 243, 0.5);
         }
         .envelope-text {
             font-family: 'Cinzel', serif; font-size: 1.2rem; color: #fff; font-weight: bold;
-            margin-top: 12px; background: rgba(0, 0, 0, 0.6); padding: 6px 15px; border-radius: 8px;
-            border: 1px solid var(--space-blue); text-shadow: 0 0 10px var(--space-blue);
+            margin-top: 12px; background: rgba(13, 11, 20, 0.7); padding: 6px 15px; border-radius: 8px;
+            border: 1px solid var(--pastel-blue);
         }
 
-        /* МОДАЛКА С ВОПРОСОМ */
+        /* МОДАЛЬНОЕ ОКНО С ВОПРОСОМ */
         #modal-overlay {
-            position: fixed; inset: 0; background: rgba(2, 4, 8, 0.85); z-index: 100;
+            position: fixed; inset: 0; background: rgba(13, 11, 20, 0.88); z-index: 100;
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px);
         }
         .modal-box {
-            background: rgba(15, 12, 41, 0.95); border: 2px solid var(--space-blue);
+            background: rgba(26, 21, 38, 0.95); border: 2px solid var(--pastel-blue);
             padding: 40px; border-radius: 15px; text-align: center; max-width: 500px; width: 90%;
-            box-shadow: 0 0 50px rgba(0, 210, 255, 0.4); animation: scaleIn 0.3s ease-out;
+            box-shadow: 0 0 50px rgba(180, 198, 231, 0.25); animation: scaleIn 0.3s ease-out;
         }
         @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-box p { font-size: 1.6rem; margin-bottom: 25px; color: #fff; text-shadow: 0 0 10px var(--space-blue); }
+        .modal-box p { font-size: 1.6rem; margin-bottom: 25px; color: var(--pastel-lavender); }
         .modal-box input {
-            width: 100%; padding: 18px; background: rgba(0,0,0,0.7); border: 2px solid #555;
+            width: 100%; padding: 18px; background: rgba(9, 7, 15, 0.8); border: 2px solid #5a4b75;
             color: #fff; border-radius: 8px; font-size: 1.5rem; text-align: center; margin-bottom: 20px; box-sizing: border-box;
         }
-        .modal-box input:focus { outline: none; border-color: var(--space-blue); box-shadow: 0 0 20px var(--space-blue); }
+        .modal-box input:focus { outline: none; border-color: var(--pastel-blue); box-shadow: 0 0 20px rgba(180, 198, 231, 0.3); }
 
-        /* КОСМИЧЕСКОЕ ПИСЬМО (КРУПНЫЙ ТЕКСТ) */
+        /* ТЕКСТ ПОЗДРАВЛЕНИЯ В КОСМИЧЕСКОМ СТИЛЕ (КРУПНЫЙ ШРИФТ) */
         #letter-content {
-            background: rgba(15, 12, 41, 0.92); 
-            color: #fff;
-            border: 2px solid var(--space-blue);
-            border-radius: 20px; padding: 50px; max-width: 900px; width: 100%;
-            box-sizing: border-box; box-shadow: 0 0 60px rgba(0, 210, 255, 0.3);
+            background: rgba(22, 18, 33, 0.9); 
+            color: #f3efe6;
+            border: 2px solid rgba(213, 166, 189, 0.4);
+            border-radius: 20px; padding: 50px; max-width: 950px; width: 100%;
+            box-sizing: border-box; box-shadow: 0 0 60px rgba(138, 100, 160, 0.25);
             display: none; opacity: 0; transform: translateY(30px);
-            transition: opacity 1s ease, transform 1s ease; line-height: 1.8; font-size: 1.35rem;
+            transition: opacity 1s ease, transform 1s ease; line-height: 1.8; font-size: 1.45rem;
             position: relative;
         }
         #letter-content.show { opacity: 1; transform: translateY(0); }
-        #letter-content h2 { font-family: 'Cinzel', serif; text-align: center; color: var(--space-blue); font-size: 2.8rem; margin-bottom: 30px; text-shadow: 0 0 20px var(--space-blue); }
-        .highlight-ilya { color: var(--space-blue); font-weight: bold; text-shadow: 0 0 10px var(--space-blue); }
-        .highlight-alice { color: var(--neon-pink, #ff00ff); font-weight: bold; text-shadow: 0 0 10px var(--neon-pink, #ff00ff); }
+        #letter-content h2 { 
+            font-family: 'Cinzel', serif; text-align: center; color: var(--pastel-lavender); 
+            font-size: 3rem; margin-bottom: 30px; text-shadow: 0 0 20px rgba(226, 217, 243, 0.4); 
+        }
+        .highlight-ilya { color: var(--pastel-blue); font-weight: bold; text-shadow: 0 0 10px rgba(180, 198, 231, 0.4); }
+        .highlight-alice { color: var(--pastel-pink); font-weight: bold; text-shadow: 0 0 10px rgba(244, 204, 204, 0.4); }
+        
+        .poem-block {
+            margin-top: 35px; padding: 25px; border-left: 4px solid var(--pastel-purple);
+            background: rgba(13, 11, 20, 0.5); font-style: italic; font-family: 'Playfair Display', serif;
+            font-size: 1.35rem; line-height: 1.7; color: #e9e2f5; border-radius: 0 12px 12px 0;
+        }
 
         /* КНОПКА ДАЛЬШЕ */
         #next-btn-container { margin-top: 40px; text-align: center; display: none; }
 
-        /* БОЛЬШАЯ ГАЛАКТИКА И СБОРКА ФОТОГРАФИИ */
+        /* ПОЛНОЭКРАННАЯ ГАЛАКТИКА */
         #galaxy-section {
             display: none; width: 100vw; height: 400vh; position: relative;
             z-index: 10; box-sizing: border-box;
@@ -149,20 +161,33 @@
             overflow: hidden;
         }
         .galaxy-instruction {
-            position: absolute; top: 40px; font-family: 'Cinzel', serif; font-size: 2rem;
-            color: #fff; text-shadow: 0 0 20px var(--space-blue); text-align: center; z-index: 12;
-            pointer-events: none; transition: opacity 0.5s;
+            position: absolute; top: 40px; font-family: 'Cinzel', serif; font-size: 1.8rem;
+            color: var(--pastel-lavender); text-shadow: 0 0 15px rgba(226, 217, 243, 0.4); 
+            text-align: center; z-index: 12; pointer-events: none; transition: opacity 0.5s;
         }
         #galaxy-canvas {
-            width: 700px; height: 700px; max-width: 95vw; max-height: 95vw;
-            border-radius: 50%; box-shadow: 0 0 100px rgba(0, 210, 255, 0.5);
-            background: radial-gradient(circle, #101432 0%, #020408 100%);
-            border: 2px solid rgba(0, 210, 255, 0.6);
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 5; pointer-events: none;
         }
 
-        /* ЭФФЕКТ ВЗРЫВА И ПОЯВЛЕНИЯ ФОТО ПОСЛЕ ГАЛАКТИКИ */
+        /* ПУЛЬСИРУЮЩИЕ ВСПЛЫВАЮЩИЕ ШУТКИ ПРО ДОТУ ПРИ ВЗРЫВЕ */
+        .floating-dota-joke {
+            position: fixed; z-index: 999; font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: bold;
+            color: var(--pastel-pink); background: rgba(13, 11, 20, 0.85); border: 2px solid var(--pastel-purple);
+            padding: 15px 30px; border-radius: 12px; pointer-events: none;
+            box-shadow: 0 0 25px rgba(213, 166, 189, 0.5);
+            animation: jokePopFade 5s forwards;
+        }
+        @keyframes jokePopFade {
+            0% { opacity: 0; transform: scale(0.5) translateY(20px); }
+            15% { opacity: 1; transform: scale(1.1) translateY(0); }
+            30% { transform: scale(1); }
+            85% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+        }
+
+        /* ФИНАЛЬНЫЙ БЛОК С ФОТО И КНОПКОЙ КОДА */
         #final-reveal-box {
-            position: fixed; inset: 0; background: rgba(2, 4, 8, 0.98); z-index: 1000;
+            position: fixed; inset: 0; background: rgba(13, 11, 20, 0.98); z-index: 1000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; animation: fadeInFinal 1.5s ease forwards;
             padding: 20px; box-sizing: border-box;
@@ -170,26 +195,24 @@
         @keyframes fadeInFinal { from { opacity: 0; } to { opacity: 1; } }
         
         .final-photo-frame {
-            max-width: 650px; width: 90%; border-radius: 15px; border: 4px solid var(--space-blue);
-            box-shadow: 0 0 60px var(--space-blue); overflow: hidden; margin-bottom: 30px;
+            max-width: 650px; width: 90%; border-radius: 16px; border: 4px solid var(--pastel-purple);
+            box-shadow: 0 0 50px rgba(213, 166, 189, 0.4); overflow: hidden; margin-bottom: 30px;
             animation: photoZoomIn 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
         .final-photo-frame img { width: 100%; height: auto; display: block; }
         @keyframes photoZoomIn {
-            0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+            0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
             100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
 
-        /* КНОПКА ОТКРЫТЬ КОД */
         .open-code-btn {
-            background: var(--space-purple); color: #fff; border: 2px solid var(--space-blue);
+            background: rgba(74, 56, 109, 0.9); color: var(--pastel-lavender); border: 2px solid var(--pastel-blue);
             padding: 18px 50px; font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: bold;
-            border-radius: 12px; cursor: pointer; box-shadow: 0 0 30px rgba(0, 210, 255, 0.5);
+            border-radius: 12px; cursor: pointer; box-shadow: 0 0 30px rgba(180, 198, 231, 0.3);
             transition: 0.3s;
         }
-        .open-code-btn:hover { background: var(--space-blue); color: #000; box-shadow: 0 0 50px var(--space-blue); transform: scale(1.05); }
+        .open-code-btn:hover { background: var(--pastel-blue); color: #0d0b14; box-shadow: 0 0 50px var(--pastel-blue); transform: scale(1.05); }
 
-        /* БЛОК С КОДОМ */
         #code-display-box {
             display: none; flex-direction: column; align-items: center; justify-content: center;
             animation: fadeInFinal 0.8s ease forwards;
@@ -197,21 +220,21 @@
         .code-display {
             font-size: 5rem; font-family: 'Courier New', Courier, monospace; color: var(--matrix-green);
             background: #000; border: 4px solid var(--matrix-green); padding: 20px 50px;
-            border-radius: 15px; box-shadow: 0 0 50px rgba(0, 255, 0, 0.4); letter-spacing: 10px;
+            border-radius: 15px; box-shadow: 0 0 50px rgba(169, 223, 191, 0.3); letter-spacing: 10px;
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- РЕАЛИСТИЧНЫЙ КОСМИЧЕСКИЙ ФОН -->
+    <!-- ПАСТЕЛЬНЫЙ КОСМИЧЕСКИЙ ФОН -->
     <div id="space-bg"></div>
 
-    <!-- ЭКРАН ЗАГРУЗКИ С МАТРИЦЕЙ И ДОТЕРСКИМ ТЕРМИНАЛОМ (60 СЕКУНД) -->
+    <!-- ЭКРАН ЗАГРУЗКИ С ТЕРМИНАЛОМ (1 МИНУТА / ДОТЕРСКИЕ ШУТКИ) -->
     <div id="start-overlay">
         <canvas id="matrix-canvas"></canvas>
         <div class="overlay-content">
-            <h1>my dear friends for you</h1>
+            <h1>My Dear Friends For You</h1>
             <div id="terminal"></div>
             <button id="start-btn" disabled onclick="startExperience()">Вперед (60)</button>
         </div>
@@ -221,20 +244,48 @@
 
     <!-- ОСНОВНОЙ БЛОК ОТКРЫТКИ -->
     <div id="postcard-container">
-        <!-- УВЕЛИЧЕННОЕ ЛЕТЯЩЕЕ ПИСЬМО -->
+        <!-- ЛЕТЯЩЕЕ ПИСЬМО -->
         <div id="flying-envelope" onclick="openEnvelopeModal()">
             <div class="envelope-text">Нажмите, чтобы открыть</div>
         </div>
 
-        <!-- КОСМИЧЕСКОЕ ПИСЬМО С ВАШИМ ТЕКСТОМ -->
+        <!-- ТЕКСТ ПОЗДРАВЛЕНИЯ -->
         <div id="letter-content">
-            <h2>Дорогие мои друзья</h2>
-            <p>Приветствую вас, мои дорогие друзья. Я бы хотел написать как дороги вы мне. И как хорошо нам вместе. Также хочу вас поблагодарить что вы есть в моей жизни. И какбы не сворачивался наш путь, и как далеко бы мы не зашли, мы остаемся друг у друга. Я желаю вам счастья! вы самая красивая пара которую я знаю. Мне не хватит и тысячи слов, как я вас обожаю и люблю.</p>
+            <h2>Дорогие мои друзья, с днем рождения!</h2>
+            <p>Приветствую вас, мои дорогие друзья. Я бы хотел написать как дороги вы мне. И как хорошо нам вместе. Также хочу вас поблагодарить что вы есть в моей жизни. И какбы не сворачивался наш путь, и как далеко бы мы не зашли, мы остаемся друг у друга. Я желаю вам счастья! Вы — самая красивая пара которую я знаю. Мне не хватит и тысячи слов, как я вас обожаю и люблю.</p>
             <p>Иногда в дни когда наступает мрак и холод, я могу пообщаться с вами и мне будет намного теплее и лучше.</p>
-            <p><span class="highlight-ilya">Илья</span>, обращусь лично к тебе. Твой смех и твоя улыбка стоит того чтобы сворачивать горы. Я дорожу нашей дружбой . Надеюсь когда нибудь мы встретимся. И станем братьями.</p>
+            <p><span class="highlight-ilya">Илья</span>, обращусь лично к тебе. Твой смех и твоя улыбка стоит того чтобы сворачивать горы. Я дорожу нашей дружбой. Надеюсь когда нибудь мы встретимся. И станем братьями.</p>
             <p><span class="highlight-alice">Алиса, Алиса.</span> Всё что у нас у всех есть, это твоя заслуга. Если бы не твоя гильдия, не твой канал. Мы бы и не были знакомы. Дружить с тобой, это ценный подарок судьбы. Ты замечательный человек. Я лишь хочу сказать, что ты важный кусочек моей жизни.</p>
-            <p style="text-align: center; font-style: italic; color: var(--space-blue); margin-top: 30px; font-weight: bold;">
-                И вам обоим я скажу: "Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой."
+            <p style="text-align: center; font-style: italic; color: var(--pastel-blue); margin-top: 25px; font-weight: bold;">
+                И вам обоим я скажу: «Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой».
+            </p>
+
+            <!-- СТИХОТВОРЕНИЕ -->
+            <div class="poem-block">
+                Скажи, ты счастлив? Не ну правда?<br>
+                Скажи, об этом ты мечтал?<br>
+                Ну помнишь в детстве. Ждал ты завтра,<br>
+                Скажи! Сбылось? Ты счастлив стал?<br><br>
+                О да, прекрасно понимаю,<br>
+                Что жизнь "не поле перейти",<br>
+                Бывало трудно. Знаю, знаю!<br>
+                Скажи, а хочешь вновь, к мечте идти?<br><br>
+                Скажи: "Зачем остановился?"<br>
+                Подумал "Что за ерунда?"<br>
+                А может в силах усомнился?<br>
+                Дак то поправим! Не беда!<br><br>
+                Давай вперед! И без сомнений!<br>
+                Ты плечи гордо распрями!<br>
+                Хорош бояться чьих-то мнений,<br>
+                К своей мечте ты, друг иди!<br><br>
+                И да, уж сильно не тревожься,<br>
+                Всё будет знаю хорошо!<br>
+                Лишь об одном побеспокойся!<br>
+                Чтоб рядом шёл, с кем Жить Легко!
+            </div>
+
+            <p style="text-align: center; margin-top: 30px; font-weight: bold; color: var(--pastel-pink);">
+                Желаю вам процветания и легких дней.
             </p>
             
             <div id="next-btn-container">
@@ -243,24 +294,24 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА С ВОПРОСОМ ДЛЯ ПИСЬМА -->
+    <!-- МОДАЛКА С ВОПРОСОМ -->
     <div id="modal-overlay">
         <div class="modal-box">
-            <p>В какой год мы познакомились?</p>
+            <p>В каком году мы познакомились?</p>
             <input type="text" id="envelope-answer" placeholder="Введите год..." onkeydown="if(event.key === 'Enter') checkEnvelopeAnswer()">
             <button onclick="checkEnvelopeAnswer()" style="margin-top:0; width:100%;">Открыть письмо</button>
         </div>
     </div>
 
-    <!-- СЕКЦИЯ БОЛЬШОЙ ГАЛАКТИКИ И СБОРКИ ФОТО -->
+    <!-- ПОЛНОЭКРАННАЯ ГАЛАКТИКА -->
     <div id="galaxy-section">
         <div class="galaxy-sticky">
-            <div class="galaxy-instruction" id="galaxy-instruction">Прокрутите вниз, чтобы собрать вселенную из воспоминаний...</div>
+            <div class="galaxy-instruction" id="galaxy-instruction">Прокрутите вниз, чтобы исследовать вселенную...</div>
             <canvas id="galaxy-canvas"></canvas>
         </div>
     </div>
 
-    <!-- ФИНАЛЬНЫЙ ЭФФЕКТ ВЗРЫВА, ПАДАЮЩЕЙ ЗВЕЗДЫ И ФОТОГРАФИИ -->
+    <!-- ФИНАЛЬНЫЙ ЭФФЕКТ ВЗРЫВА И ФОТОГРАФИИ -->
     <div id="final-reveal-box">
         <div id="photo-reveal-content">
             <div class="final-photo-frame">
@@ -277,12 +328,12 @@
     </div>
 
     <script>
-        /* РЕАЛИСТИЧНЫЕ ЗВЕЗДЫ */
+        /* ПАСТЕЛЬНЫЕ ЗВЕЗДЫ НА ФОНЕ */
         const spaceBg = document.getElementById('space-bg');
-        for (let i = 0; i < 120; i++) {
+        for (let i = 0; i < 150; i++) {
             const star = document.createElement('div');
             star.className = 'star';
-            const size = Math.random() * 2.5 + 0.5;
+            const size = Math.random() * 2.5 + 0.8;
             star.style.width = size + 'px';
             star.style.height = size + 'px';
             star.style.top = Math.random() * 100 + 'vh';
@@ -305,9 +356,9 @@
         for(let x = 0; x < columns; x++) drops[x] = 1;
         
         function drawMatrix() {
-            ctxMatrix.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctxMatrix.fillStyle = 'rgba(13, 11, 20, 0.15)';
             ctxMatrix.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
-            ctxMatrix.fillStyle = '#080';
+            ctxMatrix.fillStyle = '#a9dfbf';
             ctxMatrix.font = fontSize + 'px monospace';
             for(let i = 0; i < drops.length; i++) {
                 const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
@@ -318,34 +369,34 @@
         }
         const matrixInterval = setInterval(drawMatrix, 40);
 
-        /* ЛОГИКА ТЕРМИНАЛА С ШУТКАМИ ПРО ДОТУ (60 СЕКУНД) */
+        /* ТЕРМИНАЛ НА 1 МИНУТУ С ДОТЕРСКИМИ ШУТКАМИ */
         const terminalLogs = [
             "[SYS] Инициализация космического лобби...",
             "[SYS] Подключение к серверам Dota 2...",
-            "[SYS] Анализ пинга... 999 мс. Играбельно.",
+            "[SYS] Анализ пинга... 999 мс. Абсолютно стабильно.",
             "<span class='log-err'>[ERROR] Илья снова ферст-пикнул Techies. Команда пишет 'GG'.</span>",
-            "[WAIT] Илья взял Оракла. Обещает спасать, но кидает False Promise на фуллового крипа.",
-            "<span class='log-warn'>[OK] Алиса взяла Witch Doctor. Ситуация под контролем.</span>",
-            "[WAIT] Брошен кокос! Летит... летит... отскок в лесного крипа. Классика.",
-            "<span class='log-err'>[ERROR] Илья на Рубике украл Rot у Пуджа и забыл как выключить. Умер.</span>",
+            "[WAIT] Илья взял Оракла. Обещает сейвить, но дает False Promise на фуллового крипа.",
+            "<span class='log-warn'>[OK] Алиса взяла Witch Doctor. Ситуация под абсолютным контролем.</span>",
+            "[WAIT] Брошен кокос! Летит... летит... отскок в лесного кентавра. Классика жанра.",
+            "<span class='log-err'>[ERROR] Илья на Рубике украл Rot у Пуджа и забыл, как выключить. Умер от регена.</span>",
             "[SYS] Загрузка касочек... Эффективность хила 146%.",
-            "<span class='log-err'>[ERROR] Илья заминировал Рошпит. Сервер лагает от количества бочек.</span>",
-            "<span class='log-warn'>[INFO] Антон пытается затащить эту катку. Шансы: 3%.</span>",
-            "[SYS] Поиск команды... Найдены 4 подпиваса.",
-            "[WAIT] Алиса ставит Death Ward (WUB WUB WUB). Раздаются крики врагов.",
-            "<span class='log-warn'>[INFO] Илья делает суицид в толпу врагов. Убил только себя.</span>",
+            "<span class='log-err'>[ERROR] Илья заминировал весь Рошпит. Сервер лагает от количества бочек.</span>",
+            "<span class='log-warn'>[INFO] Антон пытается затащить эту катку. Шансы на успех: 3%.</span>",
+            "[SYS] Поиск команды... Найдены 4 преданных подпиваса.",
+            "[WAIT] Алиса ставит Death Ward (WUB WUB WUB). Вокруг раздаются крики поверженных врагов.",
+            "<span class='log-warn'>[INFO] Илья делает тактический суицид в толпу врагов. Забрал только курьера.</span>",
             "[SYS] Илья кидает Purifying Flames в союзного керри и случайно добивает его.",
             "[WAIT] Илья ставит табличку 'Осторожно, мины'. Враги думают, что это блеф... Зря.",
-            "[OK] Подключение к голосовому чату. Обнаружены неадекваты. Мут всех.",
-            "[WAIT] Алиса хилит команду... Команда с криками убегает от хила.",
+            "[OK] Подключение к голосовому чату. Обнаружены неадекваты. Мьютим всех.",
+            "[WAIT] Алиса хилит команду... Команда с паническими криками убегает от хила.",
             "<span class='log-warn'>[SYS] Сканирование таверны... Там подозрительно много наших.</span>",
-            "<span class='log-err'>[ERROR] Минёр в команде = игра на 2 часа. Заказывайте пиццу.</span>",
-            "[SYS] Илья на Рубике украл Телепорт Фуриона и улетел на вражеский фонтан.",
-            "[SYS] Вражеский керри наступил на красную мину. Минус нервы.",
-            "[WAIT] Алиса спамит 'Look at it go!'. Мораль команды повышена.",
-            "[SYS] Синхронизация общих воспоминаний...",
-            "<span class='log-warn'>[OK] Взлом лобби завершен. Защита активна.</span>",
-            "<span class='log-warn'>[SYS] Готовность 100%. Нажмите ВПЕРЕД, чтобы начать.</span>"
+            "<span class='log-err'>[ERROR] Минёр в тиме = игра на 2 часа. Заказывайте пиццу с ананасами.</span>",
+            "[SYS] Илья на Рубике украл Телепорт Фуриона и улетел прямо на вражеский фонтан.",
+            "[SYS] Вражеский керри наступил на красную мину. Минус нервы и минус шмотки.",
+            "[WAIT] Алиса спамит фирменное 'Look at it go!'. Мораль команды взлетает в небеса.",
+            "[SYS] Синхронизация общих воспоминаний и душевных моментов...",
+            "<span class='log-warn'>[OK] Взлом лобби успешно завершен. Защита открытки активна.</span>",
+            "<span class='log-warn'>[SYS] Готовность 100%. Нажмите 'Вперед', чтобы начать путешествие.</span>"
         ];
         
         const terminal = document.getElementById('terminal');
@@ -376,15 +427,24 @@
             }
         }, 1000);
 
-        /* СТАРТ ОТКРЫТКИ И МУЗЫКИ */
+        /* ПЛЕЙЛИСТ: ТОЛЬКО interstellar.m4a и EZIO.m4a НА РЕПИТЕ */
+        const playlist = ["interstellar.m4a", "EZIO.m4a"];
+        let currentTrack = 0;
         const audio = document.getElementById('audio');
+
+        audio.addEventListener('ended', () => {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            audio.src = playlist[currentTrack];
+            audio.play();
+        });
+
         function startExperience() {
             clearInterval(matrixInterval);
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('postcard-container').style.display = 'flex';
             
-            audio.volume = 0.2;
-            audio.src = "Sun.mp3";
+            audio.volume = 0.25;
+            audio.src = playlist[0];
             audio.play();
         }
 
@@ -394,7 +454,7 @@
             document.getElementById('envelope-answer').focus();
         }
 
-        /* ПРОВЕРКА 2024 */
+        /* ПРОВЕРКА ОТВЕТА 2024 */
         function checkEnvelopeAnswer() {
             const val = document.getElementById('envelope-answer').value.trim();
             if (val === "2024") {
@@ -413,175 +473,42 @@
                 input.style.borderColor = "var(--red)";
                 input.value = "";
                 input.placeholder = "Неверно! Вспомните год";
-                setTimeout(() => input.style.borderColor = "#555", 1000);
+                setTimeout(() => input.style.borderColor = "#5a4b75", 1000);
             }
         }
 
-        /* ПЕРЕХОД К ГАЛАКТИКЕ */
+        /* ПЕРЕХОД К ПОЛНОЭКРАННОЙ ГАЛАКТИКЕ */
         function showGalaxySection() {
             document.getElementById('postcard-container').style.display = 'none';
             document.getElementById('galaxy-section').style.display = 'block';
             window.scrollTo(0, 0);
-            initGalaxyPhotoAssembly();
+            initFullscreenGalaxy();
         }
 
-        /* --- СИСТЕМА ЧАСТИЦ: БОЛЬШАЯ ГАЛАКТИКА -> СБОРКА ФОТО -> ВЗРЫВ --- */
-        let particles = [];
+        /* --- ПОЛНОЭКРАННАЯ ГАЛАКТИКА И ВЗРЫВАЮЩИЕСЯ ЗВЕЗДЫ СО ШУТКАМИ --- */
         let galaxyInitialized = false;
         let isExploded = false;
+        let starsList = [];
 
-        function initGalaxyPhotoAssembly() {
+        function initFullscreenGalaxy() {
             if (galaxyInitialized) return;
             galaxyInitialized = true;
 
             const canvas = document.getElementById('galaxy-canvas');
             const ctx = canvas.getContext('2d');
             
-            canvas.width = 700;
-            canvas.height = 700;
-
-            const img = new Image();
-            img.src = 'p11.jpg';
-            img.onload = () => {
-                const tempCanvas = document.createElement('canvas');
-                const tCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = 700;
-                tempCanvas.height = 700;
-                
-                let hRatio = tempCanvas.width / img.width;
-                let vRatio = tempCanvas.height / img.height;
-                let ratio = Math.max(hRatio, vRatio);
-                let centerShiftX = (tempCanvas.width - img.width * ratio) / 2;
-                let centerShiftY = (tempCanvas.height - img.height * ratio) / 2;
-                
-                tCtx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
-                
-                const imgData = tCtx.getImageData(0, 0, 700, 700);
-                const data = imgData.data;
-
-                particles = [];
-                const step = 4; // Плотность точек
-                for (let y = 0; y < 700; y += step) {
-                    for (let x = 0; x < 700; x += step) {
-                        const index = (y * 700 + x) * 4;
-                        const r = data[index];
-                        const g = data[index + 1];
-                        const b = data[index + 2];
-                        const a = data[index + 3];
-
-                        if (a > 50) {
-                            const angle = Math.random() * Math.PI * 2;
-                            const radius = Math.random() * 450 + 100;
-                            
-                            particles.push({
-                                targetX: x,
-                                targetY: y,
-                                galaxyX: 350 + Math.cos(angle) * radius,
-                                galaxyY: 350 + Math.sin(angle) * radius,
-                                currentX: 350 + Math.cos(angle) * radius,
-                                currentY: 350 + Math.sin(angle) * radius,
-                                vx: (Math.random() - 0.5) * 35, // Скорость при взрыве
-                                vy: (Math.random() - 0.5) * 35,
-                                color: `rgb(${r},${g},${b})`,
-                                size: Math.random() * 2.2 + 1.2
-                            });
-                        }
-                    }
-                }
-
-                requestAnimationFrame(renderGalaxy);
-            };
-        }
-
-        let scrollProgress = 0;
-
-        window.addEventListener('scroll', () => {
-            const galaxySection = document.getElementById('galaxy-section');
-            if (galaxySection.style.display === 'block' && !isExploded) {
-                const maxScroll = galaxySection.offsetHeight - window.innerHeight;
-                scrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-
-                const instruction = document.getElementById('galaxy-instruction');
-                if (scrollProgress > 0.1) {
-                    instruction.style.opacity = Math.max(0, 1 - (scrollProgress - 0.1) * 5);
-                } else {
-                    instruction.style.opacity = 1;
-                }
-
-                // ВЗРЫВ И ПОЯВЛЕНИЕ ФОТОГРАФИИ В КОНЦЕ ПРОКРУТКИ
-                if (scrollProgress >= 0.98) {
-                    isExploded = true;
-                    triggeredExplosionEffect();
-                }
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
             }
-        });
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
 
-        function renderGalaxy() {
-            const canvas = document.getElementById('galaxy-canvas');
-            const ctx = canvas.getContext('2d');
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (!isExploded) {
-                const easeP = scrollProgress < 1 ? 1 - Math.pow(1 - scrollProgress, 3) : 1;
-
-                for (let i = 0; i < particles.length; i++) {
-                    const p = particles[i];
-                    p.currentX = p.galaxyX + (p.targetX - p.galaxyX) * easeP;
-                    p.currentY = p.galaxyY + (p.targetY - p.galaxyY) * easeP;
-
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(p.currentX, p.currentY, p.size, p.size);
-                }
-            } else {
-                // Анимация разлетающихся точек при взрыве
-                for (let i = 0; i < particles.length; i++) {
-                    const p = particles[i];
-                    p.currentX += p.vx;
-                    p.currentY += p.vy;
-
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(p.currentX, p.currentY, p.size, p.size);
-                }
-            }
-
-            requestAnimationFrame(renderGalaxy);
-        }
-
-        function triggeredExplosionEffect() {
-            // Прячем канвас галактики
-            document.getElementById('galaxy-section').style.display = 'none';
-            
-            // Создаем эффект летящей падающей звезды, которая пролетает и оставляет за собой вспышку фотографии
-            const star = document.createElement('div');
-            star.style.position = 'fixed';
-            star.style.width = '10px';
-            star.style.height = '10px';
-            star.style.background = '#fff';
-            star.style.borderRadius = '50%';
-            star.style.boxShadow = '0 0 30px #fff, 0 0 60px var(--space-blue)';
-            star.style.zIndex = '9999';
-            star.style.top = '-20px';
-            star.style.left = '50vw';
-            document.body.appendChild(star);
-
-            const anim = star.animate([
-                { transform: 'translate(-50%, 0) scale(1)' },
-                { transform: 'translate(-50%, 50vh) scale(5)', background: 'var(--space-blue)' },
-                { transform: 'translate(-50%, 100vh) scale(50)', opacity: 0 }
-            ], { duration: 800, easing: 'ease-in' });
-
-            anim.onfinish = () => {
-                star.remove();
-                // Показываем блок с фотографией и кнопкой "Открыть код"
-                document.getElementById('final-reveal-box').style.display = 'flex';
-            };
-        }
-
-        function revealCode() {
-            document.getElementById('photo-reveal-content').style.display = 'none';
-            document.getElementById('code-display-box').style.display = 'flex';
-        }
-    </script>
-</body>
-</html>
+            // Создаем много пастельных звезд для галактического поля
+            starsList = [];
+            for (let i = 0; i < 400; i++) {
+                starsList.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2.5 + 0.5,
+                    color: i % 3 === 0 ? '#b4c6e7' : (i % 3 === 1 ? '#
