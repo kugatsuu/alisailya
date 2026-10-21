@@ -3,378 +3,471 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Для Ильи и Алисы</title>
 
 <style>
 :root {
-  --blue: #8bd8ff;
-  --purple: #bba2ff;
-  --gold: #ffe3a3;
-  --text: #f4f2ff;
+  --gold: #e8c77d;
+  --white: #f5f3ff;
+  --muted: #b8b8d1;
+  --panel: rgba(10, 12, 32, .82);
 }
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+}
 
 html, body {
   margin: 0;
+  width: 100%;
   min-height: 100%;
-  background: #030511;
-  color: var(--text);
+  background: #03040d;
+  color: var(--white);
   font-family: Georgia, "Times New Roman", serif;
 }
-body { overflow-x: hidden; }
 
-#starfield, .nebula {
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#stars {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
   pointer-events: none;
 }
-#starfield {
-  z-index: 0;
-  background:
-    radial-gradient(ellipse at 18% 25%, rgba(54,51,140,.27), transparent 38%),
-    radial-gradient(ellipse at 80% 70%, rgba(50,30,111,.25), transparent 40%),
-    radial-gradient(ellipse at 50% 100%, rgba(12,73,113,.18), transparent 45%),
-    #030511;
-}
+
 .nebula {
-  z-index: 0;
+  position: fixed;
   inset: -20%;
+  z-index: 0;
+  pointer-events: none;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(83,48,173,.11), transparent 32%),
-    radial-gradient(ellipse at 75% 25%, rgba(32,105,163,.12), transparent 34%);
-  filter: blur(35px);
-  animation: nebulaDrift 24s ease-in-out infinite alternate;
+    radial-gradient(ellipse at 20% 25%, rgba(57, 49, 130, .22), transparent 42%),
+    radial-gradient(ellipse at 80% 65%, rgba(93, 37, 105, .18), transparent 38%),
+    radial-gradient(ellipse at 55% 15%, rgba(29, 74, 125, .13), transparent 40%);
+  animation: nebulaDrift 28s ease-in-out infinite alternate;
 }
+
 @keyframes nebulaDrift {
-  from { transform: translate(-2%,1%) scale(1); }
-  to { transform: translate(2%,-2%) scale(1.08); }
+  from { transform: translate3d(-1%, 0, 0) scale(1); }
+  to { transform: translate3d(1%, -1%, 0) scale(1.06); }
 }
 
 .screen {
   display: none;
   position: relative;
   z-index: 1;
-  min-height: 100vh;
-  min-height: 100svh;
   width: 100%;
-  padding: 32px 18px;
+  min-height: 100vh;
+  padding: 28px 18px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   text-align: center;
-  animation: screenAppear 1s ease both;
 }
-.screen.active { display: flex; }
-@keyframes screenAppear {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.content { width: min(850px, 100%); margin: auto; }
 
-.computer-notice {
-  color: #c4dfff;
-  font-size: .95rem;
-  line-height: 1.6;
-  margin: 0 0 24px;
-  text-shadow: 0 0 14px rgba(139,216,255,.4);
+.screen.active {
+  display: flex;
+  animation: appear .8s ease both;
 }
-.eyebrow {
-  color: var(--blue);
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  font-size: .76rem;
-  margin-bottom: 22px;
-  text-shadow: 0 0 16px rgba(139,216,255,.6);
+
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-h1, h2 { font-weight: normal; margin: 0 0 22px; }
+
+.panel {
+  width: min(760px, 100%);
+  padding: clamp(22px, 5vw, 48px);
+  border: 1px solid rgba(232, 199, 125, .28);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: 0 0 50px rgba(53, 50, 120, .13);
+  backdrop-filter: blur(10px);
+}
+
+h1, h2 {
+  font-weight: normal;
+  line-height: 1.3;
+}
+
 h1 {
-  font-size: clamp(2rem,7vw,4.8rem);
-  line-height: 1.12;
-  letter-spacing: .06em;
-  color: #fff;
-  text-shadow: 0 0 8px rgba(139,216,255,.8),
-               0 0 26px rgba(115,109,255,.65),
-               0 0 60px rgba(107,84,255,.32);
+  font-size: clamp(27px, 5vw, 47px);
+  letter-spacing: 2px;
 }
-h2 {
-  font-size: clamp(1.8rem,5vw,3rem);
-  color: #e9e2ff;
-  text-shadow: 0 0 24px rgba(174,151,255,.4);
-}
-p {
-  font-size: clamp(1rem,2.4vw,1.22rem);
-  line-height: 1.85;
-}
-.intro-copy {
-  white-space: pre-line;
-  min-height: 150px;
-  max-width: 680px;
-  margin: 30px auto;
-  color: #e4e8ff;
-  font-size: clamp(1.05rem,2.6vw,1.35rem);
-  line-height: 2;
-  text-shadow: 0 0 14px rgba(139,216,255,.22);
-}
-.cursor {
-  display: inline-block;
-  width: 2px;
-  height: 1.15em;
-  background: var(--blue);
-  vertical-align: -3px;
-  margin-left: 4px;
-  box-shadow: 0 0 12px var(--blue);
-  animation: blink 1.1s steps(2,start) infinite;
-}
-@keyframes blink { to { visibility: hidden; } }
 
-.glass {
-  background: linear-gradient(145deg,rgba(18,25,57,.84),rgba(12,12,34,.82));
-  border: 1px solid rgba(163,187,255,.32);
-  border-radius: 24px;
-  padding: clamp(22px,5vw,42px);
-  box-shadow: 0 0 45px rgba(83,91,207,.14),
-              inset 0 0 35px rgba(126,145,255,.035);
-  backdrop-filter: blur(12px);
+h2 {
+  font-size: clamp(23px, 4vw, 34px);
+}
+
+p {
+  line-height: 1.8;
+}
+
+.gold {
+  color: var(--gold);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 button {
-  border: 1px solid rgba(213,232,255,.7);
-  border-radius: 999px;
-  padding: 16px 30px;
-  min-height: 54px;
-  margin: 12px 6px;
-  color: #071020;
-  background: linear-gradient(110deg,#a8e7ff,#c7b5ff 55%,#ffe4a8);
-  font-family: inherit;
-  font-size: 1.05rem;
-  font-weight: bold;
+  padding: 13px 28px;
+  margin: 9px 5px;
+  border: 1px solid rgba(232, 199, 125, .65);
+  border-radius: 8px;
+  background: rgba(232, 199, 125, .09);
+  color: var(--white);
+  font: inherit;
+  font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 0 12px rgba(139,216,255,.35),
-              0 0 28px rgba(166,143,255,.24);
-  transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
-  touch-action: manipulation;
+  transition: background .25s, border-color .25s, transform .25s;
 }
+
 button:hover {
-  transform: translateY(-3px) scale(1.035);
-  filter: brightness(1.12);
-  box-shadow: 0 0 18px rgba(139,216,255,.65),
-              0 0 40px rgba(166,143,255,.4);
+  background: rgba(232, 199, 125, .2);
+  border-color: var(--gold);
+  transform: translateY(-1px);
 }
-button:active { transform: scale(.97); }
-button:focus-visible, input:focus-visible {
-  outline: 3px solid white;
-  outline-offset: 4px;
+
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
 }
-button:disabled { opacity: .45; cursor: not-allowed; }
 
 input {
-  display: block;
-  width: min(340px,100%);
-  margin: 22px auto;
-  padding: 15px 18px;
-  border: 1px solid rgba(139,216,255,.55);
-  border-radius: 12px;
-  background: rgba(3,8,25,.88);
+  width: min(340px, 100%);
+  padding: 13px 15px;
+  margin: 12px 0;
+  border: 1px solid rgba(232, 199, 125, .5);
+  border-radius: 8px;
+  outline: none;
+  background: rgba(4, 6, 20, .9);
   color: white;
-  font: 1.1rem Georgia,serif;
+  font: inherit;
+  font-size: 17px;
   text-align: center;
 }
-input::placeholder { color: #9299bd; }
-.status { min-height: 30px; color: var(--gold); line-height: 1.6; }
+
+input:focus {
+  border-color: var(--gold);
+}
+
+.status {
+  min-height: 26px;
+  margin-top: 8px;
+  color: var(--gold);
+}
+
+.type-title {
+  min-height: 1.5em;
+  overflow-wrap: anywhere;
+}
+
+#introText {
+  white-space: pre-line;
+  min-height: 120px;
+  font-size: clamp(16px, 2.5vw, 19px);
+}
 
 .envelope {
-  width: 190px;
-  height: 125px;
+  width: 150px;
+  height: 100px;
   position: relative;
-  margin: 30px auto;
-  cursor: pointer;
-  background: linear-gradient(145deg,#8a80d9,#454b8e);
-  border: 1px solid rgba(255,255,255,.45);
-  border-radius: 7px;
-  box-shadow: 0 0 36px rgba(130,122,255,.3);
-  transition: transform .3s ease, box-shadow .3s ease;
+  margin: 25px auto;
+  background: #c6a45e;
+  border-radius: 5px;
+  box-shadow: 0 0 45px rgba(232, 199, 125, .16);
 }
-.envelope:hover {
-  transform: translateY(-5px) scale(1.04);
-  box-shadow: 0 0 48px rgba(139,216,255,.5);
-}
+
 .envelope::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(35deg,transparent 49%,#b4b0f5 50%,transparent 51%),
-    linear-gradient(-35deg,transparent 49%,#8c91e6 50%,transparent 51%);
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 75px solid transparent;
+  border-right: 75px solid transparent;
+  border-top: 58px solid #e5c781;
 }
+
 .envelope::after {
   content: "✦";
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
-  font-size: 2.5rem;
-  color: #fff0bf;
-  text-shadow: 0 0 20px #ffe4a8;
+  left: 62px;
+  top: 37px;
+  color: #5c431c;
+  font-size: 28px;
 }
 
-.letter-text { text-align: left; line-height: 1.9; }
-.letter-text p { margin: 18px 0; }
+.letter {
+  width: min(850px, 100%);
+  text-align: left;
+  padding: clamp(20px, 5vw, 45px);
+  border: 1px solid rgba(232, 199, 125, .28);
+  border-radius: 14px;
+  background: rgba(8, 9, 23, .9);
+  line-height: 1.85;
+  white-space: pre-line;
+}
+
 .quote {
-  margin: 28px 0;
+  margin: 30px 0;
   padding: 18px 22px;
   border-left: 2px solid var(--gold);
-  color: #ffe9ba;
+  color: var(--gold);
+  font-size: clamp(18px, 3vw, 23px);
   font-style: italic;
-  line-height: 1.9;
-  background: rgba(255,224,157,.045);
+  line-height: 1.65;
 }
+
 .poem {
   white-space: pre-line;
-  line-height: 2;
   text-align: center;
-  margin: 28px auto;
-  color: #e4e8ff;
-  font-size: clamp(1rem,2.4vw,1.16rem);
+  line-height: 1.9;
+  color: #ded9f3;
+  margin: 32px auto;
 }
-.small-note { color: #aeb9e5; font-size: .95rem; }
-.hidden { display: none !important; }
 
-#galaxy-screen { padding: 0; overflow: hidden; }
-#galaxy-title {
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  right: 5%;
-  z-index: 2;
-  font-size: clamp(1.4rem,4vw,2.6rem);
-  color: #dcecff;
-  text-shadow: 0 0 25px rgba(139,216,255,.65);
-  pointer-events: none;
+#galaxy-screen {
+  padding: 0;
+  overflow: hidden;
+  background: #02030a;
 }
-#galaxy-canvas {
+
+#galaxyCanvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
-#galaxy-next {
-  position: absolute;
-  bottom: max(26px,env(safe-area-inset-bottom));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1s ease;
-  white-space: nowrap;
-}
-#galaxy-next.visible { opacity: 1; pointer-events: auto; }
 
-#photo-final img {
+.galaxy-overlay {
+  position: relative;
+  z-index: 2;
+  width: min(700px, 92%);
+  padding: 20px;
+  margin-top: auto;
+  margin-bottom: 22px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, transparent, rgba(3, 4, 13, .86) 25%);
+  text-shadow: 0 2px 12px #000;
+}
+
+.galaxy-overlay h2 {
+  font-size: clamp(21px, 4vw, 34px);
+}
+
+#photo-screen {
+  padding: 24px 14px;
+}
+
+#mainPhoto {
   display: block;
-  width: min(620px,100%);
-  max-height: 58svh;
+  max-width: min(850px, 94vw);
+  max-height: 67vh;
   object-fit: contain;
-  margin: 25px auto;
-  border-radius: 16px;
-  border: 1px solid rgba(187,162,255,.55);
-  box-shadow: 0 0 25px rgba(139,216,255,.2),
-              0 0 65px rgba(131,91,255,.2);
+  border-radius: 8px;
+  box-shadow: 0 0 45px rgba(109, 100, 185, .2);
 }
 
-.choice-list {
-  display: grid;
-  gap: 12px;
-  width: min(560px,100%);
-  margin: 25px auto;
+#slideshow-screen {
+  padding: 18px;
+  overflow: hidden;
 }
-.choice-button {
+
+.slideshow-frame {
+  width: min(1100px, 96vw);
+  height: min(72vh, 760px);
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#slideImage {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 0 55px rgba(65, 61, 128, .25);
+  opacity: 1;
+  transition: opacity .7s ease;
+}
+
+#slideImage.fading {
+  opacity: 0;
+}
+
+.slide-caption {
+  margin: 12px 0 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.progress-track {
+  width: min(420px, 80vw);
+  height: 3px;
+  margin: 12px auto;
+  background: rgba(255,255,255,.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#slideProgress {
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+}
+
+#video-screen {
+  padding: 20px;
+}
+
+#memoryVideo {
+  width: min(1000px, 95vw);
+  max-height: 72vh;
+  background: #000;
+  border: 1px solid rgba(232, 199, 125, .25);
+  border-radius: 8px;
+}
+
+.option-list {
+  width: min(600px, 100%);
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-list button {
   width: 100%;
   margin: 0;
-  border-radius: 14px;
-  padding: 16px 20px;
+  text-align: left;
   line-height: 1.5;
 }
-.choice-button.selected {
-  outline: 2px solid white;
-  box-shadow: 0 0 25px rgba(139,216,255,.55);
-}
-.secret-code {
-  font-size: clamp(3rem,12vw,5.5rem);
-  letter-spacing: .3em;
-  padding-left: .3em;
-  margin: 24px 0;
+
+#finalCode {
   color: var(--gold);
-  text-shadow: 0 0 12px rgba(255,227,163,.7),
-               0 0 38px rgba(255,227,163,.35);
+  font-size: clamp(42px, 10vw, 68px);
+  letter-spacing: 12px;
+  margin: 22px 0;
+}
+
+.hidden {
+  display: none !important;
 }
 
 @media (max-width: 600px) {
-  .screen { padding: 22px 14px; }
-  .glass { border-radius: 18px; }
-  button { padding: 15px 24px; }
+  .screen {
+    padding: 18px 12px;
+  }
+
+  .panel {
+    padding: 24px 18px;
+  }
+
+  .letter {
+    padding: 22px 18px;
+  }
+
+  #mainPhoto {
+    max-height: 60vh;
+  }
+
+  .slideshow-frame {
+    height: 62vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
 }
 </style>
 </head>
 
 <body>
-<canvas id="starfield"></canvas>
+<canvas id="stars"></canvas>
 <div class="nebula"></div>
-<audio id="music" src="interstellar.mp3" loop preload="auto"></audio>
 
-<!-- ЭКРАН 1: ВСТУПЛЕНИЕ -->
+<audio id="backgroundMusic" src="interstellar.mp3" loop preload="auto"></audio>
+
+<!-- 1. Вступление -->
 <section id="intro-screen" class="screen active">
-  <div class="content">
-    <p class="computer-notice">Эту открытку нужно открывать на компьютере для правильного отображения всех эффектов.</p>
-    <div class="eyebrow">A message among the stars</div>
-    <h1 id="intro-title"></h1>
-    <div class="intro-copy"><span id="intro-text"></span><span id="intro-cursor" class="cursor"></span></div>
-    <button id="intro-next" class="hidden">Открыть</button>
-    <p class="small-note">Если музыка не включилась автоматически, нажмите на экран.</p>
+  <div class="panel">
+    <p class="small">ЛИЧНО ДЛЯ ВАС</p>
+    <h1 id="introTitle" class="gold type-title"></h1>
+    <p id="introText"></p>
+    <p class="small">
+      Эту открытку нужно открывать на компьютере для правильного отображения всех эффектов.
+    </p>
+    <button id="openButton" class="hidden" onclick="showScreen('envelope-screen')">
+      Открыть
+    </button>
+    <p id="musicHint" class="small">
+      Если музыка не началась автоматически, нажмите на экран.
+    </p>
   </div>
 </section>
 
-<!-- ЭКРАН 2: КОНВЕРТ -->
+<!-- 2. Конверт и вопрос о годе знакомства -->
 <section id="envelope-screen" class="screen">
-  <div class="content glass">
-    <div class="eyebrow">Первое воспоминание</div>
-    <h2>Перед тем как открыть</h2>
-    <p>В каком году мы познакомились?</p>
-    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Открыть конверт"></div>
-    <input id="year-input" type="text" inputmode="numeric" placeholder="Введите год" autocomplete="off">
-    <button id="year-submit">Открыть письмо</button>
-    <div id="year-status" class="status" aria-live="polite"></div>
+  <div class="panel">
+    <p class="small">НЕБОЛЬШОЙ ВОПРОС ПЕРЕД ТЕМ, КАК ОТКРЫТЬ ПИСЬМО</p>
+    <div class="envelope"></div>
+    <h2>В каком году мы познакомились?</h2>
+    <p class="muted">Вспомните год, с которого всё началось.</p>
+    <form id="yearForm">
+      <input id="yearAnswer" type="text" inputmode="numeric" placeholder="Год знакомства" autocomplete="off">
+      <br>
+      <button type="submit">Ответить</button>
+    </form>
+    <div id="yearStatus" class="status"></div>
   </div>
 </section>
 
-<!-- ЭКРАН 3: ПОЗДРАВЛЕНИЕ -->
+<!-- 3. Письмо -->
 <section id="letter-screen" class="screen">
-  <div class="content glass">
-    <div class="eyebrow">От всего сердца</div>
-    <h2>Илья и Алиса</h2>
+  <article class="letter">
+    <h2 class="gold">Илья и Алиса</h2>
 
-    <div class="letter-text">
-      <p>Приветствую вас, мои дорогие друзья!</p>
+    <p>Приветствую вас, мои дорогие друзья!</p>
 
-      <p>Я хотел бы написать о том, как дороги вы мне и как хорошо нам вместе. Хочу поблагодарить вас за то, что вы есть в моей жизни. И как бы ни складывался наш путь, как бы далеко мы ни зашли, мы всё равно остаёмся друг у друга.</p>
+    <p>Я хотел бы написать о том, как дороги вы мне и как хорошо нам вместе. Хочу поблагодарить вас за то, что вы есть в моей жизни. И как бы ни складывался наш путь, как бы далеко мы ни зашли, мы всё равно остаёмся друг у друга.</p>
 
-      <p>Я желаю вам счастья! Вы — самая красивая пара из всех, кого я знаю. Мне не хватит и тысячи слов, чтобы описать, как сильно я вас обожаю и люблю.</p>
+    <p>Я желаю вам счастья! Вы — самая красивая пара из всех, кого я знаю. Мне не хватит и тысячи слов, чтобы описать, как сильно я вас обожаю и люблю.</p>
 
-      <p>Иногда бывают дни, когда вокруг наступают мрак и холод. Но стоит мне пообщаться с вами, и на душе становится намного теплее и легче. И это дорогого стоит.</p>
+    <p>Иногда бывают дни, когда вокруг наступают мрак и холод. Но стоит мне пообщаться с вами, и на душе становится намного теплее и легче. И это дорогого стоит.</p>
 
-      <p><strong>Илья, хочу обратиться лично к тебе.</strong></p>
+    <p><span class="gold">Илья, хочу обратиться лично к тебе.</span></p>
 
-      <p>Твой смех и твоя улыбка стоят того, чтобы ради них сворачивать горы. Я очень дорожу нашей дружбой и надеюсь, что однажды мы обязательно встретимся вживую и станем настоящими братьями. Для меня это действительно важно.</p>
+    <p>Твой смех и твоя улыбка стоят того, чтобы ради них сворачивать горы. Я очень дорожу нашей дружбой и надеюсь, что однажды мы обязательно встретимся вживую и станем настоящими братьями. Для меня это действительно важно.</p>
 
-      <p><strong>Алиса, Алиса…</strong></p>
+    <p><span class="gold">Алиса, Алиса…</span></p>
 
-      <p>Всё хорошее, что у нас всех есть, во многом благодаря тебе. Если бы не твоя гильдия и твой канал, мы, возможно, так никогда бы и не познакомились. Дружба с тобой — ценный подарок судьбы. Ты замечательный человек, и я просто хочу, чтобы ты знала: ты занимаешь особое место в моей жизни и являешься её важной частью.</p>
+    <p>Всё хорошее, что у нас всех есть, во многом благодаря тебе. Если бы не твоя гильдия и твой канал, мы, возможно, так никогда бы и не познакомились. Дружба с тобой — ценный подарок судьбы. Ты замечательный человек, и я просто хочу, чтобы ты знала: ты занимаешь особое место в моей жизни и являешься её важной частью.</p>
 
-      <p>Я очень рад, что вы есть у меня. Спасибо вам за вас. Я вас люблю.</p>
-    </div>
+    <p>Я очень рад, что вы есть у меня. Спасибо вам за вас. Я вас люблю.</p>
 
     <div class="quote">
       Двое становятся единым целым не тогда, когда теряют себя друг в друге, а когда рядом с другим становятся больше собой
@@ -405,81 +498,116 @@ input::placeholder { color: #9299bd; }
 Лишь об одном побеспокойся!
 Чтоб рядом шёл, с кем Жить Легко!</div>
 
-    <button id="letter-next">Дальше — к звёздам</button>
-  </div>
+    <div style="text-align:center; margin-top:28px">
+      <button onclick="startGalaxy()">Продолжить</button>
+    </div>
+  </article>
 </section>
 
-<!-- ЭКРАН 4: ГАЛАКТИКА -->
+<!-- 4. Фото собирается из частиц -->
 <section id="galaxy-screen" class="screen">
-  <div id="galaxy-title">Некоторые моменты остаются с нами навсегда</div>
-  <canvas id="galaxy-canvas"></canvas>
-  <button id="galaxy-next">Продолжить</button>
-</section>
-
-<!-- ЭКРАН 5: ФОТО. БЕЗ НАДПИСИ «НАШ МАЛЕНЬКИЙ КОСМОС» -->
-<section id="photo-screen" class="screen">
-  <div class="content glass" id="photo-final">
-    <h2>Это тоже часть нашей истории</h2>
-    <img src="p11.jpg" alt="Фотография для Ильи и Алисы">
-    <p>Пусть хороших воспоминаний впереди будет ещё больше.</p>
-    <button id="photo-next">Дальше</button>
+  <canvas id="galaxyCanvas"></canvas>
+  <div class="galaxy-overlay">
+    <h2 class="gold">Некоторые моменты остаются с нами навсегда</h2>
+    <p class="muted">Каждая частичка хранит часть воспоминания.</p>
+    <button id="galaxyContinue" class="hidden" onclick="startSlideshow()">
+      Продолжить
+    </button>
   </div>
 </section>
 
-<!-- ЭКРАН 6: ВОПРОС ПРО БАЙКАЛ -->
-<section id="secret-screen" class="screen">
-  <div class="content glass">
-    <div class="eyebrow">Последний вопрос?</div>
-    <h2>Проверим вашу эрудицию</h2>
-    <p>Как называется самое глубокое озеро в мире?</p>
-    <input id="lake-input" type="text" placeholder="Введите ответ" autocomplete="off">
-    <button id="lake-submit">Ответить</button>
-    <div id="lake-status" class="status" aria-live="polite"></div>
+<!-- 5. Главное фото -->
+<section id="photo-screen" class="screen">
+  <div class="panel">
+    <h2 class="gold">Это тоже часть нашей истории</h2>
+    <img id="mainPhoto" src="p11.jpg" alt="Главное фото">
+    <p class="muted">И это далеко не все воспоминания.</p>
+    <button onclick="startSlideshow()">Посмотреть дальше</button>
+  </div>
+</section>
 
-    <div id="friendship-question" class="hidden">
-      <div class="quote">
-        Остался ещё один шаг. Не всё самое важное можно измерить расстоянием.
-      </div>
-      <h2>Что помогает нам оставаться близкими, даже когда мы далеко друг от друга?</h2>
-      <p>Выберите ответ, который вам ближе.</p>
+<!-- 6. Слайд-шоу фотографий -->
+<section id="slideshow-screen" class="screen">
+  <h2 class="gold">Моменты, которые хочется сохранить</h2>
+  <div class="slideshow-frame">
+    <img id="slideImage" src="12.jpg" alt="Фотография из воспоминаний">
+  </div>
+  <div id="slideCaption" class="slide-caption">Воспоминание 1</div>
+  <div class="progress-track">
+    <div id="slideProgress"></div>
+  </div>
+  <div>
+    <button id="pauseSlidesButton" onclick="toggleSlideshow()">Пауза</button>
+    <button onclick="skipSlide()">Далее</button>
+  </div>
+  <p class="small">После последней фотографии начнётся видео.</p>
+</section>
 
-      <div class="choice-list">
-        <button class="choice-button" data-answer="wrong1">То, что у каждого своя жизнь</button>
-        <button class="choice-button" data-answer="correct">Дружба, общение и воспоминания, которые нас объединяют</button>
-        <button class="choice-button" data-answer="wrong2">Просто случайное совпадение</button>
-      </div>
+<!-- 7. Видео -->
+<section id="video-screen" class="screen">
+  <div class="panel">
+    <h2 class="gold">И ещё одно воспоминание</h2>
+    <video id="memoryVideo" controls playsinline preload="metadata">
+      <source src="2.mp4" type="video/mp4">
+      Ваш браузер не поддерживает воспроизведение видео.
+    </video>
+    <p id="videoStatus" class="muted">После окончания видео открытка продолжится.</p>
+    <button id="continueAfterVideo" class="hidden" onclick="startBaikalQuestion()">
+      Продолжить
+    </button>
+  </div>
+</section>
 
-      <div id="friendship-status" class="status" aria-live="polite"></div>
+<!-- 8. Вопрос о Байкале -->
+<section id="baikal-screen" class="screen">
+  <div class="panel">
+    <p class="small">ЕЩЁ ОДИН ВОПРОС</p>
+    <h2>Как называется самое глубокое озеро в мире?</h2>
+    <form id="baikalForm">
+      <input id="baikalAnswer" type="text" placeholder="Ваш ответ" autocomplete="off">
+      <br>
+      <button type="submit">Ответить</button>
+    </form>
+    <div id="baikalStatus" class="status"></div>
+  </div>
+</section>
+
+<!-- 9. Вопрос о дружбе -->
+<section id="friendship-screen" class="screen">
+  <div class="panel">
+    <p class="small">ПОСЛЕДНИЙ ВОПРОС</p>
+    <h2>Что помогает нам оставаться близкими, даже когда мы далеко друг от друга?</h2>
+    <div class="option-list">
+      <button onclick="answerFriendship(0)">То, что у каждого своя жизнь</button>
+      <button onclick="answerFriendship(1)">Дружба, общение и воспоминания, которые нас объединяют</button>
+      <button onclick="answerFriendship(2)">Просто случайное совпадение</button>
     </div>
+    <div id="friendshipStatus" class="status"></div>
+  </div>
+</section>
 
-    <div id="code-reveal" class="hidden">
-      <div class="eyebrow">Вы добрались до финала</div>
-      <h2>Ваш код от замка</h2>
-      <div class="secret-code">1276</div>
-      <p>Сохраните его. И помните: самое ценное в этой истории — не код, а люди, которые в ней есть.</p>
-    </div>
+<!-- 10. Код -->
+<section id="code-screen" class="screen">
+  <div class="panel">
+    <h2 class="gold">Код открыт</h2>
+    <p>Ваш код:</p>
+    <div id="finalCode">1276</div>
+    <button onclick="copyCode()">Скопировать код</button>
+    <div id="copyStatus" class="status"></div>
   </div>
 </section>
 
 <script>
-/* ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ */
-const screens = [...document.querySelectorAll(".screen")];
+/* ---------------- Звёздное небо ---------------- */
 
-function showScreen(id) {
-  screens.forEach(screen => screen.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  window.scrollTo(0, 0);
-}
-
-/* ЗВЁЗДНОЕ НЕБО */
-const starCanvas = document.getElementById("starfield");
+const starCanvas = document.getElementById("stars");
 const starCtx = starCanvas.getContext("2d");
 let stars = [];
 let starWidth = 0;
 let starHeight = 0;
 let starDpr = 1;
 
-function createStars() {
+function resizeStars() {
   starDpr = Math.min(window.devicePixelRatio || 1, 1.5);
   starWidth = window.innerWidth;
   starHeight = window.innerHeight;
@@ -490,347 +618,476 @@ function createStars() {
   starCanvas.style.height = starHeight + "px";
   starCtx.setTransform(starDpr, 0, 0, starDpr, 0, 0);
 
-  const count = Math.min(220, Math.floor(starWidth * starHeight / 6000));
-  stars = Array.from({length: count}, () => ({
+  const count = Math.min(220, Math.floor(starWidth * starHeight / 5500));
+  stars = Array.from({ length: count }, () => ({
     x: Math.random() * starWidth,
     y: Math.random() * starHeight,
-    r: Math.random() * 1.5 + .25,
-    phase: Math.random() * Math.PI * 2,
-    speed: Math.random() * .018 + .004,
-    tint: Math.random()
+    r: Math.random() * 1.35 + .25,
+    alpha: Math.random() * .6 + .2,
+    speed: Math.random() * .012 + .003,
+    phase: Math.random() * Math.PI * 2
   }));
 }
 
-function drawStars() {
+function drawStars(time) {
   starCtx.clearRect(0, 0, starWidth, starHeight);
-  const time = performance.now();
 
-  for (const star of stars) {
-    const alpha = .28 + (Math.sin(time * star.speed + star.phase) + 1) * .36;
-    const color = star.tint > .82
-      ? `rgba(255,224,173,${alpha})`
-      : star.tint > .48
-        ? `rgba(174,191,255,${alpha})`
-        : `rgba(235,246,255,${alpha})`;
-
+  for (const s of stars) {
+    const alpha = s.alpha * (0.65 + 0.35 * Math.sin(time * s.speed + s.phase));
+    starCtx.fillStyle = `rgba(226, 229, 255, ${alpha})`;
     starCtx.beginPath();
-    starCtx.fillStyle = color;
-    starCtx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+    starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
     starCtx.fill();
   }
+
   requestAnimationFrame(drawStars);
 }
 
-window.addEventListener("resize", createStars);
-createStars();
-drawStars();
+window.addEventListener("resize", resizeStars);
+resizeStars();
+requestAnimationFrame(drawStars);
 
-/* МУЗЫКА: 55% */
-const music = document.getElementById("music");
-music.volume = 0.55;
+/* ---------------- Переключение экранов ---------------- */
 
-async function startMusic() {
-  music.volume = 0.55;
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
+
+  const next = document.getElementById(id);
+  if (next) next.classList.add("active");
+}
+
+/* ---------------- Музыка ---------------- */
+
+const backgroundMusic = document.getElementById("backgroundMusic");
+backgroundMusic.volume = 0.55;
+
+async function tryPlayMusic() {
   try {
-    await music.play();
+    await backgroundMusic.play();
+    document.getElementById("musicHint").classList.add("hidden");
   } catch (error) {
-    // Автовоспроизведение может блокироваться настройками браузера.
+    document.getElementById("musicHint").classList.remove("hidden");
   }
 }
 
-startMusic();
-document.addEventListener("pointerdown", startMusic, {once: true});
-document.addEventListener("keydown", startMusic, {once: true});
+document.addEventListener("pointerdown", () => {
+  if (backgroundMusic.paused) tryPlayMusic();
+}, { once: true });
 
-/* ПОСИМВОЛЬНОЕ ВСТУПЛЕНИЕ */
-const introTitle = "DEAR MY FRIENDS FOR YOU";
-const introMessage =
+document.addEventListener("keydown", () => {
+  if (backgroundMusic.paused) tryPlayMusic();
+}, { once: true });
+
+tryPlayMusic();
+
+/* ---------------- Печатный текст вступления ---------------- */
+
+const introTitleText = "DEAR MY FRIENDS FOR YOU";
+const introBodyText =
   "Эта открытка для вас, мои дорогие друзья.\n\n" +
   "И когда вы её откроете, будьте готовы ко всему.\n\n" +
   "Я вас люблю.";
 
-const titleElement = document.getElementById("intro-title");
-const introTextElement = document.getElementById("intro-text");
-const introCursor = document.getElementById("intro-cursor");
-const introNext = document.getElementById("intro-next");
-const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-async function typeText(element, text, delay) {
+function typeText(element, text, speed, done) {
+  let i = 0;
   element.textContent = "";
-  for (const character of text) {
-    element.textContent += character;
-    await wait(character === " " || character === "\n" ? delay * .45 : delay);
+
+  function next() {
+    if (i < text.length) {
+      element.textContent += text[i];
+      i++;
+      setTimeout(next, speed);
+    } else if (done) {
+      done();
+    }
   }
+
+  next();
 }
 
-async function runIntro() {
-  await wait(800);
-  await typeText(titleElement, introTitle, 125);
-  await wait(700);
-  await typeText(introTextElement, introMessage, 75);
-  introCursor.classList.add("hidden");
-  introNext.classList.remove("hidden");
-}
+window.addEventListener("load", () => {
+  typeText(document.getElementById("introTitle"), introTitleText, 125, () => {
+    typeText(document.getElementById("introText"), introBodyText, 75, () => {
+      document.getElementById("openButton").classList.remove("hidden");
+    });
+  });
+});
 
-runIntro();
-introNext.addEventListener("click", () => showScreen("envelope-screen"));
+/* ---------------- Вопрос о годе знакомства ---------------- */
 
-/* ГОД ЗНАКОМСТВА */
-const yearInput = document.getElementById("year-input");
-const yearStatus = document.getElementById("year-status");
+document.getElementById("yearForm").addEventListener("submit", event => {
+  event.preventDefault();
 
-function checkYear() {
-  if (yearInput.value.trim() === "2024") {
-    yearStatus.textContent = "Верно. Письмо открывается…";
-    yearStatus.style.color = "#b9ffd7";
+  const answer = document.getElementById("yearAnswer").value.trim();
+  const status = document.getElementById("yearStatus");
+
+  if (answer === "2024") {
+    status.textContent = "Верно.";
     setTimeout(() => showScreen("letter-screen"), 700);
   } else {
-    yearStatus.textContent = "Попробуйте ещё раз.";
-    yearStatus.style.color = "#ffd0d0";
+    status.textContent = "Попробуйте ещё раз.";
   }
-}
-
-document.getElementById("year-submit").addEventListener("click", checkYear);
-yearInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") checkYear();
 });
 
-const envelope = document.getElementById("envelope");
-envelope.addEventListener("click", () => yearInput.focus());
-envelope.addEventListener("keydown", e => {
-  if (e.key === "Enter" || e.key === " ") yearInput.focus();
-});
+/* ---------------- Сборка фото из частиц ---------------- */
 
-/* ГАЛАКТИКА СОБИРАЕТСЯ ИЗ ЧАСТИЦ ФОТО */
-const galaxyScreen = document.getElementById("galaxy-screen");
-const galaxyCanvas = document.getElementById("galaxy-canvas");
-const galaxyCtx = galaxyCanvas.getContext("2d", {alpha: true});
-const galaxyNext = document.getElementById("galaxy-next");
+const galaxyCanvas = document.getElementById("galaxyCanvas");
+const galaxyCtx = galaxyCanvas.getContext("2d", { alpha: false });
 const photoImage = new Image();
+photoImage.src = "p11.jpg";
 
 let galaxyParticles = [];
+let galaxyStartTime = 0;
+let galaxyAnimationId = null;
+let galaxyBuilt = false;
 let galaxyDpr = 1;
 let galaxyW = 0;
 let galaxyH = 0;
-let galaxyStartedAt = 0;
-let galaxyFrame = null;
-let galaxyBuilt = false;
-
-function resizeGalaxy() {
-  galaxyDpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  galaxyW = Math.max(1, window.innerWidth);
-  galaxyH = Math.max(1, window.innerHeight);
-
-  galaxyCanvas.width = Math.floor(galaxyW * galaxyDpr);
-  galaxyCanvas.height = Math.floor(galaxyH * galaxyDpr);
-  galaxyCanvas.style.width = galaxyW + "px";
-  galaxyCanvas.style.height = galaxyH + "px";
-  galaxyCtx.setTransform(galaxyDpr, 0, 0, galaxyDpr, 0, 0);
-
-  galaxyBuilt = false;
-  if (photoImage.complete && photoImage.naturalWidth) buildGalaxyParticles();
-}
-
-function buildGalaxyParticles() {
-  if (!photoImage.naturalWidth || !galaxyW || !galaxyH) return;
-
-  const sampleCanvas = document.createElement("canvas");
-  const sampleCtx = sampleCanvas.getContext("2d", {willReadFrequently: true});
-
-  const maxW = Math.min(galaxyW * .88, 950);
-  const maxH = galaxyH * .62;
-  const scale = Math.min(maxW / photoImage.naturalWidth, maxH / photoImage.naturalHeight);
-  const imageW = Math.max(1, Math.floor(photoImage.naturalWidth * scale));
-  const imageH = Math.max(1, Math.floor(photoImage.naturalHeight * scale));
-
-  sampleCanvas.width = imageW;
-  sampleCanvas.height = imageH;
-  sampleCtx.drawImage(photoImage, 0, 0, imageW, imageH);
-
-  let pixels;
-  try {
-    pixels = sampleCtx.getImageData(0, 0, imageW, imageH).data;
-  } catch (error) {
-    document.getElementById("galaxy-title").textContent =
-      "Не удалось обработать p11.jpg. Проверьте файл.";
-    return;
-  }
-
-  const gap = Math.max(4, Math.round(Math.min(imageW, imageH) / 90));
-  const offsetX = (galaxyW - imageW) / 2;
-  const offsetY = (galaxyH - imageH) / 2;
-  galaxyParticles = [];
-
-  for (let y = 0; y < imageH; y += gap) {
-    for (let x = 0; x < imageW; x += gap) {
-      const index = (y * imageW + x) * 4;
-      const r = pixels[index];
-      const g = pixels[index + 1];
-      const b = pixels[index + 2];
-      const a = pixels[index + 3];
-
-      if (a < 60 || (r + g + b) / 3 < 18) continue;
-
-      const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * Math.max(galaxyW, galaxyH) * .72;
-
-      galaxyParticles.push({
-        sx: galaxyW / 2 + Math.cos(angle) * radius,
-        sy: galaxyH / 2 + Math.sin(angle) * radius,
-        x: offsetX + x,
-        y: offsetY + y,
-        r, g, b,
-        size: Math.random() * .65 + .7,
-        phase: Math.random() * Math.PI * 2
-      });
-    }
-  }
-
-  galaxyBuilt = true;
-}
-
-function easeInOut(t) {
-  return t < .5
-    ? 4 * t * t * t
-    : 1 - Math.pow(-2 * t + 2, 3) / 2;
-}
-
-function drawGalaxy(now) {
-  if (!galaxyScreen.classList.contains("active")) {
-    galaxyFrame = null;
-    return;
-  }
-
-  if (!galaxyBuilt && photoImage.complete && photoImage.naturalWidth) {
-    buildGalaxyParticles();
-  }
-
-  galaxyCtx.clearRect(0, 0, galaxyW, galaxyH);
-
-  const glow = galaxyCtx.createRadialGradient(
-    galaxyW / 2, galaxyH / 2, 0,
-    galaxyW / 2, galaxyH / 2, Math.max(galaxyW, galaxyH) * .48
-  );
-  glow.addColorStop(0, "rgba(74,69,177,.17)");
-  glow.addColorStop(.55, "rgba(42,36,104,.07)");
-  glow.addColorStop(1, "rgba(0,0,0,0)");
-  galaxyCtx.fillStyle = glow;
-  galaxyCtx.fillRect(0, 0, galaxyW, galaxyH);
-
-  const duration = 7000;
-  const progress = Math.min(1, (now - galaxyStartedAt) / duration);
-  const eased = easeInOut(progress);
-  const twinkle = now / 600;
-
-  for (const p of galaxyParticles) {
-    const x = p.sx + (p.x - p.sx) * eased;
-    const y = p.sy + (p.y - p.sy) * eased;
-    const shimmer = .78 + .22 * Math.sin(twinkle + p.phase);
-    const blend = Math.min(1, progress * 1.5);
-
-    const rr = Math.round(139 * (1 - blend) + p.r * blend);
-    const gg = Math.round(177 * (1 - blend) + p.g * blend);
-    const bb = Math.round(255 * (1 - blend) + p.b * blend);
-
-    galaxyCtx.fillStyle = `rgba(${rr},${gg},${bb},${shimmer})`;
-    galaxyCtx.beginPath();
-    galaxyCtx.arc(x, y, p.size, 0, Math.PI * 2);
-    galaxyCtx.fill();
-  }
-
-  if (progress >= 1) galaxyNext.classList.add("visible");
-  galaxyFrame = requestAnimationFrame(drawGalaxy);
-}
+const galaxyDuration = 7000;
 
 function startGalaxy() {
   showScreen("galaxy-screen");
-  galaxyNext.classList.remove("visible");
-  resizeGalaxy();
-  galaxyStartedAt = performance.now();
+  document.getElementById("galaxyContinue").classList.add("hidden");
+  galaxyBuilt = false;
+  galaxyStartTime = performance.now();
 
-  if (galaxyFrame) cancelAnimationFrame(galaxyFrame);
-  galaxyFrame = requestAnimationFrame(drawGalaxy);
+  resizeGalaxy();
+
+  if (galaxyAnimationId) cancelAnimationFrame(galaxyAnimationId);
+  galaxyAnimationId = requestAnimationFrame(animateGalaxy);
 }
 
-photoImage.onload = () => {
-  if (galaxyScreen.classList.contains("active")) resizeGalaxy();
-};
-photoImage.onerror = () => {
-  document.getElementById("galaxy-title").textContent =
-    "Не удалось загрузить p11.jpg. Проверьте имя файла.";
-};
-photoImage.src = "p11.jpg";
+function resizeGalaxy() {
+  const screen = document.getElementById("galaxy-screen");
+  galaxyW = screen.clientWidth || window.innerWidth;
+  galaxyH = screen.clientHeight || window.innerHeight;
+  galaxyDpr = Math.min(window.devicePixelRatio || 1, 1.25);
 
-window.addEventListener("resize", () => {
-  if (galaxyScreen.classList.contains("active")) resizeGalaxy();
-});
+  galaxyCanvas.width = Math.floor(galaxyW * galaxyDpr);
+  galaxyCanvas.height = Math.floor(galaxyH * galaxyDpr);
+  galaxyCtx.setTransform(galaxyDpr, 0, 0, galaxyDpr, 0, 0);
 
-document.getElementById("letter-next").addEventListener("click", startGalaxy);
-
-galaxyNext.addEventListener("click", () => {
-  if (galaxyFrame) cancelAnimationFrame(galaxyFrame);
-  galaxyFrame = null;
-  showScreen("photo-screen");
-});
-
-document.getElementById("photo-next").addEventListener("click", () => {
-  showScreen("secret-screen");
-});
-
-/* ВОПРОС 1: БАЙКАЛ */
-const lakeInput = document.getElementById("lake-input");
-const lakeStatus = document.getElementById("lake-status");
-const friendshipQuestion = document.getElementById("friendship-question");
-const friendshipStatus = document.getElementById("friendship-status");
-const codeReveal = document.getElementById("code-reveal");
-
-function checkLake() {
-  const answer = lakeInput.value.trim()
-    .toLocaleLowerCase("ru-RU")
-    .replaceAll("ё", "е");
-
-  if (answer === "байкал") {
-    lakeStatus.textContent = "Правильно. Но перед тем как открыть замок, остался ещё один шаг.";
-    lakeStatus.style.color = "#b9ffd7";
-    friendshipQuestion.classList.remove("hidden");
-  } else {
-    lakeStatus.textContent = "Это не тот ответ. Попробуйте ещё раз.";
-    lakeStatus.style.color = "#ffd0d0";
-    friendshipQuestion.classList.add("hidden");
-    codeReveal.classList.add("hidden");
+  if (photoImage.complete && photoImage.naturalWidth > 0) {
+    buildGalaxyParticles();
   }
 }
 
-document.getElementById("lake-submit").addEventListener("click", checkLake);
-lakeInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") checkLake();
-});
+function buildGalaxyParticles() {
+  const sampleCanvas = document.createElement("canvas");
+  const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
 
-/* ВОПРОС 2: ДРУЖБА */
-document.querySelectorAll(".choice-button").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".choice-button").forEach(b => {
-      b.classList.remove("selected");
-    });
-    button.classList.add("selected");
+  const maxW = Math.min(galaxyW * .78, 850);
+  const maxH = galaxyH * .68;
+  const scale = Math.min(maxW / photoImage.naturalWidth, maxH / photoImage.naturalHeight);
 
-    if (button.dataset.answer === "correct") {
-      friendshipStatus.textContent =
-        "Именно так. Даже когда нас разделяют расстояния, общение и дружба продолжают нас объединять.";
-      friendshipStatus.style.color = "#b9ffd7";
+  const imgW = Math.max(1, Math.floor(photoImage.naturalWidth * scale));
+  const imgH = Math.max(1, Math.floor(photoImage.naturalHeight * scale));
 
-      setTimeout(() => {
-        codeReveal.classList.remove("hidden");
-        codeReveal.scrollIntoView({behavior: "smooth", block: "nearest"});
-      }, 1200);
-    } else {
-      friendshipStatus.textContent =
-        "Подумайте ещё раз. Вспомните, благодаря чему вы вообще познакомились и продолжаете общаться.";
-      friendshipStatus.style.color = "#ffe3a3";
-      codeReveal.classList.add("hidden");
+  sampleCanvas.width = imgW;
+  sampleCanvas.height = imgH;
+  sampleCtx.drawImage(photoImage, 0, 0, imgW, imgH);
+
+  let pixels;
+  try {
+    pixels = sampleCtx.getImageData(0, 0, imgW, imgH).data;
+  } catch (error) {
+    document.querySelector("#galaxy-screen .galaxy-overlay p").textContent =
+      "Не удалось подготовить фотографию. Проверьте файл p11.jpg.";
+    return;
+  }
+
+  galaxyParticles = [];
+
+  const gap = Math.max(4, Math.floor(Math.min(imgW, imgH) / 95));
+  const offsetX = (galaxyW - imgW) / 2;
+  const offsetY = (galaxyH - imgH) / 2 - 20;
+
+  for (let y = 0; y < imgH; y += gap) {
+    for (let x = 0; x < imgW; x += gap) {
+      const index = (y * imgW + x) * 4;
+      const alpha = pixels[index + 3];
+
+      if (alpha < 90) continue;
+
+      const r = pixels[index];
+      const g = pixels[index + 1];
+      const b = pixels[index + 2];
+
+      galaxyParticles.push({
+        x: Math.random() * galaxyW,
+        y: Math.random() * galaxyH,
+        tx: offsetX + x,
+        ty: offsetY + y,
+        r, g, b,
+        size: Math.random() * 1.2 + 1,
+        delay: Math.random() * .32
+      });
     }
-  });
+  }
+}
+
+function animateGalaxy(now) {
+  galaxyCtx.fillStyle = "#02030a";
+  galaxyCtx.fillRect(0, 0, galaxyW, galaxyH);
+
+  if (!photoImage.complete || photoImage.naturalWidth === 0) {
+    galaxyCtx.fillStyle = "#e8c77d";
+    galaxyCtx.font = "18px Georgia";
+    galaxyCtx.textAlign = "center";
+    galaxyCtx.fillText("Загрузка фотографии…", galaxyW / 2, galaxyH / 2);
+    galaxyAnimationId = requestAnimationFrame(animateGalaxy);
+    return;
+  }
+
+  if (!galaxyParticles.length) buildGalaxyParticles();
+
+  const progress = Math.min(1, (now - galaxyStartTime) / galaxyDuration);
+
+  for (const p of galaxyParticles) {
+    const local = Math.max(0, Math.min(1, (progress - p.delay) / (1 - p.delay)));
+    const eased = 1 - Math.pow(1 - local, 3);
+
+    const x = p.x + (p.tx - p.x) * eased;
+    const y = p.y + (p.ty - p.y) * eased;
+    const alpha = Math.min(1, .18 + eased * .82);
+
+    galaxyCtx.fillStyle = `rgba(${p.r},${p.g},${p.b},${alpha})`;
+    galaxyCtx.fillRect(x, y, p.size, p.size);
+  }
+
+  if (progress < 1) {
+    galaxyAnimationId = requestAnimationFrame(animateGalaxy);
+  } else {
+    galaxyBuilt = true;
+    galaxyAnimationId = null;
+    document.getElementById("galaxyContinue").classList.remove("hidden");
+  }
+}
+
+photoImage.onload = () => {
+  if (document.getElementById("galaxy-screen").classList.contains("active")) {
+    resizeGalaxy();
+  }
+};
+
+photoImage.onerror = () => {
+  document.querySelector("#galaxy-screen .galaxy-overlay p").textContent =
+    "Не удалось загрузить p11.jpg. Проверьте имя файла и его расположение.";
+};
+
+window.addEventListener("resize", () => {
+  if (document.getElementById("galaxy-screen").classList.contains("active")) {
+    resizeGalaxy();
+  }
 });
+
+document.getElementById("mainPhoto").addEventListener("error", () => {
+  document.getElementById("mainPhoto").alt = "Не удалось загрузить p11.jpg";
+});
+
+/* ---------------- Слайд-шоу ---------------- */
+
+const slideshowFiles = [
+  "12.jpg",
+  "0172.jpg",
+  "алисик 16.jpg",
+  "Алисик2.jpg",
+  "p130.jpg",
+  "p27.jpg",
+  "p23.jpg",
+  "p19.jpg",
+  "p17.jpg",
+  "p15.jpg",
+  "p14.jpg",
+  "p13.jpg",
+  "p9.jpg",
+  "p6.jpg"
+];
+
+let slideIndex = 0;
+let slideTimer = null;
+let slideStartedAt = 0;
+let slideRemaining = 5000;
+let slideshowPaused = false;
+let slideTransitioning = false;
+const slideDuration = 5000;
+
+function startSlideshow() {
+  clearTimeout(slideTimer);
+  slideIndex = 0;
+  slideRemaining = slideDuration;
+  slideshowPaused = false;
+  slideTransitioning = false;
+
+  document.getElementById("pauseSlidesButton").textContent = "Пауза";
+  showScreen("slideshow-screen");
+  displaySlide(true);
+}
+
+function displaySlide(first = false) {
+  const image = document.getElementById("slideImage");
+  const caption = document.getElementById("slideCaption");
+  const progress = document.getElementById("slideProgress");
+
+  if (slideIndex >= slideshowFiles.length) {
+    startMemoryVideo();
+    return;
+  }
+
+  slideTransitioning = true;
+  image.classList.add("fading");
+
+  setTimeout(() => {
+    image.onload = () => {
+      image.classList.remove("fading");
+      slideTransitioning = false;
+      caption.textContent = `Воспоминание ${slideIndex + 1} из ${slideshowFiles.length}`;
+      progress.style.width = `${((slideIndex + 1) / slideshowFiles.length) * 100}%`;
+
+      if (!slideshowPaused) {
+        slideRemaining = slideDuration;
+        slideStartedAt = performance.now();
+        clearTimeout(slideTimer);
+        slideTimer = setTimeout(skipSlide, slideDuration);
+      }
+    };
+
+    image.onerror = () => {
+      caption.textContent = `Не удалось загрузить: ${slideshowFiles[slideIndex]}`;
+      image.classList.remove("fading");
+      slideTransitioning = false;
+      if (!slideshowPaused) {
+        slideTimer = setTimeout(skipSlide, 1800);
+      }
+    };
+
+    image.src = slideshowFiles[slideIndex];
+
+    if (image.complete && image.naturalWidth > 0) {
+      image.onload();
+    }
+  }, first ? 0 : 450);
+}
+
+function skipSlide() {
+  if (slideshowPaused || slideTransitioning) return;
+
+  clearTimeout(slideTimer);
+  slideIndex++;
+
+  if (slideIndex >= slideshowFiles.length) {
+    startMemoryVideo();
+    return;
+  }
+
+  displaySlide();
+}
+
+function toggleSlideshow() {
+  const button = document.getElementById("pauseSlidesButton");
+
+  if (!slideshowPaused) {
+    slideshowPaused = true;
+    slideRemaining = Math.max(0, slideDuration - (performance.now() - slideStartedAt));
+    clearTimeout(slideTimer);
+    button.textContent = "Продолжить";
+  } else {
+    slideshowPaused = false;
+    button.textContent = "Пауза";
+    slideStartedAt = performance.now() - (slideDuration - slideRemaining);
+    slideTimer = setTimeout(skipSlide, slideRemaining);
+  }
+}
+
+/* ---------------- Видео после слайд-шоу ---------------- */
+
+const memoryVideo = document.getElementById("memoryVideo");
+
+function startMemoryVideo() {
+  clearTimeout(slideTimer);
+  showScreen("video-screen");
+
+  memoryVideo.pause();
+  memoryVideo.currentTime = 0;
+  document.getElementById("continueAfterVideo").classList.add("hidden");
+  document.getElementById("videoStatus").textContent =
+    "После окончания видео открытка продолжится.";
+
+  const playPromise = memoryVideo.play();
+
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      document.getElementById("videoStatus").textContent =
+        "Нажмите кнопку воспроизведения на видео. После окончания открытка продолжится.";
+    });
+  }
+}
+
+memoryVideo.addEventListener("ended", () => {
+  document.getElementById("videoStatus").textContent = "Видео завершено.";
+  document.getElementById("continueAfterVideo").classList.remove("hidden");
+});
+
+memoryVideo.addEventListener("error", () => {
+  document.getElementById("videoStatus").textContent =
+    "Не удалось загрузить 2.mp4. Проверьте имя файла и его расположение.";
+  document.getElementById("continueAfterVideo").classList.remove("hidden");
+});
+
+/* ---------------- Вопросы после видео ---------------- */
+
+function startBaikalQuestion() {
+  memoryVideo.pause();
+  showScreen("baikal-screen");
+}
+
+document.getElementById("baikalForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const answer = document.getElementById("baikalAnswer").value
+    .trim()
+    .toLowerCase()
+    .replace(/ё/g, "е");
+
+  const status = document.getElementById("baikalStatus");
+
+  if (answer.includes("байкал")) {
+    status.textContent = "Верно.";
+    setTimeout(() => showScreen("friendship-screen"), 700);
+  } else {
+    status.textContent = "Подумайте ещё немного.";
+  }
+});
+
+/* ---------------- Вопрос о дружбе ---------------- */
+
+function answerFriendship(option) {
+  const status = document.getElementById("friendshipStatus");
+
+  if (option === 1) {
+    status.textContent = "Именно так.";
+    setTimeout(() => showScreen("code-screen"), 900);
+  } else {
+    status.textContent = "Попробуйте ещё раз.";
+  }
+}
+
+/* ---------------- Код ---------------- */
+
+function copyCode() {
+  const code = "1276";
+  const status = document.getElementById("copyStatus");
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(code)
+      .then(() => status.textContent = "Код скопирован.")
+      .catch(() => status.textContent = "Код: " + code);
+  } else {
+    status.textContent = "Код: " + code;
+  }
+}
 </script>
 </body>
 </html>
